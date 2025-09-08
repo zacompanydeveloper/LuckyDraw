@@ -1,8 +1,6 @@
 import axios from 'axios'
 import defaultSetting from '@/api/config.js'
 import router from '@/router'
-import { toast } from 'vue3-toastify'
-import helper from '@/helper'
 
 axios.interceptors.response.use(
   function (response) {
