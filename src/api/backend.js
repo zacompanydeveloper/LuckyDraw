@@ -11,7 +11,7 @@ axios.interceptors.response.use(
       const status = error.response.status
 
       if (status === 401) {
-        localStorage.removeItem('apiToken')
+        localStorage.removeItem('adminToken')
         router.push(`/`)
       } else if (status === 403) {
         router.push('/no-permission')
