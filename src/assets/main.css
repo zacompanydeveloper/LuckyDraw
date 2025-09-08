@@ -1,0 +1,10 @@
+
+@import 'tailwindcss';
+@import 'primeicons/primeicons.css';
+
+
+:root {
+    --base-color : #161866;
+    --logo-text-color : #ed1d25;
+    --light-color : #e3eeff;
+}

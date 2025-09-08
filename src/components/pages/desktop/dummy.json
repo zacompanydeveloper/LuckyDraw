@@ -1,0 +1,23 @@
+{
+    "data": {
+        "id": "z9X0Jq5E",
+        "is_expired": false,
+        "order_date": "2025-08-11 | 03:00 PM",
+        "business_type": "business",
+        "product_name": "12-Foam Bolster Cotton Big",
+        "category_name": "Pillows & Bolsters (Silicone & Foam)",
+        "serial_number": "LOT1234567",
+        "showroom_address": "Sweety Home",
+        "warranty_type": {
+            "amount" : 10,
+            "type"   : "years",
+            "period_start" : "2025-08-11",
+            "period_end" : "2035-08-11"
+        },
+        "warranty_period_days": 3650,
+        "warranty_period_years": 10,
+        "customer_name": "Hlaing HtaikHta Store",
+        "customer_phone": "09263678027",
+        "customer_address": "အမှတ်(၃၈၉), ဗိုလ်အောင်ကျော်လမ်း,7 WARD မီးခွက်ဈေး,လှိုင်သာယာ(အနောက်),ရန်ကုန်တိုင်းဒေသကြီး"
+    }
+}
