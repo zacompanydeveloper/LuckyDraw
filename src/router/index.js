@@ -12,6 +12,10 @@ router.beforeEach((to, from, next) => {
   const userAuth = isUserAuthenticated()
   const adminAuth = isAdminAuthenticated()
 
+  if(to.path === '/') {
+    return next({ name: 'admin-login' })
+  }
+
   // Admin protected routes
   if (to.meta.requiresAdminAuth && !adminAuth) {
     return next({ name: 'admin-login' })
