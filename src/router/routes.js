@@ -26,6 +26,12 @@ export const routes = [
     component: () => import("@/pages/AdminLogin.vue"),
     meta: { guest: true, role: "admin" }, // guest-only route
   },
+  {
+    path: "/admin-panel/products/:id",
+    name: "admin-panel-product-details",
+    component: () => import("@/pages/ProductDetails.vue"),
+    meta: { requiresAdminAuth: true }, // protected route
+  },
 ];
 
 export default routes;

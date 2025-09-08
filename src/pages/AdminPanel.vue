@@ -31,7 +31,7 @@
                                 <template #body="{ data }">
                                     <div class="flex justify-end items-center gap-2">
                                         <Button v-tooltip.top="'Details'" icon="pi pi-search"
-                                            @click="handleAction('details', data)" severity="info" rounded />
+                                            @click="goToDetails(data.id)" severity="info" rounded />
                                         <Button v-tooltip.top="'Download'" icon="pi pi-download"
                                             @click="downloadFile(data)" severity="success" rounded />
                                         <Button v-tooltip.top="'Generate'" icon="pi pi-cog"
@@ -89,6 +89,7 @@ import helper from "@/helper"
 import NotFound from "@/views/NotFound.vue"
 import bgImage from "@/assets/svg/bg.svg"
 import backend from "@/api/backend"
+import router from "@/router"
 
 const isMobile = helper.isMobile()
 const toast = useToast()
@@ -163,6 +164,11 @@ const downloadFile = async (product) => {
         console.error('Download failed:', error)
     }
 }
+
+const goToDetails = (productId) => {
+    router.push(`/admin-panel/products/${productId}`)
+}
+
 
 const handleAction = (action, product) => {
     toast.add({

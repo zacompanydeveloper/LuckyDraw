@@ -22,12 +22,14 @@ import ColumnGroup from 'primevue/columngroup';   // optional
 import Row from 'primevue/row';                   // optional
 import Tooltip from 'primevue/tooltip';
 import Dialog from 'primevue/dialog';
+import SelectButton from 'primevue/selectbutton';
 
 import Aura from "@primeuix/themes/aura";
 import PrimeVue from "primevue/config";
 import Button from "primevue/button";
 import ToastService from 'primevue/toastservice';
 import KeyFilter from 'primevue/keyfilter';
+
 
 const MyPreset = definePreset(Aura, {
   semantic: {
@@ -79,3 +81,4 @@ app.component('ColumnGroup', ColumnGroup);
 app.component('Row', Row);
 app.directive('tooltip', Tooltip);
 app.component('Dialog', Dialog);
+app.component('SelectButton', SelectButton);
