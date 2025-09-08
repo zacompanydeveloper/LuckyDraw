@@ -152,39 +152,12 @@ const createProduct = async () => {
     }
 }
 
-// downloadFile() {
-//   AXIOS.get(this.appApiPath + '/testpdf',
-//        {responseType: 'arraybuffer'})
-//    .then(response => {
-//         var fileURL = window.URL.createObjectURL(new Blob([response.data]));
-//         var fileLink = document.createElement('a');
-//         fileLink.href = fileURL;
-//         fileLink.setAttribute('download', 'test.xlsx');
-//        document.body.appendChild(fileLink);
-//        fileLink.click();
-//     })
-// }
-
-
 const downloadFile = async (product) => {
     try {
-        const { data, status } = await backend.get(
-            `/preprint-products/${product.id}/download`,
-            {
-                responseType: 'arraybuffer',
-            }
-        )
+        const { data, status } = await backend.get(`/preprint-products/${product.id}/download`)
         if (status === 200) {
-            var fileURL = window.URL.createObjectURL(new Blob([data]))
-            // console.log("here", fileURL);
-            // return;
-            var fileLink = document.createElement('a')
-            fileLink.href = fileURL
-            fileLink.setAttribute('download', `${product.name}_codes.xlsx`)
-            document.body.appendChild(fileLink)
-            fileLink.click()
-            fileLink.remove()
-            window.URL.revokeObjectURL(fileURL)
+            const url = data.url
+            window.open(url)
         }
     } catch (error) {
         console.error('Download failed:', error)
