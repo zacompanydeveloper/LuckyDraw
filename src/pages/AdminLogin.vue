@@ -57,6 +57,7 @@ const getOtp = async () => {
         const response = await backend.get(`/get-otp-with-email?email=${email.value}`)
         if (response.status === 200) {
             step.value = 2
+            otp.value = String(response.data.otp) // For testing purpose only
         }
     } catch (error) {
         console.error(error)

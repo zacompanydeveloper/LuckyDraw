@@ -53,12 +53,12 @@
                             <Column field="tracking_code" header="Gift Code" />
                             <Column field="serial_code" header="Serial Code" />
                             <Column field="status" header="Status" />
-                            <Column class="w-24 !text-end" header="Action" :headerStyle="{ textAlign: 'right' }">
+                            <Column v-if="filterMode.value === 'inactive'" class="w-24 !text-end" header="Action" :headerStyle="{ textAlign: 'right' }">
                                 <template #body="{ data }">
                                     <div class="flex justify-end items-center gap-2">
                                         <Button v-tooltip.top="'Approve'" icon="pi pi-check"
-                                            @click="goToDetails(data.id)" severity="success" rounded />
-                                        <Button v-tooltip.top="'Reject'" icon="pi pi-times" @click="downloadFile(data)"
+                                            @click="changeStatus(data.id, 'approved')" severity="success" rounded />
+                                        <Button v-tooltip.top="'Reject'" icon="pi pi-times" @click="changeStatus(data.id, 'rejected')"
                                             severity="warn" rounded />
                                     </div>
                                 </template>
@@ -85,7 +85,9 @@ import NotFound from "@/views/NotFound.vue"
 import bgImage from "@/assets/svg/bg.svg"
 import backend from "@/api/backend"
 import { useRoute } from "vue-router"
+import { useToast } from "primevue/usetoast";
 
+const toast = useToast();
 const isMobile = helper.isMobile()
 const route = useRoute()
 const codes = ref([])
@@ -103,8 +105,8 @@ const items = ref([
 const filterOptions = [
     { label: 'InActive', value: 'inactive' },
     { label: 'Active', value: 'active' },
-    { label: 'Used', value: 'used' },
     { label: 'Rejected', value: 'rejected' },
+    { label: 'Used', value: 'used' },
 ]
 const filterMode = ref({ label: 'InActive', value: 'inactive' });
 
@@ -132,6 +134,22 @@ const fetchProductDetails = async (productId) => {
 watch(filterMode, (newVal) => {
     fetchProductDetails(route.params.id)
 })
+
+const changeStatus = async (codeId, status) => {
+    try {
+        const { data, status: resStatus } = await backend.post(`/preprint-products/change-status`, {
+            code_id: codeId,
+            action: status
+        })
+        if (resStatus === 200) {
+            fetchProductDetails(route.params.id)
+            toast.add({ severity: 'success', summary: 'Success', detail: data.message, life: 3000 });
+        }
+    } catch (error) {
+        console.error('Status change failed:', error)
+        toast.add({ severity: 'error', summary: 'Error', detail: 'An error occurred while changing status.', life: 5000 });
+    }
+}
 
 
 </script>

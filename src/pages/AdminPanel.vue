@@ -11,6 +11,8 @@
                     <img src="@/assets/svg/logo.svg" alt="logo" class="w-60" />
                 </header>
 
+                <button @click="logout">Logout</button>
+
                 <!-- Main -->
                 <main class="px-[5%] mt-10">
                     <Breadcrumb :home="home" :model="items">
@@ -212,6 +214,14 @@ const resetForm = () => {
     form.quantity = null
     form.type = "lucky_draw"
 }
+
+const logout = () => {
+    localStorage.removeItem("adminToken")
+    localStorage.removeItem("role")
+    router.push("/admin-login")
+}
+
+
 
 /** Lifecycle */
 onMounted(fetchProducts)
