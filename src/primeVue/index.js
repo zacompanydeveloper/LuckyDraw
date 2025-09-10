@@ -23,6 +23,8 @@ import Row from 'primevue/row';                   // optional
 import Tooltip from 'primevue/tooltip';
 import Dialog from 'primevue/dialog';
 import SelectButton from 'primevue/selectbutton';
+import ConfirmDialog from 'primevue/confirmdialog';
+import ConfirmationService from 'primevue/confirmationservice';
 
 import Aura from "@primeuix/themes/aura";
 import PrimeVue from "primevue/config";
@@ -82,3 +84,5 @@ app.component('Row', Row);
 app.directive('tooltip', Tooltip);
 app.component('Dialog', Dialog);
 app.component('SelectButton', SelectButton);
+app.component('ConfirmDialog', ConfirmDialog);
+app.use(ConfirmationService);

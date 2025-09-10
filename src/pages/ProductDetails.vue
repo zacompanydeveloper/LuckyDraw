@@ -13,6 +13,7 @@
 
                 <!-- Main -->
                 <main class="px-[5%] mt-10">
+                    <!-- Breadcrumb -->
                     <Breadcrumb :home="home" :model="items">
                         <template #item="{ item, props }">
                             <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
@@ -22,13 +23,15 @@
                                 </a>
                             </router-link>
                             <a v-else :href="item.url" :target="item.target" v-bind="props.action">
-                                <span class="text-surface-700 dark:text-surface-0 text-[#2E3192]">{{ item.label }}</span>
+                                <span class="text-surface-700 dark:text-surface-0 text-[#2E3192]">
+                                    {{ item.label }}
+                                </span>
                             </a>
                         </template>
                     </Breadcrumb>
-                    <!-- <h1 class="text-2xl font-bold text-[#2E3192]">Pre-Print Code</h1> -->
+
+                    <!-- Actions -->
                     <div class="flex justify-between items-center mt-2">
-                        -
                         <Button type="button" iconPos="right" label="Create" @click="openDialog('right')"
                             class="cursor-pointer hover:opacity-90" style="background-color: #2E3192;">
                             <i class="pi pi-download"></i>
@@ -41,6 +44,7 @@
                             <SelectButton v-model="filterMode" optionLabel="label" dataKey="label"
                                 :options="filterOptions" />
                         </div>
+
                         <DataTable paginator :rows="7" dataKey="id" :value="codes" :loading="loading" scrollable
                             scrollHeight="550px" tableStyle="min-width: 50rem">
                             <Column header="#" headerStyle="width:3rem">
@@ -53,20 +57,23 @@
                             <Column field="tracking_code" header="Gift Code" />
                             <Column field="serial_code" header="Serial Code" />
                             <Column field="status" header="Status" />
-                            <Column v-if="filterMode.value === 'inactive'" class="w-24 !text-end" header="Action" :headerStyle="{ textAlign: 'right' }">
+
+                            <!-- Action column (only for inactive) -->
+                            <Column v-if="filterMode.value === 'inactive'" header="Action" class="w-24 !text-end"
+                                :headerStyle="{ textAlign: 'right' }">
                                 <template #body="{ data }">
                                     <div class="flex justify-end items-center gap-2">
                                         <Button v-tooltip.top="'Approve'" icon="pi pi-check"
                                             @click="changeStatus(data.id, 'approved')" severity="success" rounded />
-                                        <Button v-tooltip.top="'Reject'" icon="pi pi-times" @click="changeStatus(data.id, 'rejected')"
-                                            severity="warn" rounded />
+                                        <Button v-tooltip.top="'Reject'" icon="pi pi-times"
+                                            @click="openRejectDialog(data.id)" severity="warn" rounded />
                                     </div>
                                 </template>
                             </Column>
+
+                            <!-- Empty state -->
                             <template #empty>
-                                <div class="p-4 text-center text-gray-500">
-                                    No records found.
-                                </div>
+                                <div class="p-4 text-center text-gray-500">No records found.</div>
                             </template>
                         </DataTable>
 
@@ -75,83 +82,136 @@
                 </main>
             </div>
         </div>
+
+        <!-- Reject Dialog -->
+        <Dialog v-model:visible="visible" modal :style="{ width: '25rem' }" header="Reject Code" :closable="false">
+            <div class="flex items-center gap-4 mb-8">
+                <InputText id="remark" class="flex-auto" placeholder="Remark" v-model="remark" autocomplete="off" />
+            </div>
+            <div class="flex justify-end gap-2">
+                <Button type="button" label="Cancel" severity="secondary" @click="visible = false" />
+                <Button type="button" label="Confirm" style="background-color: #2E3192;" @click="rejectConfirm" />
+            </div>
+        </Dialog>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue"
-import helper from "@/helper"
-import NotFound from "@/views/NotFound.vue"
-import bgImage from "@/assets/svg/bg.svg"
-import backend from "@/api/backend"
-import { useRoute } from "vue-router"
+import { ref, onMounted, watch } from "vue";
+import { useRoute } from "vue-router";
 import { useToast } from "primevue/usetoast";
+import helper from "@/helper";
+import backend from "@/api/backend";
+import NotFound from "@/views/NotFound.vue";
+import bgImage from "@/assets/svg/bg.svg";
 
-const toast = useToast();
-const isMobile = helper.isMobile()
-const route = useRoute()
-const codes = ref([])
-const loading = ref(false)
-
-const home = ref({
-    icon: 'pi pi-home',
-    route: '/'
-});
-const items = ref([
-    { label: 'Pre-Print', route: '/admin-panel' },
-    { label: 'Pre-Print Code' },
-]);
-
+// -------------------
+// Constants
+// -------------------
+const home = { icon: "pi pi-home", route: "/" };
+const items = [
+    { label: "Pre-Print", route: "/admin-panel" },
+    { label: "Pre-Print Code" },
+];
 const filterOptions = [
-    { label: 'InActive', value: 'inactive' },
-    { label: 'Active', value: 'active' },
-    { label: 'Rejected', value: 'rejected' },
-    { label: 'Used', value: 'used' },
-]
-const filterMode = ref({ label: 'InActive', value: 'inactive' });
+    { label: "InActive", value: "inactive" },
+    { label: "Active", value: "active" },
+    { label: "Rejected", value: "rejected" },
+    { label: "Used", value: "used" },
+];
 
+// -------------------
+// State
+// -------------------
+const isMobile = helper.isMobile();
+const route = useRoute();
+const toast = useToast();
+
+const codes = ref([]);
+const loading = ref(false);
+
+const filterMode = ref(filterOptions[0]); // Default: Inactive
+const visible = ref(false);
+const remark = ref("");
+const selectedCodeId = ref(null);
+
+// -------------------
+// Lifecycle
+// -------------------
 onMounted(() => {
-    fetchProductDetails(route.params.id)
-})
+    fetchProductDetails(route.params.id);
+});
 
+watch(filterMode, () => {
+    fetchProductDetails(route.params.id);
+});
+
+// -------------------
+// Methods
+// -------------------
 const fetchProductDetails = async (productId) => {
     try {
-        loading.value = true
-        const { data, status } = await backend.get(`/preprint-products/${productId}`, {
-            'status': filterMode.value.value
-        })
+        loading.value = true;
+        const { data, status } = await backend.get(`/preprint-products/${productId}`,
+            { status: filterMode.value.value });
         if (status === 200) {
-            console.log("here =>", data.data);
-            codes.value = data.data
+            codes.value = data.data;
         }
     } catch (error) {
-        console.error('Fetch details failed:', error)
+        console.error("Fetch details failed:", error);
+        toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "Unable to fetch product details.",
+            life: 5000,
+        });
     } finally {
-        loading.value = false
+        loading.value = false;
     }
-}
+};
 
-watch(filterMode, (newVal) => {
-    fetchProductDetails(route.params.id)
-})
-
-const changeStatus = async (codeId, status) => {
+const changeStatus = async (codeId, action) => {
     try {
-        const { data, status: resStatus } = await backend.post(`/preprint-products/change-status`, {
+        const { data, status } = await backend.post(`/preprint-products/change-status`, {
             code_id: codeId,
-            action: status
-        })
-        if (resStatus === 200) {
-            fetchProductDetails(route.params.id)
-            toast.add({ severity: 'success', summary: 'Success', detail: data.message, life: 3000 });
+            action,
+            remark: remark.value,
+        });
+
+        if (status === 200) {
+            await fetchProductDetails(route.params.id);
+            toast.add({ severity: "success", summary: "Success", detail: data.message, life: 3000 });
         }
     } catch (error) {
-        console.error('Status change failed:', error)
-        toast.add({ severity: 'error', summary: 'Error', detail: 'An error occurred while changing status.', life: 5000 });
+        console.error("Status change failed:", error);
+        toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "An error occurred while changing status.",
+            life: 5000,
+        });
     }
-}
+};
 
+const openRejectDialog = (codeId) => {
+    selectedCodeId.value = codeId;
+    remark.value = "";
+    visible.value = true;
+};
 
+const rejectConfirm = () => {
+    if (!remark.value.trim()) {
+        toast.add({
+            severity: "warn",
+            summary: "Warning",
+            detail: "Remark is required to reject.",
+            life: 3000,
+        });
+        return;
+    }
+    visible.value = false;
+    changeStatus(selectedCodeId.value, "rejected");
+};
 </script>
 
 <style lang="scss" scoped></style>
