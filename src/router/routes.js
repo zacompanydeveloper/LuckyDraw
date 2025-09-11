@@ -24,25 +24,42 @@ export const routes = [
     path: "/admin-panel/pre-print-code",
     name: "admin-panel-pre-print-code",
     component: () => import("@/pages/PrePrintCode.vue"),
-    meta: { requiresAdminAuth: true }, // protected route
+    meta: {
+      requiresAdminAuth: true,
+      permissions: ["view-preprint"],
+    }, // protected route
   },
   {
     path: "/admin-login",
     name: "admin-login",
     component: () => import("@/pages/AdminLogin.vue"),
-    meta: { guest: true, role: "admin" }, // guest-only route
+    meta: {
+      guest: true,
+      role: "admin",
+    }, // guest-only route
   },
   {
     path: "/admin-panel/products/:id",
     name: "admin-panel-product-details",
     component: () => import("@/pages/ProductDetails.vue"),
-    meta: { requiresAdminAuth: true }, // protected route
+    meta: {
+      requiresAdminAuth: true,
+      permissions: ["view-product-details"],
+    }, // protected route
   },
   {
     path: "/admin-panel/code-registration",
     name: "admin-panel-code-registration",
     component: () => import("@/pages/CodeRegistration.vue"),
-    meta: { requiresAdminAuth: true }, // protected route
+    meta: {
+      requiresAdminAuth: true,
+      permissions: ["view-registration"],
+    }, // protected route
+  },
+  {
+    path: "/admin-panel/403",
+    name: "forbidden",
+    component: () => import("@/views/Forbidden.vue"),
   },
 ];
 
