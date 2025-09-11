@@ -21,6 +21,12 @@ export const routes = [
     meta: { requiresAdminAuth: true }, // protected route
   },
   {
+    path: "/admin-panel/pre-print-code",
+    name: "admin-panel-pre-print-code",
+    component: () => import("@/pages/PrePrintCode.vue"),
+    meta: { requiresAdminAuth: true }, // protected route
+  },
+  {
     path: "/admin-login",
     name: "admin-login",
     component: () => import("@/pages/AdminLogin.vue"),
@@ -30,6 +36,12 @@ export const routes = [
     path: "/admin-panel/products/:id",
     name: "admin-panel-product-details",
     component: () => import("@/pages/ProductDetails.vue"),
+    meta: { requiresAdminAuth: true }, // protected route
+  },
+  {
+    path: "/admin-panel/code-registration",
+    name: "admin-panel-code-registration",
+    component: () => import("@/pages/CodeRegistration.vue"),
     meta: { requiresAdminAuth: true }, // protected route
   },
 ];

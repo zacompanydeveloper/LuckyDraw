@@ -1,16 +1,20 @@
 <template>
-    <div class="flex flex-col h-screen fixed w-full">
+    <div class="min-h-screen bg-contain bg-x-repeat bg-y-no-repeat" :style="{ backgroundImage: `url(${bgImage})` }">
         <!-- Header -->
-        <Header class=" w-full"/>
+        <Header />
 
         <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto">
+        <main class="px-[5%] mt-10">
             <slot />
         </main>
-
-        <!-- Footer -->
     </div>
 </template>
+
 <script setup>
-import Header from '@/layouts/Header.vue';
+import bgImage from "@/assets/svg/bg.svg"
+import Header from "@/layouts/Header.vue"
 </script>
+
+<style scoped>
+/* Optional custom styles */
+</style>

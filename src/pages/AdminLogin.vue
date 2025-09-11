@@ -43,7 +43,7 @@ import backend from "@/api/backend"
 import router from "@/router"
 
 const isMobile = helper.isMobile()
-const email = ref("admin@gmail.com")
+const email = ref("")
 const otp = ref("")
 const loading = ref(false)
 const step = ref(1)

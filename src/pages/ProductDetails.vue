@@ -13,23 +13,7 @@
 
                 <!-- Main -->
                 <main class="px-[5%] mt-10">
-                    <!-- Breadcrumb -->
-                    <Breadcrumb :home="home" :model="items">
-                        <template #item="{ item, props }">
-                            <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
-                                <a :href="href" v-bind="props.action" @click="navigate">
-                                    <span :class="[item.icon, 'text-color']" />
-                                    <span class="text-primary font-semibold">{{ item.label }}</span>
-                                </a>
-                            </router-link>
-                            <a v-else :href="item.url" :target="item.target" v-bind="props.action">
-                                <span class="text-surface-700 dark:text-surface-0 text-[#2E3192]">
-                                    {{ item.label }}
-                                </span>
-                            </a>
-                        </template>
-                    </Breadcrumb>
-
+                
                     <!-- Actions -->
                     <div class="flex justify-between items-center mt-2">
                         <Button type="button" iconPos="right" label="Create" @click="openDialog('right')"
@@ -108,11 +92,6 @@ import bgImage from "@/assets/svg/bg.svg";
 // -------------------
 // Constants
 // -------------------
-const home = { icon: "pi pi-home", route: "/" };
-const items = [
-    { label: "Pre-Print", route: "/admin-panel" },
-    { label: "Pre-Print Code" },
-];
 const filterOptions = [
     { label: "InActive", value: "inactive" },
     { label: "Active", value: "active" },
