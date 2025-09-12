@@ -6,8 +6,6 @@
         <div v-else>
             <DesktopLayout>
 
-                <!-- <pre>{{ fromDate }}</pre>
-                <pre> {{ toDate }}</pre> -->
                 <!-- Page Content -->
                 <h2 class="text-2xl font-bold text-[#2E3192]">Pre-Print Code</h2>
                 <div class="flex justify-between items-center mt-2">
@@ -53,8 +51,8 @@
                                         severity="info" rounded />
                                     <Button v-tooltip.top="'Download'" icon="pi pi-download" @click="downloadFile(data)"
                                         severity="success" rounded />
-                                    <Button v-tooltip.top="'Generate'" icon="pi pi-cog"
-                                        @click="handleAction('generate', data)" severity="danger" rounded />
+                                    <!-- <Button v-tooltip.top="'Generate'" icon="pi pi-cog"
+                                        @click="handleAction('generate', data)" severity="danger" rounded /> -->
                                 </div>
                             </template>
                         </Column>

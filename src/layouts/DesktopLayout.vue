@@ -10,8 +10,8 @@
 
         <!-- Footer -->
         <div class="fixed bottom-0 w-full text-right py-4 px-10">
-            <div class="text-sm text-[#2E3192] flex justify-end items-center gap-4">
-                <span>Copyright @ {{ new Date().getFullYear() }}</span>
+            <div class="text-sm text-[#2E3192] flex justify-between items-center gap-4">
+                <span> &COPY; {{ new Date().getFullYear() }} Sweety Home</span>
                 <span class="flex items-center gap-2"> Developed By <img src="@/assets/svg/za.svg" alt=""></span>
             </div>
         </div>

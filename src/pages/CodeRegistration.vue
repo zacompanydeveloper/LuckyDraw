@@ -12,12 +12,19 @@
                 </h2>
 
                 <section class="w-[330px] flex flex-col gap-4 mt-5">
-                    <InputText v-model="form.invoice_no" placeholder="Voucher No." fluid autocomplete="off" />
-
-                    <InputText v-model="form.amount" v-keyfilter.num placeholder="Amount" fluid autocomplete="off" />
-
-                    <InputText id="numkeys" v-model="form.phone" v-keyfilter.num placeholder="Phone Number" fluid
-                        autocomplete="off" />
+                    <FloatLabel variant="on">
+                        <InputText v-model="form.invoice_no" fluid autocomplete="off" />
+                        <label for="invoice_no">Voucher No.</label>
+                    </FloatLabel>
+                    <FloatLabel variant="on">
+                        <InputText v-model="form.amount" v-keyfilter.num fluid autocomplete="off" />
+                        <label for="amount">Amount</label>
+                    </FloatLabel>
+                    <FloatLabel variant="on">
+                        <InputText id="numkeys" v-model="form.phone" v-keyfilter.num fluid
+                            autocomplete="off" />
+                        <label for="numkeys">Phone Number</label>
+                    </FloatLabel>
 
                     <Button label="Activate" class="cursor-pointer hover:opacity-90 w-full" :loading="loading"
                         :disabled="!isFormValid || loading" @click.prevent="activate"
@@ -28,8 +35,7 @@
             <!-- Success state -->
             <section v-if="success" class="flex flex-col items-center justify-center mt-20 w-[500px] mx-auto">
                 <StatusCard type="success" title="Activation Successfully!"
-                    message="Thank you for joining our lucky draw!" :image="successImg"
-                    :contact="contact" />
+                    message="Thank you for joining our lucky draw!" :image="successImg" :contact="contact" />
             </section>
         </DesktopLayout>
 
