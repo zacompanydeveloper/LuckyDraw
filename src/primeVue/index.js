@@ -32,6 +32,7 @@ import Button from "primevue/button";
 import ToastService from 'primevue/toastservice';
 import KeyFilter from 'primevue/keyfilter';
 import Drawer from 'primevue/drawer';
+import DatePicker from 'primevue/datepicker';
 
 const MyPreset = definePreset(Aura, {
   semantic: {
@@ -87,3 +88,4 @@ app.component('SelectButton', SelectButton);
 app.component('ConfirmDialog', ConfirmDialog);
 app.use(ConfirmationService);
 app.component('Drawer', Drawer);
+app.component('DatePicker', DatePicker);

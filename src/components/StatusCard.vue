@@ -21,7 +21,7 @@
       </div>
 
       <!-- Bottom contact message (optional) -->
-      <div v-if="contact || phone" class="text-sm font-medium text-red-500">
+      <div v-if="contact || phone" :class="type === 'success' ? 'text-[#0F9500] text-lg' : 'text-red-500 text-sm font-medium'">
         <p>{{ contact }}</p>
         <p v-if="phone" class="font-semibold">{{ phone }}</p>
       </div>

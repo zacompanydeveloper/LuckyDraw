@@ -6,16 +6,37 @@
         <div v-else>
             <DesktopLayout>
 
+                <!-- <pre>{{ fromDate }}</pre>
+                <pre> {{ toDate }}</pre> -->
                 <!-- Page Content -->
+                <h2 class="text-2xl font-bold text-[#2E3192]">Pre-Print Code</h2>
                 <div class="flex justify-between items-center mt-2">
-                    <h2 class="text-2xl font-bold text-[#2E3192]">Pre-Print Code</h2>
+                    <!-- filters -->
+                    <div class="flex gap-3">
+                        <FloatLabel variant="on">
+                            <DatePicker v-model="fromDate" inputId="from_date" showIcon iconDisplay="input" />
+                            <label for="from_date">From Date</label>
+                        </FloatLabel>
+                        <FloatLabel variant="on">
+                            <DatePicker v-model="toDate" inputId="to_date" showIcon iconDisplay="input" />
+                            <label for="to_date">To Date</label>
+                        </FloatLabel>
+                        <FloatLabel variant="on">
+                            <InputText id="search" v-model="search" autocomplete="off" />
+                            <label for="search">Search</label>
+                        </FloatLabel>
+                        <Button @click="searchProduct" type="button" icon="pi pi-filter" iconPos="left" label="Search" severity="success" variant="outlined"
+                            class="cursor-pointer  w-35" />
+                        <Button @click="clearFilters" type="button" icon="pi pi-refresh" iconPos="left" style="color: #2E3192;"
+                            class="cursor-pointer"  variant="outlined" />
+                    </div>
                     <Button type="button" iconPos="right" label="Create" @click="openDialog('right')"
                         class="cursor-pointer hover:opacity-90 w-35" style="background-color: #2E3192;" />
                 </div>
 
                 <!-- Table -->
                 <div class="card mt-5 mb-10">
-                    <DataTable :value="products" scrollable scrollHeight="550px" tableStyle="min-width: 50rem">
+                    <DataTable :value="products" scrollable scrollHeight="550px" tableStyle="min-width: 50rem" :loading="loading.table">
                         <Column header="#" headerStyle="width:3rem">
                             <template #body="slotProps">
                                 {{ slotProps.index + 1 }}
@@ -59,9 +80,9 @@
                                 </div>
                                 <div class="flex flex-col gap-2 mb-2">
                                     <label for="quantity" class="w-24">Quantity</label>
-                                    <!-- 1000 max -->
+                                    <!-- 35000 max -->
                                     <InputText class="w-full" type="text" id="quantity" v-model="form.quantity"
-                                        maxlength="4" v-keyfilter.num autocomplete="off" placeholder="0" />
+                                        maxlength="5" v-keyfilter.num autocomplete="off" placeholder="0" />
                                 </div>
                             </div>
 
@@ -86,12 +107,15 @@ import DesktopLayout from "@/layouts/DesktopLayout.vue"
 import { useToast } from "primevue/usetoast"
 import helper from "@/helper"
 import NotFound from "@/views/NotFound.vue"
-import bgImage from "@/assets/svg/bg.svg"
 import backend from "@/api/backend"
 import router from "@/router"
 
 const isMobile = helper.isMobile()
 const toast = useToast()
+
+const fromDate = ref(null)
+const toDate = ref(null)
+const search = ref("")
 
 /** State */
 const products = ref([])
@@ -112,14 +136,18 @@ const dialog = reactive({
 
 /** Computed */
 const isFormValid = computed(() => {
-    return form.name && form.quantity > 0 && form.quantity <= 1000
+    return form.name && form.quantity > 0 && form.quantity <= 35000
 })
 
 /** Methods */
 const fetchProducts = async () => {
     try {
         loading.table = true
-        const { data, status } = await backend.get("/preprint-products")
+        const { data, status } = await backend.get("/preprint-products",
+            {
+                
+            }
+        )
         if (status === 200) {
             products.value = data.data
         }
@@ -188,6 +216,32 @@ const resetForm = () => {
     form.description = ""
     form.quantity = null
     form.type = "lucky_draw"
+}
+
+const clearFilters = () => {
+    fromDate.value = null
+    toDate.value = null
+    search.value = ""
+}
+
+const prepareFilters = () => {
+    const filters = {}
+    if (fromDate.value) {
+        filters.from_date = fromDate.value
+    }
+    if (toDate.value) {
+        filters.to_date = toDate.value
+    }
+    if (search.value) {
+        filters.search = search.value
+    }
+    return filters
+}
+
+const searchProduct = () => {
+    const filters = prepareFilters()
+    console.log('Searching products with filters:', filters)
+    fetchProducts()
 }
 
 /** Lifecycle */
