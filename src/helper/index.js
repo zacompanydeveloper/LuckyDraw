@@ -266,6 +266,11 @@ export function startCountdown(totalSeconds, ui) {
   const timer = setInterval(update, 1000); // Update every second
 }
 
+export function authUser() {
+  const userInfo = localStorage.getItem("userInfo");
+  return userInfo ? JSON.parse(userInfo) : null;
+}
+
 export default {
   isMobile,
   errorUnauthorized,
@@ -283,4 +288,5 @@ export default {
   spaceImageFix,
   priceFormat,
   startCountdown,
+  authUser
 };

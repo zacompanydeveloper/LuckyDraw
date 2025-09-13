@@ -37,13 +37,14 @@
                         </router-link>
                     </li>
                 </ul>
-                <template #footer>
-                    <div class="flex items-center justify-between gap-2">
-                        <div class="flex items-center gap-2 text-[#2E3192]">
+                <template #footer class="p-0">
+                    <div class="flex justify-between items-center no-wrap gap-2 text-[#2E3192]">
+                        <div class="flex items-center gap-2 p-2">
                             <i class="pi pi-user border rounded-full p-1"></i>
-                            <span>{{ name }}</span>
+                            <span>{{ name }} </span>
+                            <span class=" text-red-500 text-xs">({{ role }})</span>
                         </div>
-                        <Button label="Logout" icon="pi pi-sign-out" severity="danger" text @click="logout" />
+                        <i class="pi pi-sign-out cursor-pointer" style="color: red" @click="logout"></i>
                     </div>
                 </template>
             </Drawer>
@@ -61,15 +62,18 @@
 <script setup>
 import { ref } from "vue";
 import router from "@/router";
+import helper from "@/helper";
 
 const visible = ref(false);
-const name = "Admin";
+const user = helper.authUser();
+const name = user ? user.name : "Admin";
+const role = user ? user.role : "admin";
 
 const logout = () => {
-    localStorage.removeItem("adminToken")
-    localStorage.removeItem("role")
-    localStorage.removeItem("userPermissions")
+    localStorage.clear();
     router.push("/admin-login")
 }
 
 </script>
+
+<style></style>

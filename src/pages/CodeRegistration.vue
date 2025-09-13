@@ -13,6 +13,11 @@
 
                 <section class="w-[330px] flex flex-col gap-4 mt-5">
                     <FloatLabel variant="on">
+                        <InputText id="shop_name" v-model="form.shop_name" fluid autocomplete="off" disabled />
+                        <label for="shop_name">Shop</label>
+                    </FloatLabel>
+
+                    <FloatLabel variant="on">
                         <InputText v-model="form.invoice_no" fluid autocomplete="off" />
                         <label for="invoice_no">Voucher No.</label>
                     </FloatLabel>
@@ -21,8 +26,7 @@
                         <label for="amount">Amount</label>
                     </FloatLabel>
                     <FloatLabel variant="on">
-                        <InputText id="numkeys" v-model="form.phone" v-keyfilter.num fluid
-                            autocomplete="off" />
+                        <InputText id="numkeys" v-model="form.phone" v-keyfilter.num fluid autocomplete="off" />
                         <label for="numkeys">Phone Number</label>
                     </FloatLabel>
 
@@ -53,6 +57,7 @@ import backend from "@/api/backend"
 import { useToast } from "primevue/usetoast"
 import successImg from '@/assets/svg/success.svg'
 import StatusCard from '@/components/StatusCard.vue'
+import router from "@/router"
 
 const toast = useToast();
 const isMobile = helper.isMobile()
@@ -64,10 +69,11 @@ const form = reactive({
     invoice_no: "",
     amount: "",
     phone: "",
+    shop_name: "Home Mart",
 })
 
 const isFormValid = computed(() => {
-    return form.invoice_no && form.amount && form.phone && form.amount >= 100000
+    return form.invoice_no && form.amount && form.phone && form.shop_name && form.amount >= 100000
 })
 
 const activate = async () => {
@@ -96,6 +102,19 @@ const activate = async () => {
         loading.value = false
     }
 }
+console.log('User Info:', helper.authUser());
+
+const setShopName = () => {
+    const user = helper.authUser();
+    if (user && user.member_branch) {
+        form.shop_name = user.member_branch;
+    } else {
+        localStorage.clear();
+        router.push('/admin-login');
+    }
+};
+
+setShopName();
 
 </script>
 

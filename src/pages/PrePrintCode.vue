@@ -5,18 +5,19 @@
         </div>
         <div v-else>
             <DesktopLayout>
-
                 <!-- Page Content -->
                 <h2 class="text-2xl font-bold text-[#2E3192]">Pre-Print Code</h2>
                 <div class="flex justify-between items-center mt-2">
                     <!-- filters -->
                     <div class="flex gap-3">
                         <FloatLabel variant="on">
-                            <DatePicker v-model="fromDate" inputId="from_date" showIcon iconDisplay="input" />
+                            <DatePicker v-model="fromDate" dateFormat="dd-mm-yy" inputId="from_date" showIcon
+                                iconDisplay="input" />
                             <label for="from_date">From Date</label>
                         </FloatLabel>
                         <FloatLabel variant="on">
-                            <DatePicker v-model="toDate" inputId="to_date" showIcon iconDisplay="input" />
+                            <DatePicker v-model="toDate" dateFormat="dd-mm-yy" inputId="to_date" showIcon
+                                iconDisplay="input" />
                             <label for="to_date">To Date</label>
                         </FloatLabel>
                         <FloatLabel variant="on">
@@ -144,7 +145,9 @@ const fetchProducts = async () => {
         loading.table = true
         const { data, status } = await backend.get("/preprint-products",
             {
-
+                from_date: fromDate.value || null,
+                to_date: toDate.value || null,
+                search: search.value || null,
             }
         )
         if (status === 200) {
@@ -200,16 +203,6 @@ const goToDetails = (productId) => {
     router.push(`/admin-panel/products/${productId}`)
 }
 
-
-const handleAction = (action, product) => {
-    toast.add({
-        severity: "info",
-        summary: `${action} triggered`,
-        detail: `Code: ${product.code} | Name: ${product.name}`,
-        life: 3000,
-    })
-}
-
 const openDialog = (pos = "center") => {
     dialog.position = pos
     dialog.visible = true
@@ -226,25 +219,15 @@ const clearFilters = () => {
     fromDate.value = null
     toDate.value = null
     search.value = ""
-}
-
-const prepareFilters = () => {
-    const filters = {}
-    if (fromDate.value) {
-        filters.from_date = fromDate.value
-    }
-    if (toDate.value) {
-        filters.to_date = toDate.value
-    }
-    if (search.value) {
-        filters.search = search.value
-    }
-    return filters
+    fetchProducts()
 }
 
 const searchProduct = () => {
-    const filters = prepareFilters()
-    console.log('Searching products with filters:', filters)
+    console.log('Searching products with filters:', {
+        from_date: fromDate.value,
+        to_date: toDate.value,
+        search: search.value,
+    })
     fetchProducts()
 }
 

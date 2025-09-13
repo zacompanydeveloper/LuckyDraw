@@ -78,8 +78,8 @@ const confirmOtp = async () => {
         })
         if (response.status === 200) {
             localStorage.setItem("adminToken", response.data.token)
-            localStorage.setItem("role", response.data.role)
-            localStorage.setItem("userPermissions", JSON.stringify(response.data.permissions))
+            localStorage.setItem("userPermissions", JSON.stringify(response.data.user?.permissions))
+            localStorage.setItem("userInfo", JSON.stringify(response.data.user))
             router.push("/admin-panel")
         }
     } catch (error) {

@@ -6,7 +6,9 @@
         <DesktopLayout v-else>
             <!-- Main -->
             <main>
-                <h2 class="text-2xl font-bold text-[#2E3192]">Pre-Print Code</h2>
+                <router-link to="/admin-panel/pre-print-code" class="text-[#2E3192] mb-4 text-2xl font-bold">
+                    &larr; Pre-Print Code
+                </router-link>
 
                 <!-- Actions -->
                 <div class="flex justify-between items-center mt-2">
@@ -17,20 +19,17 @@
                             <label for="search">Search</label>
                         </FloatLabel>
                         <Button @click="searchProduct" type="button" icon="pi pi-filter" iconPos="left" label="Search"
-                            severity="success" raised class="cursor-pointer  w-35" />
+                            severity="success" raised class="cursor-pointer w-35" />
                         <Button @click="clearFilters" type="button" icon="pi pi-refresh" iconPos="left" raised
                             style="color: #2E3192;" class="cursor-pointer" variant="outlined" />
                     </div>
-                    <div class=" flex gap-1">
+
+                    <div class="flex gap-1">
                         <Button v-if="filterMode.value === 'inactive'" type="button" v-tooltip.top="'Approve All'"
-                            iconPos="right" icon="pi pi-check" severity="success" @click="openApproveDialog" raised>
-                        </Button>
-                        <Button v-if="filterMode.value === 'inactive'" type="button" v-tooltip.top="'Reject All'"
-                            iconPos="right" icon="pi pi-times" severity="danger" @click="" raised>
-                        </Button>
-                        <Button type="button" v-tooltip.top="'Download'" iconPos="right" icon="pi pi-download" @click="downloadFile"
-                            raised style="background-color: #2E3192;">
-                        </Button>
+                            iconPos="right" icon="pi pi-check" severity="success" @click="openApproveDialog('all')"
+                            raised />
+                        <Button type="button" v-tooltip.top="'Download'" iconPos="right" icon="pi pi-download"
+                            @click="downloadFile" raised style="background-color: #2E3192;" />
                     </div>
                 </div>
 
@@ -38,15 +37,14 @@
                 <div class="card">
                     <div class="flex justify-center">
                         <SelectButton v-model="filterMode" optionLabel="label" dataKey="label"
-                            class=" border border-gray-200 my-2" :options="filterOptions" />
+                            class="border border-gray-200 my-2" :options="filterOptions" />
                     </div>
-
 
                     <DataTable dataKey="id" :value="codes" :loading="loading" scrollable scrollHeight="460px"
                         tableStyle="min-width: 50rem">
                         <Column header="#" headerStyle="width:3rem">
                             <template #body="slotProps">
-                                {{ pagination.from + slotProps.index }}
+                                {{ pagination.from + slotProps.index - 1 }}
                             </template>
                         </Column>
                         <Column field="created_at" header="Created Date" />
@@ -55,13 +53,18 @@
                         <Column field="serial_code" header="Serial Code" />
                         <Column field="status" header="Status" />
 
-                        <!-- Action column (only for inactive) -->
-                        <Column v-if="filterMode.value === 'inactive'" header="Action" class="w-24 !text-end"
-                            :headerStyle="{ textAlign: 'right' }">
+                        <!-- Action column -->
+                        <Column v-if="
+                            filterMode.value === 'inactive' ||
+                            filterMode.value === 'active'
+                        " header="Action" class="w-24 !text-end" :headerStyle="{ textAlign: 'right' }">
                             <template #body="{ data }">
                                 <div class="flex justify-end items-center gap-2">
-                                    <Button v-tooltip.top="'Approve'" icon="pi pi-check"
-                                        @click="changeStatus(data.id, 'approved')" severity="success" rounded />
+                                    <Button v-if="filterMode.value === 'inactive'" v-tooltip.top="'Approve'"
+                                        icon="pi pi-check" @click="openApproveDialog('single', data.id)"
+                                        severity="success" rounded />
+                                    <Button v-if="filterMode.value === 'active'" v-tooltip.top="'Details'"
+                                        icon="pi pi-search" @click="viewDetails(data.id)" rounded />
                                     <Button v-tooltip.top="'Reject'" icon="pi pi-times"
                                         @click="openRejectDialog(data.id)" severity="danger" rounded />
                                 </div>
@@ -70,12 +73,14 @@
 
                         <!-- Empty state -->
                         <template #empty>
-                            <div class="p-4 text-center text-gray-500">No records found.</div>
+                            <div class="p-4 text-center text-gray-500">
+                                No records found.
+                            </div>
                         </template>
                     </DataTable>
+
                     <Paginator class="mt-1" :rows="pagination.rows" :totalRecords="pagination.totalRecords"
-                        @page="onPageChange">
-                    </Paginator>
+                        @page="onPageChange" />
                     <Toast />
                 </div>
             </main>
@@ -94,14 +99,43 @@
         </Dialog>
 
         <!-- Approve Dialog -->
-        <Dialog v-model:visible="approveVisible" modal :style="{ width: '25rem' }" header="Approve All Codes"
-            :closable="false">
+        <Dialog v-model:visible="approveVisible" modal :style="{ width: '25rem' }" :header="approveType === 'all' ? 'Approve All Codes' : 'Approve Code'
+            " :closable="false">
             <div class="flex items-center gap-4 mb-8">
-                <p>Are you sure you want to approve all inactive codes?</p>
+                <p>
+                    {{
+                        approveType === 'all'
+                            ? 'Are you sure you want to approve all inactive codes?'
+                            : 'Are you sure you want to approve this code?'
+                    }}
+                </p>
             </div>
             <div class="flex justify-end gap-2">
                 <Button type="button" label="Cancel" severity="secondary" @click="approveVisible = false" />
-                <Button type="button" label="Confirm" severity="success" @click="approveAll" />
+                <Button type="button" label="Confirm" severity="success" @click="approveConfirm" />
+            </div>
+        </Dialog>
+
+        <!-- Detail Dialog -->
+        <Dialog v-model:visible="codeDetailVisible" modal :style="{ width: '25rem' }" header="Code Details"
+            :closable="true">
+            <div class="flex flex-col gap-4 mb-8">
+                <div class="flex justify-between">
+                    <span class="font-semibold">Serial Number:</span>
+                    <span>{{ codeDetail.serial_code }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-semibold">Created At:</span>
+                    <span>{{ codeDetail.created_at }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-semibold">Approved At:</span>
+                    <span>{{ codeDetail.activated_at }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-semibold">Approved By:</span>
+                    <span>{{ codeDetail.activated_by }}</span>
+                </div>
             </div>
         </Dialog>
     </div>
@@ -114,9 +148,7 @@ import { useToast } from "primevue/usetoast";
 import helper from "@/helper";
 import backend from "@/api/backend";
 import NotFound from "@/views/NotFound.vue";
-import bgImage from "@/assets/svg/bg.svg";
 import DesktopLayout from "@/layouts/DesktopLayout.vue";
-import app from "@/app_root";
 
 // -------------------
 // Constants
@@ -141,34 +173,48 @@ const loading = ref(false);
 const filterMode = ref(filterOptions[0]); // Default: Inactive
 const rejectVisible = ref(false);
 const approveVisible = ref(false);
-const remark = ref(null);
+const remark = ref("");
+const search = ref("");
 const selectedCodeId = ref(null);
+const approveType = ref("all"); // 'all' or 'single'
 const pagination = reactive({
     page: 1,
     totalRecords: 0,
     rows: 10,
     from: 0,
 });
+const codeDetailVisible = ref(false);
+const codeDetail = ref({});
 
 // -------------------
 // Lifecycle
 // -------------------
 onMounted(() => {
-    fetchProductDetails(route.params.id);
+    fetchProductDetails();
 });
 
 watch(filterMode, () => {
-    fetchProductDetails(route.params.id);
+    pagination.page = 1;
+    fetchProductDetails();
 });
 
 // -------------------
 // Methods
 // -------------------
-const fetchProductDetails = async (productId, page = 1) => {
+const fetchProductDetails = async (page = pagination.page) => {
     try {
         loading.value = true;
-        const { data, status } = await backend.get(`/preprint-products/${productId}`,
-            { status: filterMode.value.value, page });
+        const { data, status } = await backend.get(
+            `/preprint-products/${route.params.id}`,
+            {
+                params: {
+                    status: filterMode.value.value,
+                    page,
+                    search: search.value.trim() || null,
+                },
+            }
+        );
+
         if (status === 200) {
             codes.value = data.data;
             pagination.totalRecords = data.meta.total;
@@ -189,29 +235,39 @@ const fetchProductDetails = async (productId, page = 1) => {
     }
 };
 
+// change status of a single code
 const changeStatus = async (codeId, action) => {
     try {
-        const { data, status } = await backend.post(`/preprint-products/change-status`, {
-            code_id: codeId,
-            action,
-            remark: remark.value ?? null,
-        });
+        const { data, status } = await backend.post(
+            `/preprint-products/change-status`,
+            {
+                code_id: codeId,
+                action,
+                remark: remark.value ?? null,
+            }
+        );
 
         if (status === 200) {
-            await fetchProductDetails(route.params.id);
-            toast.add({ severity: "success", summary: "Success", detail: data.message, life: 3000 });
+            await fetchProductDetails();
+            toast.add({
+                severity: "success",
+                summary: "Success",
+                detail: data.message,
+                life: 3000,
+            });
         }
     } catch (error) {
         console.error("Status change failed:", error);
         toast.add({
             severity: "error",
             summary: "Error",
-            detail: "An error occurred while changing status.",
+            detail: error.response?.data?.message || "An error occurred while changing status.",
             life: 5000,
         });
     }
 };
 
+// Reject
 const openRejectDialog = (codeId) => {
     selectedCodeId.value = codeId;
     remark.value = "";
@@ -232,57 +288,107 @@ const rejectConfirm = () => {
     changeStatus(selectedCodeId.value, "rejected");
 };
 
+// Pagination
 const onPageChange = (event) => {
-    console.log("Page changed:", event);
-    fetchProductDetails(route.params.id, event.page + 1);
+    pagination.page = event.page + 1;
+    fetchProductDetails();
 };
 
-const openApproveDialog = () => {
+// Approve
+const openApproveDialog = (type = "all", codeId = null) => {
+    approveType.value = type;
+    selectedCodeId.value = codeId;
     approveVisible.value = true;
-}
+};
 
-const approveAll = async () => {
+const approveConfirm = async () => {
+    approveVisible.value = false;
+
     try {
-        const { data, status } = await backend.post(`/preprint-products/approve-all`, {
-            product_id: route.params.id,
-        });
+        if (approveType.value === "all") {
+            const { data, status } = await backend.post(
+                `/preprint-products/approve-all`,
+                { product_id: route.params.id }
+            );
 
-        if (status === 200) {
-            await fetchProductDetails(route.params.id);
-            toast.add({ severity: "success", summary: "Success", detail: data.message, life: 3000 });
+            if (status === 200) {
+                await fetchProductDetails();
+                toast.add({
+                    severity: "success",
+                    summary: "Success",
+                    detail: data.message,
+                    life: 3000,
+                });
+            }
+        } else {
+            // single code
+            await changeStatus(selectedCodeId.value, "approved");
         }
     } catch (error) {
-        console.error("Approve all failed:", error);
+        console.error("Approve failed:", error);
         toast.add({
             severity: "error",
             summary: "Error",
-            detail: error.response?.data?.message || "An error occurred while approving all codes.",
+            detail:
+                error.response?.data?.message ||
+                "An error occurred while approving codes.",
             life: 5000,
         });
-    } finally {
-        approveVisible.value = false;
     }
 };
 
+// Download
 const downloadFile = async () => {
     const id = route.params.id;
     try {
-        const { data, status } = await backend.get(`/preprint-products/${id}/download`,
+        const { data, status } = await backend.get(
+            `/preprint-products/${id}/download`,
             {
-                status: filterMode.value.value,
+                params: { status: filterMode.value.value },
             }
-        )
+        );
         if (status === 200) {
-            const url = data.url
-            const link = document.createElement('a')
-            link.href = url
-            link.download = ''
-            document.body.appendChild(link)
-            link.click()
-            document.body.removeChild(link)
+            const link = document.createElement("a");
+            link.href = data.url;
+            link.download = "";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     } catch (error) {
-        console.error('Download failed:', error)
+        console.error("Download failed:", error);
+    }
+};
+
+// filters
+const clearFilters = () => {
+    filterMode.value = filterOptions[0];
+    search.value = "";
+    pagination.page = 1;
+    fetchProductDetails();
+};
+
+const searchProduct = () => {
+    pagination.page = 1;
+    fetchProductDetails();
+};
+
+const viewDetails = async (codeId) => {
+    try {
+        const { data, status } = await backend.get(`/preprint-products/preprint-codes/${codeId}`);
+        if (status === 200) {
+            console.log("Code Details:", data);
+            codeDetail.value = data.data
+            codeDetailVisible.value = true;
+        }
+    } catch (error) {
+        console.error("Fetch code detail failed:", error);
+        toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "Unable to fetch code details.",
+            life: 5000,
+        });
     }
 }
 </script>
