@@ -35,7 +35,7 @@
 
                 <!-- Table -->
                 <div class="card mt-5 mb-10">
-                    <DataTable :value="products" scrollable scrollHeight="550px" tableStyle="min-width: 50rem"
+                    <DataTable :value="products" showGridlines scrollable scrollHeight="550px" tableStyle="min-width: 50rem"
                         :loading="loading.table">
                         <Column header="#" headerStyle="width:3rem">
                             <template #body="slotProps">

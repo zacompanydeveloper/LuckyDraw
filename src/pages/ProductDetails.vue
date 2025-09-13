@@ -40,7 +40,7 @@
                             class="border border-gray-200 my-2" :options="filterOptions" />
                     </div>
 
-                    <DataTable dataKey="id" :value="codes" :loading="loading" scrollable scrollHeight="460px"
+                    <DataTable dataKey="id" showGridlines :value="codes" :loading="loading" scrollable scrollHeight="460px"
                         tableStyle="min-width: 50rem">
                         <Column header="#" headerStyle="width:3rem">
                             <template #body="slotProps">
