@@ -23,10 +23,10 @@
                             <InputText id="search" v-model="search" autocomplete="off" />
                             <label for="search">Search</label>
                         </FloatLabel>
-                        <Button @click="searchProduct" type="button" icon="pi pi-filter" iconPos="left" label="Search" severity="success" variant="outlined"
-                            class="cursor-pointer  w-35" />
-                        <Button @click="clearFilters" type="button" icon="pi pi-refresh" iconPos="left" style="color: #2E3192;"
-                            class="cursor-pointer"  variant="outlined" />
+                        <Button @click="searchProduct" type="button" icon="pi pi-filter" iconPos="left" label="Search"
+                            severity="success" raised class="cursor-pointer  w-35" />
+                        <Button @click="clearFilters" type="button" icon="pi pi-refresh" iconPos="left" raised
+                            style="color: #2E3192;" class="cursor-pointer" variant="outlined" />
                     </div>
                     <Button type="button" iconPos="right" label="Create" @click="openDialog('right')"
                         class="cursor-pointer hover:opacity-90 w-35" style="background-color: #2E3192;" />
@@ -34,7 +34,8 @@
 
                 <!-- Table -->
                 <div class="card mt-5 mb-10">
-                    <DataTable :value="products" scrollable scrollHeight="550px" tableStyle="min-width: 50rem" :loading="loading.table">
+                    <DataTable :value="products" scrollable scrollHeight="550px" tableStyle="min-width: 50rem"
+                        :loading="loading.table">
                         <Column header="#" headerStyle="width:3rem">
                             <template #body="slotProps">
                                 {{ slotProps.index + 1 }}
@@ -143,7 +144,7 @@ const fetchProducts = async () => {
         loading.table = true
         const { data, status } = await backend.get("/preprint-products",
             {
-                
+
             }
         )
         if (status === 200) {
@@ -183,7 +184,12 @@ const downloadFile = async (product) => {
         const { data, status } = await backend.get(`/preprint-products/${product.id}/download`)
         if (status === 200) {
             const url = data.url
-            window.open(url)
+            const link = document.createElement('a')
+            link.href = url
+            link.download = ''
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
         }
     } catch (error) {
         console.error('Download failed:', error)

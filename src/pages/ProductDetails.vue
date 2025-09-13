@@ -28,7 +28,7 @@
                         <Button v-if="filterMode.value === 'inactive'" type="button" v-tooltip.top="'Reject All'"
                             iconPos="right" icon="pi pi-times" severity="danger" @click="" raised>
                         </Button>
-                        <Button type="button" v-tooltip.top="'Download'" iconPos="right" icon="pi pi-download" @click=""
+                        <Button type="button" v-tooltip.top="'Download'" iconPos="right" icon="pi pi-download" @click="downloadFile"
                             raised style="background-color: #2E3192;">
                         </Button>
                     </div>
@@ -263,6 +263,28 @@ const approveAll = async () => {
         approveVisible.value = false;
     }
 };
+
+const downloadFile = async () => {
+    const id = route.params.id;
+    try {
+        const { data, status } = await backend.get(`/preprint-products/${id}/download`,
+            {
+                status: filterMode.value.value,
+            }
+        )
+        if (status === 200) {
+            const url = data.url
+            const link = document.createElement('a')
+            link.href = url
+            link.download = ''
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+        }
+    } catch (error) {
+        console.error('Download failed:', error)
+    }
+}
 </script>
 
 <style lang="scss" scoped></style>
