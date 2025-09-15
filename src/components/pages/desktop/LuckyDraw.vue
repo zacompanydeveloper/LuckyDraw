@@ -28,22 +28,42 @@
           <section class="mt-8">
             <h2 class="text-2xl text-center font-bold text-[#2E3192] mb-4">
               Registration for Lucky Draw
+              {{ $t("register_activate_for_lucky_draw") }}
             </h2>
             <div class="px-[4%] mx-auto grid grid-cols-1 gap-4">
-              <InputText id="numkeys" v-model="form.phone" v-keyfilter.num placeholder="Phone Number" size="large"
-                autocomplete="off" />
-              <InputText v-model="form.name" placeholder="Name" fluid size="large" autocomplete="off" />
+
+              <FloatLabel variant="on">
+                <InputText v-model="form.shop" fluid size="large" autocomplete="off"
+                  :disabled="form.business_type !== 'business'" />
+                <label for="shop">Shop</label>
+              </FloatLabel>
+
+              <FloatLabel variant="on">
+                <InputText id="numkeys" v-model="form.phone" v-keyfilter.num fluid size="large" autocomplete="off" />
+                <label for="numkeys">Phone Number</label>
+              </FloatLabel>
+
+              <FloatLabel variant="on">
+                <InputText v-model="form.name" fluid size="large" autocomplete="off" />
+                <label for="name">Name</label>
+              </FloatLabel>
+
               <Nrc @update:fullnrc="nrc => form.nrc = nrc" />
+
               <Select v-model="form.township" :options="townships" optionLabel="township" placeholder="Township"
                 size="large" showClear :loading="loading.township">
                 <template #dropdownicon>
                   <i class="pi pi-sort-down-fill" style="color: #2E3192; font-size: small;"></i>
                 </template>
               </Select>
-              <AutoComplete v-if="form.business_type === 'business'" fluid size="large" v-model="form.shop" optionLabel="name" :suggestions="shops"
-                @complete="debouncedSearchShop" forceSelection placeholder="Search shop..." />
-              <Button type="button" iconPos="right" label="Register" :loading="loading.register" :style="{ cursor: isFormValid ? 'pointer' : 'not-allowed' }"
-                :disabled="!isFormValid" @click.prevent="register" size="large" style="background-color: #2E3192;" />
+
+              <!-- <AutoComplete v-if="form.business_type === 'business'" fluid size="large" v-model="form.shop"
+                optionLabel="name" :suggestions="shops" @complete="debouncedSearchShop" forceSelection
+                placeholder="Search shop..." /> -->
+
+              <Button type="button" iconPos="right" label="Register" :loading="loading.register"
+                :style="{ cursor: isFormValid ? 'pointer' : 'not-allowed' }" :disabled="!isFormValid"
+                @click.prevent="register" size="large" style="background-color: #2E3192;" />
             </div>
           </section>
         </div>
@@ -193,6 +213,8 @@ const getLuckyDrawDetails = async () => {
       registrationOpen.value = data.is_active
       form.tracking_code = data.tracking_code
       form.business_type = data.business_type
+      form.phone = data.phone
+      form.shop = data.shop || null
       startCountdown(data.expire)
     }
     loading.details = false

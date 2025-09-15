@@ -28,6 +28,17 @@
   "name" : "Name",
   "phone" : "Phone",
   "address" : "Address",
-  "email" : "Email"
-
-} 
+  "email" : "Email",
+  "registration_for_lucky_draw" : "Registration for Lucky Draw",
+  "registration" : "Registration",
+  "register_activate_for_lucky_draw": "Register Activate for Lucky Draw",
+  "pre_print_code": "Pre-Print Code",
+  "sms_records": "SMS Records",
+  "prize_registration": "Prize Registration",
+  "shop" : "Shop",
+  "voucher_no":"Voucher No",
+  "amount": "Amount",
+  "phone_number" : "Phone Number",
+  "activate" : "Activate",
+  "home" : "Home"
+}

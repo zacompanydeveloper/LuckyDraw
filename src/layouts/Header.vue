@@ -6,34 +6,34 @@
                 style="color: #2E3192;">
                 <ul class="flex flex-col gap-1">
                     <li v-can="'view-dashboard'">
-                        <router-link to="/admin-panel" active-class="font-semibold bg-[#2E3192]/10"
-                            class="w-full block text-[#2E3192] hover:bg-[#2E3192]/10 px-3 py-2 rounded-md transition-colors">
+                        <router-link to="/admin-panel" active-class="bg-[#2E3192]/10"
+                            class="w-full flex items-center gap-2 text-[#2E3192] hover:bg-[#2E3192]/10 px-3 py-2 rounded-md transition-colors">
                             <i class="pi pi-home"></i>
-                            Home
+                            {{ $t('home') }}
                         </router-link>
                     </li>
 
                     <li v-can="'view-registration'">
-                        <router-link to="/admin-panel/code-registration" active-class="font-semibold bg-[#2E3192]/10"
-                            class="w-full block text-[#2E3192] hover:bg-[#2E3192]/10 px-3 py-2 rounded-md transition-colors">
+                        <router-link to="/admin-panel/code-registration" active-class=" bg-[#2E3192]/10"
+                            class="w-full flex items-center gap-2 text-[#2E3192] hover:bg-[#2E3192]/10 px-3 py-2 rounded-md transition-colors">
                             <i class="pi pi-file-edit"></i>
-                            Registration
+                            {{ $t('registration') }}
                         </router-link>
                     </li>
 
                     <li v-can="'view-preprint'">
-                        <router-link to="/admin-panel/pre-print-code" active-class="font-semibold bg-[#2E3192]/10"
-                            class="w-full block text-[#2E3192] hover:bg-[#2E3192]/10 px-3 py-2 rounded-md transition-colors">
+                        <router-link to="/admin-panel/pre-print-code" active-class="bg-[#2E3192]/10"
+                            class="w-full flex items-center gap-2 text-[#2E3192] hover:bg-[#2E3192]/10 px-3 py-2 rounded-md transition-colors">
                             <i class="pi pi-print"></i>
-                            Pre-Print Code
+                            {{ $t('pre_print_code') }}
                         </router-link>
                     </li>
 
                     <li v-can="'view-sms'">
-                        <router-link to="/" active-class="font-semibold bg-[#2E3192]/10"
-                            class="w-full block text-[#2E3192] hover:bg-[#2E3192]/10 px-3 py-2 rounded-md transition-colors">
+                        <router-link to="/" active-class="bg-[#2E3192]/10"
+                            class="w-full flex items-center gap-2 text-[#2E3192] hover:bg-[#2E3192]/10 px-3 py-2 rounded-md transition-colors">
                             <i class="pi pi-envelope"></i>
-                            SMS Records
+                            {{ $t('sms_records') }}
                         </router-link>
                     </li>
                 </ul>

@@ -2,14 +2,14 @@ import { app } from '@/app_root.js'
 import { createI18n } from 'vue-i18n'
 
 import en from './en.json'
-import my from './my.json'
+import mm from './mm.json'
 
 const i18n = createI18n({
-  locale: 'en',
-  fallbackLocale: 'en',
+  locale: 'mm',
+  fallbackLocale: 'mm',
   messages: {
     en,
-    my,
+    mm,
   },
 })
 

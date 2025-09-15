@@ -7,7 +7,7 @@
   "warranty_check": "အွန်လိုင်းအာမခံ စစ်ဆေးရန်",
   "search": "ရှာဖွေရန်",
   "lot_number_activated": "LOTနံပါတ် သည်အွန်လိုင်းအာမခံ လုပ်ပြီသားပါ!",
-  "warranty_type" : "အွန်လိုင်းအာမခံ အမျိုးအစား",
+  "warranty_type": "အွန်လိုင်းအာမခံ အမျိုးအစား",
   "warranty_period": "အွန်လိုင်းအာမခံ ကာလ",
   "request_otp": "OTP တောင်းရန်",
   "serial_number_not_found": "LOT နံပါတ် မတွေ့ပါ",
@@ -28,5 +28,17 @@
   "name": "အမည်",
   "phone": "ဖုန်း",
   "address": "လိပ်စာ",
-  "email": "အီးမေးလ်"
+  "email": "အီးမေးလ်",
+  "registration_for_lucky_draw": "ကံစမ်းမဲပေးရန် မှတ်ပုံတင်ခြင်း",
+  "registration": "ကံစမ်းမဲလက်မှတ် အတည်ပြုရန်",
+  "register_activate_for_lucky_draw": "ကံစမ်းမဲလက်မှတ် အတည်ပြုရန်",
+  "pre_print_code": "Pre-Print ကုဒ်",
+  "sms_records": "စာတိုမှတ်တမ်း",
+  "prize_registration": "ဆုလက်ဆောင် မှတ်ပုံတင်ရန်",
+  "shop": "ဆိုင်အမည်",
+  "voucher_no": "ဘောက်ချာ နံပါတ်",
+  "amount": "ငွေပမာဏ",
+  "phone_number" : "ဖုန်းနံပါတ်",
+  "activate" : "အတည်ပြုရန်",
+  "home" : "ပင်မစာမျက်နှာ"
 }

@@ -1,6 +1,6 @@
 import { useBreakpoints } from '@vueuse/core'
 import en from "@/locale/en.json";
-import mm from "@/locale/my.json";
+import mm from "@/locale/mm.json";
 import { useI18n } from "vue-i18n";
 
 export function isMobile() {

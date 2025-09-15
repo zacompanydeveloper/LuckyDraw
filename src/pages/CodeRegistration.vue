@@ -8,31 +8,33 @@
             <!-- Show form if not successful -->
             <section v-if="!success" class="flex flex-col items-center mt-20">
                 <h2 class="text-2xl text-center font-bold text-[#2E3192] mb-4">
-                    Register Activate for Lucky Draw
+                    {{ $t("register_activate_for_lucky_draw") }}
                 </h2>
 
                 <section class="w-[330px] flex flex-col gap-4 mt-5">
                     <FloatLabel variant="on">
                         <InputText id="shop_name" v-model="form.shop_name" fluid autocomplete="off" disabled />
-                        <label for="shop_name">Shop</label>
+                        <label for="shop_name">{{ $t("shop") }}</label>
                     </FloatLabel>
 
                     <FloatLabel variant="on">
                         <InputText v-model="form.invoice_no" fluid autocomplete="off" />
-                        <label for="invoice_no">Voucher No.</label>
+                        <label for="invoice_no">{{ $t("voucher_no") }}</label>
                     </FloatLabel>
                     <FloatLabel variant="on">
                         <InputText v-model="form.amount" v-keyfilter.num fluid autocomplete="off" />
-                        <label for="amount">Amount</label>
+                        <label for="amount">{{ $t("amount") }}</label>
                     </FloatLabel>
                     <FloatLabel variant="on">
                         <InputText id="numkeys" v-model="form.phone" v-keyfilter.num fluid autocomplete="off" />
-                        <label for="numkeys">Phone Number</label>
+                        <label for="numkeys">{{ $t("phone_number") }}</label>
                     </FloatLabel>
 
-                    <Button label="Activate" class="cursor-pointer hover:opacity-90 w-full" :loading="loading"
-                        :disabled="!isFormValid || loading" @click.prevent="activate"
-                        :style="{ backgroundColor: '#2E3192', cursor: isFormValid && !loading ? 'pointer' : 'not-allowed' }" />
+                    <Button :label="$t('activate')" class="hover:opacity-90 w-full" :loading="loading"
+                        :disabled="!isFormValid || loading" @click.prevent="activate" :style="{
+                            backgroundColor: '#2E3192',
+                            cursor: (!isFormValid || loading) ? 'not-allowed' : 'pointer'
+                        }" />
                 </section>
             </section>
 
