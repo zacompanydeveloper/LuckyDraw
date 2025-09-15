@@ -2,11 +2,12 @@
   <div class="min-h-screen bg-contain bg-x-repeat" :style="{ backgroundImage: `url(${bgImage})` }">
     <!-- Header -->
     <header class="w-full flex justify-center items-center shadow-xl py-[20px]">
-      <img src="@/assets/svg/logo.svg" alt="logo" class="w-60" />
+      <img src="@/assets/svg/logo.svg" alt="logo" class="w-50" />
     </header>
 
-    <main class="h-[calc(100vh-80px)] max-w-md mx-auto">
-      <div v-if="!loading.details" class="h-full">
+    <main class="mx-auto">
+      <div v-if="!loading.details"
+        class="h-full min-h-[calc(100vh-96px)] flex flex-col justify-start items-center py-6 px-4">
         <!-- Registration open -->
         <div v-if="registrationOpen && !alreadyRegistered">
           <!-- Countdown Section -->
@@ -26,9 +27,8 @@
 
           <!-- Registration Form -->
           <section class="mt-8">
-            <h2 class="text-2xl text-center font-bold text-[#2E3192] mb-4">
-              Registration for Lucky Draw
-              {{ $t("register_activate_for_lucky_draw") }}
+            <h2 class="text-2xl text-center font-bold text-[#2E3192] mb-8">
+              {{ $t("registration_for_lucky_draw") }}
             </h2>
             <div class="px-[4%] mx-auto grid grid-cols-1 gap-4">
 
@@ -39,7 +39,8 @@
               </FloatLabel>
 
               <FloatLabel variant="on">
-                <InputText id="numkeys" v-model="form.phone" v-keyfilter.num fluid size="large" autocomplete="off" />
+                <InputText id="numkeys" v-model="form.phone" v-keyfilter.num fluid size="large" autocomplete="off"
+                  disabled />
                 <label for="numkeys">Phone Number</label>
               </FloatLabel>
 
@@ -51,7 +52,7 @@
               <Nrc @update:fullnrc="nrc => form.nrc = nrc" />
 
               <Select v-model="form.township" :options="townships" optionLabel="township" placeholder="Township"
-                size="large" showClear :loading="loading.township">
+                size="large" showClear :loading="loading.township" filter filterPlaceholder="Search township">
                 <template #dropdownicon>
                   <i class="pi pi-sort-down-fill" style="color: #2E3192; font-size: small;"></i>
                 </template>
@@ -82,7 +83,7 @@
       </div>
 
       <!-- Loading -->
-      <div v-else class="h-full flex items-center justify-center">
+      <div v-else class="min-h-screen flex items-center justify-center">
         <Loading />
       </div>
     </main>
@@ -225,7 +226,7 @@ const getLuckyDrawDetails = async () => {
       toast.add({ severity: 'error', summary: 'Error Message', detail: 'Server Error!', life: 5000, closable: false });
       return;
     } else {
-      toast.add({ severity: 'error', summary: 'Error Message', detail: err.response?.data?.message || 'An error occurred', life: 5000, closable: false });
+      // toast.add({ severity: 'error', summary: 'Error Message', detail: err.response?.data?.message || 'An error occurred', life: 5000, closable: false });
     }
     loading.details = false
     registrationOpen.value = false

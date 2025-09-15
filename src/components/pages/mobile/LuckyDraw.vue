@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-cover bg-center" :style="{ backgroundImage: `url(${bgImage})` }">
     <!-- Header -->
     <header class="w-full flex justify-center items-center shadow-xl py-[4%]">
-      <img src="@/assets/svg/logo.svg" alt="logo" class="w-60" />
+      <img src="@/assets/svg/logo.svg" alt="logo" class="w-50" />
     </header>
 
     <main class="h-[calc(100vh-80px)]">
@@ -26,9 +26,8 @@
 
           <!-- Registration Form -->
           <section class="mt-8">
-            <h2 class="text-2xl text-center font-bold text-[#2E3192] mb-4">
-              Registration for Lucky Draw
-              {{ $t('serial_number_is_already_activated') }}
+            <h2 class="text-2xl text-center font-bold text-[#2E3192] mb-8">
+              {{ $t('registration_for_lucky_draw') }}
             </h2>
             <div class="px-[4%] mx-auto grid grid-cols-1 gap-4">
 
@@ -52,11 +51,12 @@
               <Nrc @update:fullnrc="nrc => form.nrc = nrc" />
 
               <Select v-model="form.township" :options="townships" optionLabel="township" placeholder="Township"
-                size="large" showClear :loading="loading.township">
+                size="large" showClear :loading="loading.township" filter filterPlaceholder="Search township">
                 <template #dropdownicon>
                   <i class="pi pi-sort-down-fill" style="color: #2E3192; font-size: small;"></i>
                 </template>
               </Select>
+
 
               <!-- <AutoComplete v-if="form.business_type === 'business'" fluid size="large" v-model="form.shop" optionLabel="name" :suggestions="shops"
                 @complete="debouncedSearchShop" forceSelection placeholder="Search shop..." /> -->
@@ -223,7 +223,7 @@ const getLuckyDrawDetails = async () => {
       toast.add({ severity: 'error', summary: 'Error Message', detail: 'Server Error!', life: 5000, closable: false });
       return;
     } else {
-      toast.add({ severity: 'error', summary: 'Error Message', detail: err.response?.data?.message || 'An error occurred', life: 5000, closable: false });
+      // toast.add({ severity: 'error', summary: 'Error Message', detail: err.response?.data?.message || 'An error occurred', life: 5000, closable: false });
     }
     loading.details = false
     registrationOpen.value = false

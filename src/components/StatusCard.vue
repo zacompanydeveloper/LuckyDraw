@@ -17,7 +17,7 @@
 
       <!-- Illustration -->
       <div class="flex justify-center mb-4">
-        <img :src="image" :alt="title" class="w-[300px] h-auto" />
+        <img :src="image" :alt="title" class="w-[400px] h-auto" />
       </div>
 
       <!-- Bottom contact message (optional) -->
