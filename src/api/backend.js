@@ -2,93 +2,86 @@ import axios from "axios";
 import defaultSetting from "@/api/config.js";
 import router from "@/router";
 
+const testing = localStorage.getItem("mode") === "testing";
+
+const API_BASE_URL = testing
+  ? "https://testing.sweetyhomemm.com/api/b2c/v1" // testing URL
+  : import.meta.env.VITE_BACKEND_URL; // live URL from env
+
+// Interceptors
 axios.interceptors.response.use(
-  function (response) {
-    return response;
-  },
-  function (error) {
+  (response) => response,
+  (error) => {
     if (error.response) {
       const status = error.response.status;
-
       if (status === 401) {
         localStorage.removeItem("adminToken");
         router.push(`/`);
       } else if (status === 403) {
         router.push("/no-permission");
-      } else if (status === 500) {
-        //
       }
-    } else {
-      // toast.error('Unknown Error Occure!')
     }
     return Promise.reject(error);
   }
 );
 
-function get(url, params) {
-  // Support both { params: { key: value } } and { key: value }
-  const formattedParams = params?.params ? { ...params.params } : { ...params };
+// Core request builder
+function request(method, url, { params, data, headers } = {}) {
+  return axios({
+    baseURL: API_BASE_URL,
+    method,
+    url,
+    params,
+    data,
+    headers,
+  });
+}
 
-  // Convert Date objects to local formatted string manually
-  Object.keys(formattedParams).forEach((key) => {
-    if (formattedParams[key] instanceof Date) {
-      formattedParams[key] = formattedParams[key].toLocaleString("sv-SE"); // e.g. 2025-09-02 00:00:00
+// Param formatter
+function formatParams(params = {}) {
+  const formatted = params?.params ? { ...params.params } : { ...params };
+  Object.keys(formatted).forEach((key) => {
+    if (formatted[key] instanceof Date) {
+      formatted[key] = formatted[key].toLocaleString("sv-SE");
     }
   });
+  return formatted;
+}
 
-  return axios({
-    baseURL: import.meta.env.VITE_BACKEND_URL,
-    method: "get",
-    url,
-    params: formattedParams,
+// API helpers
+function get(url, params) {
+  return request("get", url, {
+    params: formatParams(params),
     headers: defaultSetting.header(),
   });
 }
 
 function post(url, data) {
-  return axios({
-    baseURL: import.meta.env.VITE_BACKEND_URL,
-    method: "post",
-    url,
+  return request("post", url, {
     data,
     headers: defaultSetting.header(),
   });
 }
 
 function put(url, data) {
-  return axios({
-    baseURL: import.meta.env.VITE_BACKEND_URL,
-    method: "put",
-    url,
+  return request("put", url, {
     data,
     headers: defaultSetting.header(),
   });
 }
 
 function destroy(url, data) {
-  return axios({
-    baseURL: import.meta.env.VITE_BACKEND_URL,
-    method: "delete",
-    url,
+  return request("delete", url, {
     data,
     headers: defaultSetting.header(),
   });
 }
 
 function filePost(url, data) {
-  return axios({
-    baseURL: import.meta.env.VITE_BACKEND_URL,
-    method: "post",
-    url,
+  return request("post", url, {
     data,
     headers: defaultSetting.fileHeader(),
   });
 }
 
-export default {
-  get,
-  post,
-  put,
-  destroy,
-  filePost,
-};
+export default { get, post, put, destroy, filePost };

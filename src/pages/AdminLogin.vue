@@ -11,6 +11,15 @@
                     <img src="@/assets/svg/logo.svg" alt="logo" class="w-60" />
                 </header>
 
+                <div class=" bottom-0 right-0 fixed m-4 flex items-center gap-2 rounded-full shadow-lg min-w-[90px] min-h-[36px] px-3" :class="checked ? '' : 'opacity:50'">
+                    <ToggleSwitch v-model="checked">
+                        <template #handle="{ checked }">
+                            <i :class="['!text-xs pi', { 'pi-check': checked, 'pi-times': !checked }]" />
+                        </template>
+                    </ToggleSwitch>
+                    <p class="!text-xs min-w-[50px]" :class="checked ? 'text-blue-500' : 'text-red-500'">{{ checked ? 'testing' : 'live' }}</p>
+                </div>
+
                 <!-- Main -->
                 <main class="flex flex-col justify-center items-center gap-4 mt-20">
                     <img src="@/assets/svg/login.svg" alt="Login" />
@@ -35,7 +44,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue"
+import { ref, watch } from "vue"
 import helper from "@/helper"
 import bgImage from "@/assets/svg/bg.svg"
 import NotFound from "@/views/NotFound.vue"
@@ -95,4 +104,15 @@ const confirmOtp = async () => {
 const handleAction = () => {
     step.value === 1 ? getOtp() : confirmOtp()
 }
+
+const checked = ref(localStorage.getItem('mode') === 'testing');
+
+watch (checked, (newVal) => {
+    if (newVal) {
+        localStorage.setItem('mode', 'testing');
+    } else {
+        localStorage.setItem('mode', 'live');
+    }
+});
+
 </script>

@@ -34,6 +34,7 @@ import KeyFilter from 'primevue/keyfilter';
 import Drawer from 'primevue/drawer';
 import DatePicker from 'primevue/datepicker';
 import Paginator from 'primevue/paginator';
+import ToggleSwitch from 'primevue/toggleswitch';
 
 
 const MyPreset = definePreset(Aura, {
@@ -92,3 +93,4 @@ app.use(ConfirmationService);
 app.component('Drawer', Drawer);
 app.component('DatePicker', DatePicker);
 app.component('Paginator', Paginator);
+app.component('ToggleSwitch', ToggleSwitch);
