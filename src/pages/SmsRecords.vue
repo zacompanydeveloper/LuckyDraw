@@ -192,6 +192,7 @@ const retrySms = async (id) => {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to retry SMS', life: 3000 });
     }finally {
         retryVisible.value = false;
+        getSmsRecords(pagination.page);
     }
 };
 
