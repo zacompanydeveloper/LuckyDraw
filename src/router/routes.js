@@ -57,6 +57,15 @@ export const routes = [
     }, // protected route
   },
   {
+    path: "/admin-panel/sms-records",
+    name: "admin-panel-sms-records",
+    component: () => import("@/pages/SmsRecords.vue"),
+    meta: {
+      requiresAdminAuth: true,
+      permissions: ["view-sms"],
+    }, // protected route
+  },
+  {
     path: "/admin-panel/403",
     name: "forbidden",
     component: () => import("@/views/Forbidden.vue"),

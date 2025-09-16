@@ -40,5 +40,8 @@
   "amount": "Amount",
   "phone_number" : "Phone Number",
   "activate" : "Activate",
-  "home" : "Home"
+  "home" : "Home",
+  "region": "Region",
+  "township": "Township",
+  "shop_address" : "Shop Address"
 }

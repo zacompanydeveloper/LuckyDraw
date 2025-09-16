@@ -11,20 +11,27 @@
                     {{ $t("register_activate_for_lucky_draw") }}
                 </h2>
 
-                <section class="w-[330px] flex flex-col gap-4 mt-5">
+                <section class="w-[400px] flex flex-col gap-4 mt-5">
                     <FloatLabel variant="on">
                         <InputText id="shop_name" v-model="form.shop_name" fluid autocomplete="off" disabled />
                         <label for="shop_name">{{ $t("shop") }}</label>
                     </FloatLabel>
 
                     <FloatLabel variant="on">
+                        <InputText v-model="form.shop_address" fluid autocomplete="off" disabled />
+                        <label for="shop_address">{{ $t("shop_address") }}</label>
+                    </FloatLabel>
+
+                    <FloatLabel variant="on">
                         <InputText v-model="form.invoice_no" fluid autocomplete="off" />
                         <label for="invoice_no">{{ $t("voucher_no") }}</label>
                     </FloatLabel>
+
                     <FloatLabel variant="on">
                         <InputText v-model="form.amount" v-keyfilter.num fluid autocomplete="off" />
                         <label for="amount">{{ $t("amount") }}</label>
                     </FloatLabel>
+
                     <FloatLabel variant="on">
                         <InputText id="numkeys" v-model="form.phone" v-keyfilter.num fluid autocomplete="off" />
                         <label for="numkeys">{{ $t("phone_number") }}</label>
@@ -110,6 +117,7 @@ const setShopName = () => {
     const user = helper.authUser();
     if (user && user.member_branch) {
         form.shop_name = user.member_branch;
+        form.shop_address = user.township + ', ' + user.region || '';
     } else {
         localStorage.clear();
         router.push('/admin-login');
