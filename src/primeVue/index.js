@@ -25,6 +25,8 @@ import Dialog from 'primevue/dialog';
 import SelectButton from 'primevue/selectbutton';
 import ConfirmDialog from 'primevue/confirmdialog';
 import ConfirmationService from 'primevue/confirmationservice';
+import Tag from 'primevue/tag';
+
 
 import Aura from "@primeuix/themes/aura";
 import PrimeVue from "primevue/config";
@@ -94,3 +96,4 @@ app.component('Drawer', Drawer);
 app.component('DatePicker', DatePicker);
 app.component('Paginator', Paginator);
 app.component('ToggleSwitch', ToggleSwitch);
+app.component('Tag', Tag);

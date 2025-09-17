@@ -66,6 +66,24 @@ export const routes = [
     }, // protected route
   },
   {
+    path: "/admin-panel/lucky-draw",
+    name: "admin-panel-lucky-draw",
+    component: () => import("@/pages/LuckyDrawRecords.vue"),
+    meta: {
+      requiresAdminAuth: true,
+      permissions: ["view-lucky-draw"],
+    }, // protected route
+  },
+  {
+    path: "/admin-panel/lucky-draw/:id",
+    name: "admin-panel-lucky-draw-details",
+    component: () => import("@/pages/LuckyDrawDetails.vue"),
+    meta: {
+      requiresAdminAuth: true,
+      permissions: ["manage-lucky-draw"],
+    }, // protected route
+  },
+  {
     path: "/admin-panel/403",
     name: "forbidden",
     component: () => import("@/views/Forbidden.vue"),

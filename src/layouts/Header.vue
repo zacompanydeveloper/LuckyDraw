@@ -13,6 +13,14 @@
                         </router-link>
                     </li>
 
+                    <li v-can="'view-lucky-draw'">
+                        <router-link to="/admin-panel/lucky-draw" active-class="bg-[#2E3192]/10"
+                            class="w-full flex items-center gap-2 text-[#2E3192] hover:bg-[#2E3192]/10 px-3 py-2 rounded-md transition-colors">
+                            <i class="pi pi-gift"></i>
+                            {{ $t('lucky_draw_ticket') }}
+                        </router-link>
+                    </li>
+
                     <li v-can="'view-registration'">
                         <router-link to="/admin-panel/code-registration" active-class=" bg-[#2E3192]/10"
                             class="w-full flex items-center gap-2 text-[#2E3192] hover:bg-[#2E3192]/10 px-3 py-2 rounded-md transition-colors">
