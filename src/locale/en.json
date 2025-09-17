@@ -66,5 +66,8 @@
   "enter_valid_phone": "Enter valid phone number",
   "enter_valid_email": "Enter valid email",
   "enter_required_fields": "Please enter all required fields",
-  "thank_you_for_joining": "Thank you for joining our lucky draw event!"
+  "thank_you_for_joining": "Thank you for joining our lucky draw event!",
+  "please_confirm_the_information_and_the_number_of_tickets_received_are_correct?": "Please confirm the information and the number of tickets received are correct?",
+  "ticket": "Ticket",
+  "ks": "Ks"
 }
