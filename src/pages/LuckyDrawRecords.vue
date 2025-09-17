@@ -4,12 +4,16 @@
             <h2 class="text-2xl font-bold text-[#2E3192]">{{ $t('lucky_draw_ticket') }}</h2>
             <!-- Table -->
             <div class="card mt-4">
+                <div class="flex justify-center">
+                    <SelectButton v-model="filterMode" optionLabel="label" dataKey="label"
+                        class="border border-gray-200 my-2" :options="filterOptions" />
+                </div>
                 <DataTable dataKey="id" showGridlines :value="luckyDrawRecords" :loading="loading.table" scrollable
                     scrollDirection="both" scrollHeight="460px" tableStyle="min-width: 120rem">
                     <Column headerStyle="background-color: #2E3192; color: white; width:3rem" class="table-header"
                         header="#">
                         <template #body="slotProps">
-                            {{ slotProps.index + 1 }}
+                            {{ pagination.from + slotProps.index + 1 }}
                         </template>
                     </Column>
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
@@ -33,8 +37,8 @@
                         class="w-24 table-header" :headerStyle="{ textAlign: 'right' }">
                         <template #body="{ data }">
                             <div class="flex justify-end items-center gap-2">
-                                <Button v-tooltip.top="'Details'"
-                                    icon="pi pi-search" @click="goToDetail(data.id)" severity="success" outlined rounded />
+                                <Button v-tooltip.top="'Details'" icon="pi pi-search" @click="goToDetail(data.id)"
+                                    severity="success" outlined rounded />
                             </div>
                         </template>
                     </Column>
@@ -58,13 +62,23 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, watch } from "vue";
 import backend from "@/api/backend";
 import helper from "@/helper";
 import NotFound from "@/views/NotFound.vue";
-import router from "@/router";
 
 const isMobile = helper.isMobile()
+const filterOptions = [
+    { label: 'Pending', value: 'pending' },
+    { label: 'Approved', value: 'approved' },
+    { label: 'Rejected', value: 'rejected' },
+    { label: 'Used', value: 'used' }
+];
+const filterMode = ref(filterOptions[0]);
+
+watch(filterMode, () => {
+    getLuckyDrawRecords(1);
+});
 
 const luckyDrawRecords = ref([]);
 const loading = reactive({
@@ -78,13 +92,13 @@ const pagination = reactive({
     from: 0,
 });
 
-const getLuckyDrawRecords = async () => {
+const getLuckyDrawRecords = async (page = 1) => {
     try {
         loading.table = true;
         const response = await backend.get("/lucky-draw/records", {
             params: {
-                page: 1,
-                status: 'pending'
+                page: page,
+                status: filterMode.value.value,
             },
         });
         if (response.status === 200) {
@@ -105,8 +119,13 @@ const getLuckyDrawRecords = async () => {
 };
 
 const goToDetail = (luckyDrawId) => {
-    router.push(`/admin-panel/lucky-draw/${luckyDrawId}`)
+
 }
+
+const onPageChange = (event) => {
+    pagination.page = event.page + 1; // PrimeVue Paginator is zero-based
+    getLuckyDrawRecords(pagination.page);
+};
 
 onMounted(() => {
     getLuckyDrawRecords();
