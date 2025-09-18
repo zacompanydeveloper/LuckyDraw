@@ -4,7 +4,7 @@
         <Header />
 
         <!-- Main Content -->
-        <main class="px-[5%] mt-10">
+        <main class="px-[5%] mt-8">
             <slot />
         </main>
 

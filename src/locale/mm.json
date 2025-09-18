@@ -79,5 +79,7 @@
   "thank_you_for_joining": "ပါဝင်ပေးမှုအတွက် ကျေးဇူးတင်ပါသည်",
   "please_confirm_the_information_and_the_number_of_tickets_received_are_correct?": "အချက်အလက်များနှင့် လက်ခံရရှိသော လက်မှတ်အရေအတွက် မှန်ကန်ကြောင်း အတည်ပြုပါ",
   "ticket": "လက်မှတ်",
-  "ks": "ကျပ်"
+  "ks": "ကျပ်",
+  "no_data": "ဒေတာ မရှိသေးပါ",
+  "nrc_no": "နိုင်ငံသားစိစစ်ရေးကတ်ပြား နံပါတ်"
 }
