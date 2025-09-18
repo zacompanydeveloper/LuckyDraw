@@ -64,7 +64,7 @@
                     <Column headerStyle="background-color: #2E3192; color: white;" header="Action"
                         class="w-24 table-header" :headerStyle="{ textAlign: 'right' }">
                         <template #body="{ data }">
-                            <div class="flex justify-end items-center gap-2">
+                            <div class="flex justify-center items-center">
                                 <Button v-tooltip.top="'Details'" icon="pi pi-search" @click="getDetail(data.id)"
                                     severity="success" outlined rounded />
                             </div>
