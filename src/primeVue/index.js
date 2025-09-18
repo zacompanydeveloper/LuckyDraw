@@ -27,7 +27,7 @@ import ConfirmDialog from 'primevue/confirmdialog';
 import ConfirmationService from 'primevue/confirmationservice';
 import Tag from 'primevue/tag';
 import ConfirmPopup from 'primevue/confirmpopup';
-
+import FileUpload from 'primevue/fileupload';
 
 import Aura from "@primeuix/themes/aura";
 import PrimeVue from "primevue/config";
@@ -99,3 +99,4 @@ app.component('Paginator', Paginator);
 app.component('ToggleSwitch', ToggleSwitch);
 app.component('Tag', Tag);
 app.component('ConfirmPopup', ConfirmPopup);
+app.component('FileUpload',FileUpload)

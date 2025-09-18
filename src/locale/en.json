@@ -71,5 +71,14 @@
   "ticket": "Ticket",
   "ks": "Ks",
   "no_data": "No data found",
-  "nrc_no": "NRC No"
+  "nrc_no": "NRC No",
+  "prizes": "Prizes",
+  "add_new_prize": "Add New Prize",
+  "edit_prize": "Edit Prize",
+  "delete_prize": "Delete Prize",
+  "image": "Image",
+  "quantity": "Quantity",
+  "description": "Description",
+  "loading": "Loading...",
+  "no_data_found": "No data found"
 }

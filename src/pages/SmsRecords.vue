@@ -109,7 +109,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, reactive } from "vue";
 import backend from "@/api/backend";
 import helper from "@/helper";
 import NotFound from "@/views/NotFound.vue";
@@ -131,7 +131,7 @@ const loading = ref({
     table: false,
 });
 
-const pagination = ref({
+const pagination = reactive({
     totalRecords: 0,
     rows: 10,
     page: 1,
@@ -155,10 +155,10 @@ const getSmsRecords = async (page = 1) => {
             totalAmount.value = response.data?.total_amount;
 
             // Update pagination info
-            pagination.value.totalRecords = response.data?.meta.total;
-            pagination.value.page = response.data?.meta.current_page;
-            pagination.value.rows = response.data?.meta.per_page;
-            pagination.value.from = response.data?.meta.from;
+            pagination.totalRecords = response.data?.meta.total;
+            pagination.page = response.data?.meta.current_page;
+            pagination.rows = response.data?.meta.per_page;
+            pagination.from = response.data?.meta.from;
             loading.value.table = false;
         }
 

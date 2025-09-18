@@ -44,6 +44,14 @@
                             {{ $t('sms_records') }}
                         </router-link>
                     </li>
+
+                    <li>
+                        <router-link to="/admin-panel/prizes" active-class="bg-[#2E3192]/10"
+                            class="w-full flex items-center gap-2 text-[#2E3192] hover:bg-[#2E3192]/10 px-3 py-2 rounded-md transition-colors">
+                            <i class="pi pi-trophy"></i>
+                            {{ $t('prizes') }}
+                        </router-link>
+                    </li>
                 </ul>
                 <template #footer class="p-0">
                     <div class="flex justify-between items-center no-wrap gap-2 text-[#2E3192]">

@@ -84,6 +84,15 @@ export const routes = [
     }, // protected route
   },
   {
+    path: "/admin-panel/prizes",
+    name: "admin-panel-prizes",
+    component: () => import("@/pages/Prizes.vue"),
+    meta: {
+      requiresAdminAuth: true,
+      // permissions: ["view-prizes"],
+    }, // protected route
+  },
+  {
     path: "/admin-panel/403",
     name: "forbidden",
     component: () => import("@/views/Forbidden.vue"),
