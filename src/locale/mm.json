@@ -154,5 +154,17 @@
   "error_changing_status": "အခြေအနေ ပြောင်းလဲစဥ် အမှားဖြစ်ပွားသည်။",
   "remark_required_reject": "ပယ်ရန် မှတ်ချက် လိုအပ်ပါသည်။",
   "please_confirm_details": "အတည်ပြုခြင်း မတွံုပံ အသေးစိတ်များကို အတည်ပြုပါ:",
-  "save": "သေ့ခွင်းမည်"
+  "save": "သိမ်းဆည်းမည်",
+  "register": "မှတ်ပုံတင်မည်",
+  "township": "မြို့နယ်",
+  "search_township": "မြို့နယ် ရှာဖွေမည်",
+  "registration_successfully": "မှတ်ပုံတင်ခြင်း အောင်မြင်ပါပြီ!",
+  "thank_you_joining": "ကံစမ်းပွဲမှာ ပါဝင်ပေးမှုအတွက် ကျေးဇူးတင်ပါသည်!",
+  "link_expired": "လင့်က် သက်တမ်းကုန်ဆုံးသွားပြီ!",
+  "link_expired_message": "စောရီပါသည်။ ဤလင့်က်သည် သက်တမ်းကုန်ဆုံးသွားပါပြီ ဟုတ်မဟုတ် မမှန်ကန်ပါ။",
+  "contact_service": "Sweety Home Call Service ကို ဆက်သွယ်ပါ",
+  "registration_failed": "မှတ်ပုံတင်ခြင်း အမှားရှိပါသည်",
+  "registration_error": "မှတ်ပုံတင်ရာတွင် အမှားရှိပါသည်။",
+  "error_message": "အမှားမက်ဆေ့ခ်",
+  "server_error": "ဆာဗာအမှား!"
 }

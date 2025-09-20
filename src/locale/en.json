@@ -141,5 +141,17 @@
   "error_changing_status": "An error occurred while changing status.",
   "remark_required_reject": "Remark is required to reject.",
   "please_confirm_details": "Please confirm the following details before activation:",
-  "save": "Save"
+  "save": "Save",
+  "register": "Register",
+  "township": "Township",
+  "search_township": "Search township",
+  "registration_successfully": "Registration Successfully!",
+  "thank_you_joining": "Thank you for joining our lucky draw!",
+  "link_expired": "Link Expired!",
+  "link_expired_message": "Sorry, this link has expired or is no longer valid.",
+  "contact_service": "Please contact Sweety Home Call Service",
+  "registration_failed": "Registration Failed",
+  "registration_error": "An error occurred during registration.",
+  "error_message": "Error Message",
+  "server_error": "Server Error!"
 }

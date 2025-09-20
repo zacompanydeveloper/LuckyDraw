@@ -5,7 +5,7 @@
             <ToggleSwitch v-model="checked">
                 <template #handle="{ checked }">
                     <span class="text-[10px] font-semibold" :class="checked ? 'text-red-500' : 'text-red-500'">
-                        {{ checked ? 'Testing' : 'Live' }}
+                        {{ checked ? $t('testing') : $t('live') }}
                     </span>
                 </template>
             </ToggleSwitch>
@@ -32,7 +32,9 @@
 <script setup>
 import helper from '@/helper'
 import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n();
 const isMobile = helper.isMobile()
 
 const checked = ref(localStorage.getItem('mode') === 'testing');

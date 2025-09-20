@@ -12,7 +12,7 @@
         <div v-if="registrationOpen && !alreadyRegistered">
           <!-- Countdown Section -->
           <section class="text-center mt-6">
-            <p class="text-[#ED1C24] font-semibold">Registration Link will expire in</p>
+            <p class="text-[#ED1C24] font-semibold">{{ $t('registration_expire_text') }}</p>
             <div class="flex justify-center items-center gap-2 mt-4 text-[#2C2C2C]">
               <template v-for="(time, index) in countdown" :key="index">
                 <div class="w-11 h-12 flex items-center justify-center 
@@ -34,23 +34,23 @@
 
               <FloatLabel variant="on">
                 <InputText v-model="form.shop" fluid autocomplete="off" :disabled="form.business_type !== 'business'" />
-                <label for="shop">Shop</label>
+                <label for="shop">{{ $t('shop') }}</label>
               </FloatLabel>
 
               <FloatLabel variant="on">
                 <InputText id="numkeys" v-model="form.phone" v-keyfilter.num fluid autocomplete="off" disabled />
-                <label for="numkeys">Phone Number</label>
+                <label for="numkeys">{{ $t('phone_number') }}</label>
               </FloatLabel>
 
               <FloatLabel variant="on">
                 <InputText v-model="form.name" fluid autocomplete="off" />
-                <label for="name">Name</label>
+                <label for="name">{{ $t('name') }}</label>
               </FloatLabel>
 
               <Nrc @update:fullnrc="nrc => form.nrc = nrc" />
 
-              <Select v-model="form.township" :options="townships" optionLabel="township" placeholder="Township"
-                showClear :loading="loading.township" filter filterPlaceholder="Search township">
+              <Select v-model="form.township" :options="townships" optionLabel="township" :placeholder="$t('township')"
+                showClear :loading="loading.township" filter :filterPlaceholder="$t('search_township')">
                 <template #dropdownicon>
                   <i class="pi pi-sort-down-fill" style="color: #2E3192; font-size: small;"></i>
                 </template>
@@ -60,7 +60,7 @@
                 optionLabel="name" :suggestions="shops" @complete="debouncedSearchShop" forceSelection
                 placeholder="Search shop..." /> -->
 
-              <Button type="button" iconPos="right" label="Register" :loading="loading.register"
+              <Button type="button" iconPos="right" :label="$t('register')" :loading="loading.register"
                 :style="{ cursor: isFormValid ? 'pointer' : 'not-allowed' }" :disabled="!isFormValid"
                 @click.prevent="register" style="background-color: #2E3192;" />
             </div>
@@ -69,14 +69,14 @@
 
         <!-- Already registered -->
         <div v-else-if="alreadyRegistered" class="h-full flex items-center justify-center">
-          <StatusCard type="success" title="Registration Successfully!" message="Thank you for joining our lucky draw!"
+          <StatusCard type="success" :title="$t('registration_successfully')" :message="$t('thank_you_joining')"
             :image="successImg" />
         </div>
 
         <!-- Link expired -->
         <div v-else class="h-full flex items-center justify-center">
-          <StatusCard type="error" title="Link Expired!" message="Sorry, this link has expired or is no longer valid."
-            :image="expiredImg" contact="Please contact Sweety Home Call Service" phone="09 900000001" />
+          <StatusCard type="error" :title="$t('link_expired')" :message="$t('link_expired_message')"
+            :image="expiredImg" :contact="$t('contact_service')" phone="09 900000001" />
         </div>
       </div>
 
@@ -94,6 +94,7 @@
 import bgImage from '@/assets/svg/bg.svg'
 import { ref, reactive, onMounted, onUnmounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import backend from '@/api/backend'
 import StatusCard from '@/components/StatusCard.vue' // New extracted component
 import successImg from '@/assets/svg/success.svg'
@@ -103,6 +104,7 @@ import { useToast } from "primevue/usetoast";
 const { signature, tracking_code } = useRoute().params
 
 // State
+const { t } = useI18n();
 const toast = useToast();
 const shops = ref([])
 const townships = ref([])
@@ -193,7 +195,7 @@ const register = async () => {
     }
   } catch (err) {
     console.error('Registration failed:', err)
-    toast.add({ severity: 'error', summary: 'Registration Failed', detail: err.response?.data?.message || 'An error occurred during registration.', life: 5000 });
+    toast.add({ severity: 'error', summary: t('registration_failed'), detail: err.response?.data?.message || t('registration_error'), life: 5000 });
   } finally {
     loading.register = false
   }
@@ -221,7 +223,7 @@ const getLuckyDrawDetails = async () => {
     console.error('Failed to fetch Lucky Draw details:', err)
     const status = err.response?.status
     if (status === 500) {
-      toast.add({ severity: 'error', summary: 'Error Message', detail: 'Server Error!', life: 5000, closable: false });
+      toast.add({ severity: 'error', summary: t('error_message'), detail: t('server_error'), life: 5000, closable: false });
       return;
     } else {
       // toast.add({ severity: 'error', summary: 'Error Message', detail: err.response?.data?.message || 'An error occurred', life: 5000, closable: false });
