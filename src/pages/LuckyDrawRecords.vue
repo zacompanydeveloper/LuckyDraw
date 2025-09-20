@@ -9,25 +9,25 @@
                     <FloatLabel variant="on">
                         <DatePicker v-model="fromDate" dateFormat="dd-mm-yy" inputId="from_date" showIcon
                             iconDisplay="input" />
-                        <label for="from_date">From Date</label>
+                        <label for="from_date">{{ $t('from_date') }}</label>
                     </FloatLabel>
                     <FloatLabel variant="on">
                         <DatePicker v-model="toDate" dateFormat="dd-mm-yy" inputId="to_date" showIcon
                             iconDisplay="input" />
-                        <label for="to_date">To Date</label>
+                        <label for="to_date">{{ $t('to_date') }}</label>
                     </FloatLabel>
                     <FloatLabel variant="on">
                         <InputText id="search" v-model="search" autocomplete="off" />
-                        <label for="search">Search</label>
+                        <label for="search">{{ $t('search') }}</label>
                     </FloatLabel>
 
                     <FloatLabel variant="on">
                         <Select class="w-[200px] border border-gray-200" v-model="businessType" optionLabel="label"
                             dataKey="label" :options="businessTypeOptions" />
-                        <label for="businessType">Business Type</label>
+                        <label for="businessType">{{ $t('business_type') }}</label>
                     </FloatLabel>
 
-                    <Button @click="searchProduct" type="button" icon="pi pi-filter" iconPos="left" label="Search"
+                    <Button @click="searchProduct" type="button" icon="pi pi-filter" iconPos="left" :label="$t('search')"
                         severity="success" raised class="cursor-pointer  w-35" />
                     <Button @click="clearFilters" type="button" icon="pi pi-refresh" iconPos="left" raised
                         style="color: #2E3192;" class="cursor-pointer" variant="outlined" />
@@ -43,29 +43,29 @@
                 <DataTable dataKey="id" showGridlines :value="luckyDrawRecords" :loading="loading.table" scrollable
                     scrollDirection="both" scrollHeight="460px" tableStyle="min-width: 80rem">
                     <Column headerStyle="background-color: #2E3192; color: white; width:3rem" class="table-header"
-                        header="No.">
+                        :header="$t('no')">
                         <template #body="slotProps">
                             {{ pagination.from + slotProps.index + 1 }}
                         </template>
                     </Column>
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
-                        field="created_at" header="Created Date" />
+                        field="created_at" :header="$t('created_date')" />
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
-                        field="customer_name" header="Customer" />
+                        field="customer_name" :header="$t('customer')" />
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header" field="phone"
-                        header="Customer Phone" />
+                        :header="$t('customer_phone')" />
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
-                        field="business_type" header="Business Type" />
+                        field="business_type" :header="$t('business_type')" />
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
-                        field="serial_code" header="Serial Code" />
+                        field="serial_code" :header="$t('serial_code')" />
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header" field="status"
-                        header="Status" />
+                        :header="$t('status')" />
 
-                    <Column headerStyle="background-color: #2E3192; color: white;" header="Action"
+                    <Column headerStyle="background-color: #2E3192; color: white;" :header="$t('action')"
                         class="w-24 table-header" :headerStyle="{ textAlign: 'right' }">
                         <template #body="{ data }">
                             <div class="flex justify-center items-center">
-                                <Button v-tooltip.top="'Details'" icon="pi pi-search" @click="getDetail(data.id)"
+                                <Button v-tooltip.top="$t('details')" icon="pi pi-search" @click="getDetail(data.id)"
                                     severity="success" outlined rounded />
                             </div>
                         </template>
@@ -73,7 +73,7 @@
 
                     <template #empty>
                         <div class="p-4 text-center text-gray-500">
-                            No records found.
+                            {{ $t('no_records_found') }}
                         </div>
                     </template>
                 </DataTable>
@@ -83,7 +83,7 @@
                 <Toast />
 
                 <!-- Detail Dialog -->
-                <Dialog v-model:visible="detailDialog" header="Lucky Draw Activation List Detail"
+                <Dialog v-model:visible="detailDialog" :header="$t('lucky_draw_activation_detail')"
                     :style="{ width: '30rem', height: '100%', color: '#2E3192' }" :modal="true" :draggable="false"
                     position="right">
                     <div class="space-y-4 min-h-[700px]">
@@ -180,12 +180,14 @@
 
 <script setup>
 import { onMounted, reactive, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import backend from "@/api/backend";
 import helper from "@/helper";
 import NotFound from "@/views/NotFound.vue";
 import { useToast } from "primevue/usetoast";
 import { useConfirm } from "primevue/useconfirm";
 
+const { t } = useI18n();
 const rejectVisible = ref(false);
 const remark = ref('');
 const rejectId = ref(null);
@@ -327,13 +329,13 @@ const changeStatus = async (id, status) => {
             }
         );
         if (response.status === 200) {
-            toast.add({ severity: "success", summary: "Success", life: 5000 });
+            toast.add({ severity: "success", summary: t('success'), life: 5000 });
             detailDialog.value = false;
             getLuckyDrawRecords(pagination.page);
         }
     } catch (error) {
         console.error("Error changing status:", error);
-        toast.add({ severity: "error", summary: "Error", detail: error.response?.data?.message || "An error occurred", life: 5000 });
+        toast.add({ severity: "error", summary: t('error'), detail: error.response?.data?.message || t('error_occurred'), life: 5000 });
     } finally {
         loading.approve = false;
         loading.reject = false;
@@ -348,8 +350,8 @@ const rejectConfirm = () => {
     if (!remark.value.trim()) {
         toast.add({
             severity: "warn",
-            summary: "Warning",
-            detail: "Remark is required to reject.",
+            summary: t('warning'),
+            detail: t('remark_required_reject'),
             life: 3000,
         });
         return;
@@ -367,7 +369,7 @@ const retrySms = async (id) => {
         }
     } catch (error) {
         console.error("Error retrying SMS:", error);
-        toast.add({ severity: "error", summary: "Error", detail: error.response?.data?.message || "An error occurred", life: 5000 });
+        toast.add({ severity: "error", summary: t('error'), detail: error.response?.data?.message || t('error_occurred'), life: 5000 });
     } finally {
         loading.retry = false;
     }

@@ -11,7 +11,7 @@
         <div v-if="registrationOpen && !alreadyRegistered">
           <!-- Countdown Section -->
           <section class="text-center mt-6">
-            <p class="text-[#ED1C24] font-semibold">Registration Link will expire in</p>
+            <p class="text-[#ED1C24] font-semibold">{{ $t('registration_expire_text') }}</p>
             <div class="flex justify-center items-center gap-2 mt-4 text-[#2C2C2C]">
               <template v-for="(time, index) in countdown" :key="index">
                 <div class="w-11 h-12 flex items-center justify-center 
@@ -34,18 +34,18 @@
               <FloatLabel variant="on">
                 <InputText v-model="form.shop" fluid autocomplete="off"
                   :disabled="form.business_type !== 'business'" />
-                <label for="shop">Shop</label>
+                <label for="shop">{{ $t('shop') }}</label>
               </FloatLabel>
 
               <FloatLabel variant="on">
                 <InputText id="numkeys" v-model="form.phone" v-keyfilter.num fluid disabled
                   autocomplete="off" />
-                <label for="numkeys">Phone Number</label>
+                <label for="numkeys">{{ $t('phone_number') }}</label>
               </FloatLabel>
 
               <FloatLabel variant="on">
                 <InputText v-model="form.name" fluid autocomplete="off" />
-                <label for="name">Name</label>
+                <label for="name">{{ $t('name') }}</label>
               </FloatLabel>
 
               <Nrc @update:fullnrc="nrc => form.nrc = nrc" />

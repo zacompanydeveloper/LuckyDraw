@@ -6,25 +6,25 @@
         <div v-else>
             <DesktopLayout>
                 <!-- Page Content -->
-                <h2 class="text-2xl font-bold text-[#2E3192]">Pre-Print Code</h2>
+                <h2 class="text-2xl font-bold text-[#2E3192]">{{ $t('pre_print_code_page') }}</h2>
                 <div class="flex justify-between items-center mt-2">
                     <!-- filters -->
                     <div class="flex gap-3">
                         <FloatLabel variant="on">
                             <DatePicker v-model="fromDate" dateFormat="dd-mm-yy" inputId="from_date" showIcon
                                 iconDisplay="input" />
-                            <label for="from_date">From Date</label>
+                            <label for="from_date">{{ $t('from_date') }}</label>
                         </FloatLabel>
                         <FloatLabel variant="on">
                             <DatePicker v-model="toDate" dateFormat="dd-mm-yy" inputId="to_date" showIcon
                                 iconDisplay="input" />
-                            <label for="to_date">To Date</label>
+                            <label for="to_date">{{ $t('to_date') }}</label>
                         </FloatLabel>
                         <FloatLabel variant="on">
                             <InputText id="search" v-model="search" autocomplete="off" />
-                            <label for="search">Search</label>
+                            <label for="search">{{ $t('search') }}</label>
                         </FloatLabel>
-                        <Button @click="searchProduct" type="button" icon="pi pi-filter" iconPos="left" label="Search"
+                        <Button @click="searchProduct" type="button" icon="pi pi-filter" iconPos="left" :label="$t('search')"
                             severity="success" raised class="cursor-pointer  w-35" />
                         <Button @click="clearFilters" type="button" icon="pi pi-refresh" iconPos="left" raised
                             style="color: #2E3192;" class="cursor-pointer" variant="outlined" />
@@ -42,30 +42,30 @@
                         </Column>
 
                         <Column headerStyle="background-color: #2E3192; color: white;" field="created_at"
-                            header="Created Date & Time" />
+                            :header="$t('created_date_time')" />
 
                         <Column headerStyle="background-color: #2E3192; color: white;" field="phone"
-                            header="Phone Number" />
+                            :header="$t('phone_number')" />
 
-                        <Column headerStyle="background-color: #2E3192; color: white;" field="type" header="SMS Type">
+                        <Column headerStyle="background-color: #2E3192; color: white;" field="type" :header="$t('sms_type')">
                             <template #body="slotProps">
-                                {{ slotProps.data.type === 'lucky_draw_link' ? 'Registration Link' : 'Successful'
+                                {{ slotProps.data.type === 'lucky_draw_link' ? $t('registration_link') : $t('successful')
                                 }}
                             </template>
                         </Column>
 
                         <Column headerStyle="background-color: #2E3192; color: white;" field="amount"
-                            header="Amount (Kyats)" />
+                            :header="$t('amount_kyats')" />
 
                         <Column headerStyle="background-color: #2E3192; color: white;" field="sms_poh_id"
-                            header="Message ID" />
+                            :header="$t('message_id')" />
 
                         <!-- Action column -->
-                        <Column headerStyle="background-color: #2E3192; color: white;" header=" Action"
+                        <Column headerStyle="background-color: #2E3192; color: white;" :header="$t('action')"
                             class="w-24 !text-end" :headerStyle="{ textAlign: 'right' }">
                             <template #body="{ data }">
                                 <div class="flex justify-end items-center gap-2">
-                                    <Button v-if="data.type === 'lucky_draw_link'" v-tooltip.top="'Retry'"
+                                    <Button v-if="data.type === 'lucky_draw_link'" v-tooltip.top="$t('retry')"
                                         icon="pi pi-replay" @click="openRetryDialog(data.id)" severity="success"
                                         rounded />
                                 </div>
@@ -74,7 +74,7 @@
 
                         <ColumnGroup type="footer" class=" font-bold mt-4">
                             <Row>
-                                <Column footer="Totals (Kyats)" :colspan="5" footerStyle="text-align:left" />
+                                <Column :footer="$t('totals_kyats')" :colspan="5" footerStyle="text-align:left" />
                                 <Column :colspan="2" :footer="totalAmount" footerStyle="text-align:center" />
                             </Row>
                         </ColumnGroup>
@@ -83,7 +83,7 @@
                         <!-- Empty state -->
                         <template #empty>
                             <div class="p-4 text-center text-gray-500">
-                                No records found.
+                                {{ $t('no_records_found') }}
                             </div>
                         </template>
                     </DataTable>
@@ -95,13 +95,13 @@
             </DesktopLayout>
 
             <!-- Retry Dialog -->
-            <Dialog v-model:visible="retryVisible" header="Retry SMS" modal>
+            <Dialog v-model:visible="retryVisible" :header="$t('retry_sms')" modal>
                 <div class="p-4">
-                    <p>Are you sure you want to retry sending this SMS?</p>
+                    <p>{{ $t('retry_sms_confirm') }}</p>
                 </div>
                 <template #footer>
-                    <Button label="Cancel" icon="pi pi-times" @click="retryVisible = false" />
-                    <Button label="Retry" icon="pi pi-check" severity="success" @click="retrySms(selectedId)" />
+                    <Button :label="$t('cancel')" icon="pi pi-times" @click="retryVisible = false" />
+                    <Button :label="$t('retry')" icon="pi pi-check" severity="success" @click="retrySms(selectedId)" />
                 </template>
             </Dialog>
         </div>
@@ -110,12 +110,14 @@
 
 <script setup>
 import { ref, onMounted, reactive } from "vue";
+import { useI18n } from "vue-i18n";
 import backend from "@/api/backend";
 import helper from "@/helper";
 import NotFound from "@/views/NotFound.vue";
 import DesktopLayout from "@/layouts/DesktopLayout.vue";
 import { useToast } from "primevue";
 
+const { t } = useI18n();
 const isMobile = helper.isMobile()
 const fromDate = ref(null);
 const toDate = ref(null);
@@ -165,7 +167,7 @@ const getSmsRecords = async (page = 1) => {
     } catch (error) {
         console.error("Error fetching SMS records:", error);
         loading.value.table = false;
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to fetch SMS records', life: 3000 });
+        toast.add({ severity: 'error', summary: t('error'), detail: t('failed_fetch_sms'), life: 3000 });
     }
 };
 
@@ -185,11 +187,11 @@ const retrySms = async (id) => {
         const response = await backend.post(`lucky-draw/retry-sms/${id}`);
         if (response.status === 200) {
             retryVisible.value = false;
-            toast.add({ severity: 'success', summary: 'Success', detail: 'SMS retried successfully', life: 3000 });
+            toast.add({ severity: 'success', summary: t('success'), detail: t('sms_retry_success'), life: 3000 });
         }
     } catch (error) {
         console.error("Error retrying SMS:", error);
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to retry SMS', life: 3000 });
+        toast.add({ severity: 'error', summary: t('error'), detail: t('sms_retry_failed'), life: 3000 });
     }finally {
         retryVisible.value = false;
         getSmsRecords(pagination.page);

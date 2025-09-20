@@ -144,6 +144,7 @@
 <script setup>
 import { ref, onMounted, watch, reactive } from "vue";
 import { useRoute } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { useToast } from "primevue/usetoast";
 import helper from "@/helper";
 import backend from "@/api/backend";
@@ -153,6 +154,7 @@ import DesktopLayout from "@/layouts/DesktopLayout.vue";
 // -------------------
 // Constants
 // -------------------
+const { t } = useI18n();
 const filterOptions = [
     { label: "InActive", value: "inactive" },
     { label: "Active", value: "active" },
@@ -226,8 +228,8 @@ const fetchProductDetails = async (page = pagination.page) => {
         console.error("Fetch details failed:", error);
         toast.add({
             severity: "error",
-            summary: "Error",
-            detail: "Unable to fetch product details.",
+            summary: t('error'),
+            detail: t('unable_fetch_product'),
             life: 5000,
         });
     } finally {
@@ -251,7 +253,7 @@ const changeStatus = async (codeId, action) => {
             await fetchProductDetails();
             toast.add({
                 severity: "success",
-                summary: "Success",
+                summary: t('success'),
                 detail: data.message,
                 life: 3000,
             });
@@ -260,8 +262,8 @@ const changeStatus = async (codeId, action) => {
         console.error("Status change failed:", error);
         toast.add({
             severity: "error",
-            summary: "Error",
-            detail: error.response?.data?.message || "An error occurred while changing status.",
+            summary: t('error'),
+            detail: error.response?.data?.message || t('error_changing_status'),
             life: 5000,
         });
     }
@@ -278,8 +280,8 @@ const rejectConfirm = () => {
     if (!remark.value.trim()) {
         toast.add({
             severity: "warn",
-            summary: "Warning",
-            detail: "Remark is required to reject.",
+            summary: t('warning'),
+            detail: t('remark_required_reject'),
             life: 3000,
         });
         return;
@@ -315,7 +317,7 @@ const approveConfirm = async () => {
                 await fetchProductDetails();
                 toast.add({
                     severity: "success",
-                    summary: "Success",
+                    summary: t('success'),
                     detail: data.message,
                     life: 3000,
                 });
@@ -385,8 +387,8 @@ const viewDetails = async (codeId) => {
         console.error("Fetch code detail failed:", error);
         toast.add({
             severity: "error",
-            summary: "Error",
-            detail: "Unable to fetch code details.",
+            summary: t('error'),
+            detail: t('unable_fetch_code'),
             life: 5000,
         });
     }

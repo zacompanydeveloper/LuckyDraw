@@ -59,7 +59,7 @@
             :style="{ width: '60%' }">
             <!-- <div class="mb-4">
                 <h3 class="text-lg font-bold mb-2">Confirm Activation</h3>
-                <p>Please confirm the following details before activation:</p>
+                <p>{{ $t('please_confirm_details') }}</p>
                 <ul class="list-disc list-inside mt-2">
                     <li><strong>Invoice No:</strong> {{ dialogData.invoice_no }}</li>
                     <li><strong>Amount:</strong> {{ dialogData.amount }}</li>
@@ -69,7 +69,7 @@
             </div>
             <div class="flex justify-end gap-2">
                 <Button type="button" label="Cancel" severity="secondary" @click="resetDialog" :disabled="loading"></Button>
-                <Button type="button" label="Save" @click="activate" :loading="loading" :disabled="loading"
+                <Button type="button" :label="$t('save')" @click="activate" :loading="loading" :disabled="loading"
                     style="background-color: #2E3192;"></Button>
             </div> -->
 

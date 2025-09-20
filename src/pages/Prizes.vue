@@ -15,57 +15,57 @@
                         <FloatLabel variant="on">
                             <DatePicker v-model="fromDate" dateFormat="dd-mm-yy" inputId="from_date" showIcon
                                 iconDisplay="input" />
-                            <label for="from_date">From Date</label>
+                            <label for="from_date">{{ $t('from_date') }}</label>
                         </FloatLabel>
 
                         <FloatLabel variant="on">
                             <DatePicker v-model="toDate" dateFormat="dd-mm-yy" inputId="to_date" showIcon
                                 iconDisplay="input" />
-                            <label for="to_date">To Date</label>
+                            <label for="to_date">{{ $t('to_date') }}</label>
                         </FloatLabel>
 
                         <FloatLabel variant="on">
                             <InputText id="search" v-model="search" autocomplete="off" />
-                            <label for="search">Search</label>
+                            <label for="search">{{ $t('search') }}</label>
                         </FloatLabel>
 
-                        <Button @click="searchProduct" type="button" icon="pi pi-filter" iconPos="left" label="Search"
+                        <Button @click="searchProduct" type="button" icon="pi pi-filter" iconPos="left" :label="$t('search')"
                             severity="success" raised class="cursor-pointer w-35" />
 
                         <Button @click="clearFilters" type="button" icon="pi pi-refresh" iconPos="left" raised
                             style="color: #2E3192;" class="cursor-pointer" variant="outlined" />
                     </div>
 
-                    <Button type="button" iconPos="right" label="Create" @click="openDialog('right')"
+                    <Button type="button" iconPos="right" :label="$t('create')" @click="openDialog('right')"
                         class="cursor-pointer hover:opacity-90 w-35" style="background-color: #2E3192;" />
                 </div>
 
                 <div class="card mt-5 mb-10">
                     <DataTable :value="prizeList" showGridlines scrollable scrollHeight="500px"
                         tableStyle="min-width: 50rem" :loading="loading.table">
-                        <Column header="No." headerStyle="width:3rem ;background-color: #2E3192; color: white;">
+                        <Column :header="$t('no')" headerStyle="width:3rem ;background-color: #2E3192; color: white;">
                             <template #body="slotProps">
                                 {{ pagination.from + slotProps.index }}
                             </template>
                         </Column>
                         <Column headerStyle="background-color: #2E3192; color: white;" field="created_at"
-                            header="Created Date" />
-                        <Column headerStyle="background-color: #2E3192; color: white;" header="Image">
+                            :header="$t('created_date')" />
+                        <Column headerStyle="background-color: #2E3192; color: white;" :header="$t('image')">
                             <template #body="slotProps">
                                 <img :src="slotProps.data.image?.url" :alt="slotProps.data.image?.id"
                                     class="w-24 rounded mx-auto" />
                             </template>
                         </Column>
-                        <Column headerStyle="background-color: #2E3192; color: white;" field="name" header="Label" />
+                        <Column headerStyle="background-color: #2E3192; color: white;" field="name" :header="$t('label')" />
                         <Column headerStyle="background-color: #2E3192; color: white;" field="quantity"
-                            header="Quantity" />
+                            :header="$t('quantity')" />
                         <Column headerStyle="background-color: #2E3192; color: white;" field="created_by"
-                            header="Created By" />
+                            :header="$t('created_by')" />
 
                         <!-- Empty state -->
                         <template #empty>
                             <div class="p-4 text-center text-gray-500">
-                                No records found.
+                                {{ $t('no_records_found') }}
                             </div>
                         </template>
                     </DataTable>
@@ -93,7 +93,7 @@
 
                             <div class="border border-dashed border-gray-500 rounded-lg p-1">
                                 <FileUpload v-if="!src" mode="basic" @select="onFileSelect" customUpload auto
-                                    severity="secondary" chooseLabel="Upload Image" class="p-button-outlined w-full" />
+                                    severity="secondary" :chooseLabel="$t('upload_image')" class="p-button-outlined w-full" />
 
                                 <div class="relative">
                                     <img v-if="src" :src="src" alt="Image" class="shadow-md w-full rounded-lg" />
@@ -108,7 +108,7 @@
 
                         <div
                             class="flex justify-end gap-2 mt-4 fixed bottom-0 left-0 right-0 bg-white p-4 rounded-b-lg">
-                            <Button type="button" iconPos="right" label="Create" :loading="loading.create"
+                            <Button type="button" iconPos="right" :label="$t('create')" :loading="loading.create"
                                 :disabled="!isFormValid || loading.create" class="cursor-pointer hover:opacity-90 w-35"
                                 @click="createPrize" style="background-color: #2E3192;" />
                         </div>
@@ -125,12 +125,14 @@
 
 <script setup>
 import { ref, reactive, watch, computed, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
 import NotFound from "@/views/NotFound.vue"
 const isMobile = helper.isMobile()
 import helper from "@/helper"
 import backend from "@/api/backend";
 import { useToast } from 'primevue/usetoast';
 const toast = useToast();
+const { t } = useI18n();
 
 const dialog = reactive({
     visible: false,
@@ -202,7 +204,7 @@ const createPrize = async () => {
     loading.create = true;
     try {
         const { data } = await backend.filePost("/lucky-draw-prizes", form);
-        toast.add({ severity: 'success', summary: 'Success', detail: 'Prize created successfully', life: 3000 });
+        toast.add({ severity: 'success', summary: t('success'), detail: t('prize_created_successfully'), life: 3000 });
         dialog.visible = false;
         // Reset form
         form.name = "";
@@ -212,6 +214,7 @@ const createPrize = async () => {
         getPrizes();
     } catch (error) {
         console.error("Error creating prize:", error);
+        toast.add({ severity: 'error', summary: t('error'), detail: t('error_creating_prize'), life: 3000 });
     } finally {
         loading.create = false;
     }
@@ -237,6 +240,7 @@ const getPrizes = async (page = 1) => {
 
     } catch (error) {
         console.error("Error fetching prizes:", error);
+        toast.add({ severity: 'error', summary: t('error'), detail: t('error_fetching_prizes'), life: 3000 });
     } finally {
         loading.table = false;
     }
