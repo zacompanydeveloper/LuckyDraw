@@ -13,7 +13,7 @@
           <div class="flex items-center gap-2">
             <img src="@/assets/svg/logo.svg" alt="logo" class="" />
             <span>|</span>
-            <div class="font-bold text-[#2E3192]">Lucky Draw App</div>
+            <div class="font-bold text-[#2E3192]">{{ $t('lucky_draw_app') }}</div>
           </div>
 
           <!-- Language Selector -->
@@ -44,7 +44,7 @@
             class="!text-xs min-w-[50px]"
             :class="checked ? 'text-blue-500' : 'text-red-500'"
           >
-            {{ checked ? 'testing' : 'live' }}
+            {{ $t(checked ? 'testing' : 'live') }}
           </p>
         </div>
 
@@ -52,8 +52,8 @@
         <main class="flex flex-col justify-center items-center gap-4 mt-20">
           <img src="@/assets/svg/login.svg" alt="Login" />
 
-          <h1 v-if="step === 1" class="text-2xl font-bold text-[#2E3192]">Login</h1>
-          <h1 v-else class="text-2xl font-bold text-[#2E3192]">Confirmation Code</h1>
+          <h1 v-if="step === 1" class="text-2xl font-bold text-[#2E3192]">{{ $t('login') }}</h1>
+          <h1 v-else class="text-2xl font-bold text-[#2E3192]">{{ $t('confirmation_code') }}</h1>
 
           <InputText
             v-if="step === 1"
@@ -78,7 +78,7 @@
           <Button
             type="button"
             iconPos="right"
-            :label="step === 1 ? 'Login' : 'Confirm'"
+            :label="$t(step === 1 ? 'login' : 'confirm')"
             size="large"
             class="min-w-[336px] mt-4 cursor-pointer hover:opacity-90"
             :loading="loading"

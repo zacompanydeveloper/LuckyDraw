@@ -93,5 +93,10 @@
   "prize_updated_successfully": "ဆုလက်ဆောင် ပြင်ဆင်ခြင်း အောင်မြင်ပါသည်",
   "prize_deleted_successfully": "ဆုလက်ဆောင် ဖျက်ခြင်း အောင်မြင်ပါသည်",
   "add": "ထည့်ရန်",
-  "update": "ပြင်ဆင်ရန်"
+  "update": "ပြင်ဆင်ရန်",
+  "login": "လော့ဂ်အင်",
+  "confirmation_code": "အတည်ပြုကုဒ်",
+  "testing": "စမ်းသပ်",
+  "live": "တိုက်ရိုက်",
+  "lucky_draw_app": "ကံစမ်းမဲဆွဲအက်ပ်"
 }

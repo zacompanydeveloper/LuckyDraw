@@ -80,5 +80,10 @@
   "quantity": "Quantity",
   "description": "Description",
   "loading": "Loading...",
-  "no_data_found": "No data found"
+  "no_data_found": "No data found",
+  "login": "Login",
+  "confirmation_code": "Confirmation Code",
+  "testing": "Testing",
+  "live": "Live",
+  "lucky_draw_app": "Lucky Draw App"
 }
