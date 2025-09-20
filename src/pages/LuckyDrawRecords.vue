@@ -148,7 +148,7 @@
                             <Button v-if="record.status === 'pending' || record.status === 'approved'" class=" w-full"
                                 label="Reject" severity="danger" variant="outlined" :loading="loading.reject"
                                 @click="confirmStatus('rejected', record.id)" />
-                            <Button v-if="record.status === 'pending'" class=" w-full" label="Retry Sms" severity="info"
+                            <Button v-if="record.status === 'pending' && record.can_send_sms" class=" w-full" label="Retry Sms" severity="info"
                                 variant="outlined" :loading="loading.retry" @click="retrySms(record.id)" />
                         </div>
                     </template>

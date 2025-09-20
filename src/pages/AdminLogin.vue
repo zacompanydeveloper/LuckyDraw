@@ -7,17 +7,24 @@
             <div class="min-h-screen bg-contain bg-x-repeat bg-y-no-repeat"
                 :style="{ backgroundImage: `url(${bgImage})` }">
                 <!-- Header -->
-                <header class="w-full flex justify-center items-center shadow-xl py-5">
-                    <img src="@/assets/svg/logo.svg" alt="logo" class="w-60" />
+                <header class="w-full flex justify-between items-center shadow-xl py-2 px-8">
+                    <div class="flex items-center gap-2">
+                        <img src="@/assets/svg/logo.svg" alt="logo" class="w-50" />
+                        <span> | </span>
+                        <div class="font-bold text-[#2E3192]">Lucky Draw App</div>
+                    </div>
                 </header>
 
-                <div class=" bottom-0 right-0 fixed m-4 flex items-center gap-2 rounded-full shadow-lg min-w-[90px] min-h-[36px] px-3" :class="checked ? '' : 'opacity:50'">
+                <div class=" bottom-0 right-0 fixed m-4 flex items-center gap-2 rounded-full shadow-lg min-w-[90px] min-h-[36px] px-3"
+                    :class="checked ? '' : 'opacity:50'">
                     <ToggleSwitch v-model="checked">
                         <template #handle="{ checked }">
                             <i :class="['!text-xs pi', { 'pi-check': checked, 'pi-times': !checked }]" />
                         </template>
                     </ToggleSwitch>
-                    <p class="!text-xs min-w-[50px]" :class="checked ? 'text-blue-500' : 'text-red-500'">{{ checked ? 'testing' : 'live' }}</p>
+                    <p class="!text-xs min-w-[50px]" :class="checked ? 'text-blue-500' : 'text-red-500'">{{ checked ?
+                        'testing' : 'live' }}
+                    </p>
                 </div>
 
                 <!-- Main -->
@@ -107,7 +114,7 @@ const handleAction = () => {
 
 const checked = ref(localStorage.getItem('mode') === 'testing');
 
-watch (checked, (newVal) => {
+watch(checked, (newVal) => {
     if (newVal) {
         localStorage.setItem('mode', 'testing');
     } else {
