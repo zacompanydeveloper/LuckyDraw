@@ -1,9 +1,9 @@
 <template>
   <div class="min-h-screen bg-cover bg-center" :style="{ backgroundImage: `url(${bgImage})` }">
     <!-- Header -->
-    <!-- <header class="w-full flex justify-center items-center shadow-xl py-[4%]">
+    <header class="w-full flex justify-center items-center shadow-xl py-[4%]">
       <img src="@/assets/svg/logo.svg" alt="logo" class="w-50" />
-    </header> -->
+    </header>
 
     <main class="h-[calc(100vh-80px)]">
       <div v-if="!loading.details" class="h-full">

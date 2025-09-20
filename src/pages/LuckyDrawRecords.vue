@@ -224,7 +224,7 @@ const pagination = reactive({
 });
 
 const businessTypeOptions = [
-    { label: 'All', value: '' },
+    { label: 'All', value: 'all' },
     { label: 'Retail', value: 'retail' },
     { label: 'B2B', value: 'business' },
 ];
