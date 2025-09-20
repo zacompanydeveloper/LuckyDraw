@@ -38,6 +38,7 @@ import Drawer from 'primevue/drawer';
 import DatePicker from 'primevue/datepicker';
 import Paginator from 'primevue/paginator';
 import ToggleSwitch from 'primevue/toggleswitch';
+import Menu from 'primevue/menu';
 
 
 const MyPreset = definePreset(Aura, {
@@ -99,4 +100,5 @@ app.component('Paginator', Paginator);
 app.component('ToggleSwitch', ToggleSwitch);
 app.component('Tag', Tag);
 app.component('ConfirmPopup', ConfirmPopup);
-app.component('FileUpload',FileUpload)
+app.component('FileUpload', FileUpload);
+app.component('Menu', Menu);
