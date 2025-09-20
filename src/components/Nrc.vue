@@ -1,7 +1,7 @@
 <template>
     <div class="flex gap-y-4 gap-1">
         <!-- State Number (primitive value) -->
-        <Select class="min-w-[55px]" size="large" v-model="selectedRegion" :options="stateOptions" optionLabel="label"
+        <Select class="min-w-[55px]" v-model="selectedRegion" :options="stateOptions" optionLabel="label"
             optionValue="value" placeholder="State">
             <template #dropdownicon>
                 <i class="pi pi-sort-down-fill" style="color: #2E3192; font-size: small;"></i>
@@ -9,7 +9,7 @@
         </Select>
 
         <!-- District Code (primitive value) -->
-        <Select class="min-w-[90px]" size="large" v-model="selectedDistrictCode" :options="districtOptions"
+        <Select class="min-w-[90px]" v-model="selectedDistrictCode" :options="districtOptions"
             optionLabel="label" optionValue="value" placeholder="District">
             <template #dropdownicon>
                 <i class="pi pi-sort-down-fill" style="color: #2E3192; font-size: small;"></i>
@@ -17,7 +17,7 @@
         </Select>
 
         <!-- NRC Type (primitive value) -->
-        <Select class="min-w-[65px]" size="large" v-model="selectedType" :options="typeOptions" optionLabel="label"
+        <Select class="min-w-[65px]" v-model="selectedType" :options="typeOptions" optionLabel="label"
             optionValue="value" placeholder="Type">
             <template #dropdownicon style="display: no;">
                 <i class="pi pi-sort-down-fill" style="color: #2E3192; font-size: 10px;"></i>
@@ -26,7 +26,7 @@
 
         <!-- NRC Number (InputNumber) -->
         <InputText class="w-full" type="text" id="numkeys" v-model="nrcNumber" minlength="6" maxlength="6"
-            v-keyfilter.num autocomplete="off" placeholder="၁၂၃၄၅၆" size="large" />
+            v-keyfilter.num autocomplete="off" placeholder="၁၂၃၄၅၆" />
     </div>
 </template>
 

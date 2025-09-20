@@ -1,8 +1,8 @@
 <template>
   <div class="min-h-screen bg-contain bg-x-repeat" :style="{ backgroundImage: `url(${bgImage})` }">
     <!-- Header -->
-    <header class="w-full flex justify-center items-center shadow-xl py-[20px]">
-      <img src="@/assets/svg/logo.svg" alt="logo" class="w-50" />
+    <header class="w-full flex justify-center items-center shadow-xl py-[16px]">
+      <img src="@/assets/svg/logo.svg" alt="logo" class="w-48" />
     </header>
 
     <main class="mx-auto">
@@ -33,38 +33,36 @@
             <div class="px-[4%] mx-auto grid grid-cols-1 gap-4">
 
               <FloatLabel variant="on">
-                <InputText v-model="form.shop" fluid size="large" autocomplete="off"
-                  :disabled="form.business_type !== 'business'" />
+                <InputText v-model="form.shop" fluid autocomplete="off" :disabled="form.business_type !== 'business'" />
                 <label for="shop">Shop</label>
               </FloatLabel>
 
               <FloatLabel variant="on">
-                <InputText id="numkeys" v-model="form.phone" v-keyfilter.num fluid size="large" autocomplete="off"
-                  disabled />
+                <InputText id="numkeys" v-model="form.phone" v-keyfilter.num fluid autocomplete="off" disabled />
                 <label for="numkeys">Phone Number</label>
               </FloatLabel>
 
               <FloatLabel variant="on">
-                <InputText v-model="form.name" fluid size="large" autocomplete="off" />
+                <InputText v-model="form.name" fluid autocomplete="off" />
                 <label for="name">Name</label>
               </FloatLabel>
 
               <Nrc @update:fullnrc="nrc => form.nrc = nrc" />
 
               <Select v-model="form.township" :options="townships" optionLabel="township" placeholder="Township"
-                size="large" showClear :loading="loading.township" filter filterPlaceholder="Search township">
+                showClear :loading="loading.township" filter filterPlaceholder="Search township">
                 <template #dropdownicon>
                   <i class="pi pi-sort-down-fill" style="color: #2E3192; font-size: small;"></i>
                 </template>
               </Select>
 
-              <!-- <AutoComplete v-if="form.business_type === 'business'" fluid size="large" v-model="form.shop"
+              <!-- <AutoComplete v-if="form.business_type === 'business'" fluid v-model="form.shop"
                 optionLabel="name" :suggestions="shops" @complete="debouncedSearchShop" forceSelection
                 placeholder="Search shop..." /> -->
 
               <Button type="button" iconPos="right" label="Register" :loading="loading.register"
                 :style="{ cursor: isFormValid ? 'pointer' : 'not-allowed' }" :disabled="!isFormValid"
-                @click.prevent="register" size="large" style="background-color: #2E3192;" />
+                @click.prevent="register" style="background-color: #2E3192;" />
             </div>
           </section>
         </div>

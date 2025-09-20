@@ -1,94 +1,57 @@
 <template>
-  <div>
-    <div v-if="isMobile">
-      <NotFound />
-    </div>
-    <div v-else>
-      <div
-        class="min-h-screen bg-contain bg-x-repeat bg-y-no-repeat"
-        :style="{ backgroundImage: `url(${bgImage})` }"
-      >
-        <!-- Header -->
-        <header class="w-full flex justify-between items-center shadow-xl py-2 px-8">
-          <div class="flex items-center gap-2">
-            <img src="@/assets/svg/logo.svg" alt="logo" class="" />
-            <span>|</span>
-            <div class="font-bold text-[#2E3192]">{{ $t('lucky_draw_app') }}</div>
-          </div>
-
-          <!-- Language Selector -->
-          <div class="flex items-center gap-2">
-            <Button
-              @click="toggleLanguageMenu"
-              icon="pi pi-globe"
-              class="p-button-text p-button-rounded !text-lg p-2"
-              style="color: #2E3192;"
-            >
-            <i class=" text-2xl" v-html="languages.find(l => l.code === selectedLanguage)?.icon"></i>
-            </Button>
-            <Menu ref="languageMenu" :model="languageMenuItems" :popup="true" />
-          </div>
-        </header>
-
-        <!-- Mode toggle -->
-        <div
-          class="bottom-0 right-0 fixed m-4 flex items-center gap-2 rounded-full shadow-lg min-w-[90px] min-h-[36px] px-3"
-          :class="checked ? '' : 'opacity-50'"
-        >
-          <ToggleSwitch v-model="checked">
-            <template #handle="{ value }">
-              <i :class="['!text-xs pi', { 'pi-check': value, 'pi-times': !value }]" />
-            </template>
-          </ToggleSwitch>
-          <p
-            class="!text-xs min-w-[50px]"
-            :class="checked ? 'text-blue-500' : 'text-red-500'"
-          >
-            {{ $t(checked ? 'testing' : 'live') }}
-          </p>
+    <div>
+        <div v-if="isMobile">
+            <NotFound />
         </div>
+        <div v-else>
+            <div class="min-h-screen bg-contain bg-x-repeat bg-y-no-repeat"
+                :style="{ backgroundImage: `url(${bgImage})` }">
+                <!-- Header -->
+                <header class="w-full flex justify-between items-center shadow-xl py-2 px-8">
+                    <div class="flex items-center gap-2">
+                        <img src="@/assets/svg/logo.svg" alt="logo" class="" />
+                        <span>|</span>
+                        <div class="font-bold text-[#2E3192]">{{ $t('lucky_draw_app') }}</div>
+                    </div>
 
-        <!-- Main -->
-        <main class="flex flex-col justify-center items-center gap-4 mt-20">
-          <img src="@/assets/svg/login.svg" alt="Login" />
+                    <!-- Language Selector -->
+                    <LanguageSwitcher />
+                </header>
 
-          <h1 v-if="step === 1" class="text-2xl font-bold text-[#2E3192]">{{ $t('login') }}</h1>
-          <h1 v-else class="text-2xl font-bold text-[#2E3192]">{{ $t('confirmation_code') }}</h1>
+                <!-- Mode toggle -->
+                <div class="bottom-0 right-0 fixed m-4 flex items-center gap-2 rounded-full shadow-lg min-w-[90px] min-h-[36px] px-3"
+                    :class="checked ? '' : 'opacity-50'">
+                    <ToggleSwitch v-model="checked">
+                        <template #handle="{ value }">
+                            <i :class="['!text-xs pi', { 'pi-check': value, 'pi-times': !value }]" />
+                        </template>
+                    </ToggleSwitch>
+                    <p class="!text-xs min-w-[50px]" :class="checked ? 'text-blue-500' : 'text-red-500'">
+                        {{ $t(checked ? 'testing' : 'live') }}
+                    </p>
+                </div>
 
-          <InputText
-            v-if="step === 1"
-            v-model="email"
-            placeholder="Email"
-            type="email"
-            class="min-w-[336px] mt-4"
-            size="large"
-            autocomplete="off"
-          />
+                <!-- Main -->
+                <main class="flex flex-col justify-center items-center gap-4 mt-20">
+                    <img src="@/assets/svg/login.svg" alt="Login" />
 
-          <InputOtp
-            v-if="step === 2"
-            v-model="otp"
-            class="flex justify-center items-center min-w-[336px] mt-4"
-            size="large"
-            variant="filled"
-            :length="6"
-            integerOnly
-          />
+                    <h1 v-if="step === 1" class="text-2xl font-bold text-[#2E3192]">{{ $t('login') }}</h1>
+                    <h1 v-else class="text-2xl font-bold text-[#2E3192]">{{ $t('confirmation_code') }}</h1>
 
-          <Button
-            type="button"
-            iconPos="right"
-            :label="$t(step === 1 ? 'login' : 'confirm')"
-            size="large"
-            class="min-w-[336px] mt-4 cursor-pointer hover:opacity-90"
-            :loading="loading"
-            @click.prevent="handleAction"
-            style="background-color: #2E3192;"
-          />
-        </main>
-      </div>
+                    <InputText v-if="step === 1" v-model="email" :placeholder="$t('email')" type="email"
+                        class="min-w-[336px] mt-4" autocomplete="off" />
+
+                    <InputOtp v-if="step === 2" v-model="otp"
+                        class="flex justify-center items-center min-w-[336px] mt-4" variant="filled"
+                        :length="6" integerOnly />
+
+                    <Button type="button" iconPos="right" :label="$t(step === 1 ? 'login' : 'confirm')"
+                        class="min-w-[336px] mt-4 cursor-pointer hover:opacity-90" :loading="loading"
+                        @click.prevent="handleAction" style="background-color: #2E3192;" />
+                </main>
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script setup>
@@ -110,80 +73,79 @@ const step = ref(1);
 const languageMenu = ref();
 
 const languages = [
-  { name: "English", code: "en", icon: "🇬🇧" },
-  { name: "မြန်မာ", code: "mm", icon: "🇲🇲" },
+    { name: "English", code: "en", icon: "🇬🇧" },
+    { name: "မြန်မာ", code: "mm", icon: "🇲🇲" },
 ];
 
 const selectedLanguage = ref(localStorage.getItem("locale") || locale.value || "mm");
 const selectedLanguageLabel = ref(
-  languages.find((l) => l.code === selectedLanguage.value)?.name || "မြန်မာ"
+    languages.find((l) => l.code === selectedLanguage.value)?.name || "မြန်မာ"
 );
 
 const languageMenuItems = ref(
-  languages.map((lang) => ({
-    label: `${lang.icon} ${lang.name}`,
-    command: () => changeLanguage(lang.code),
-  }))
+    languages.map((lang) => ({
+        label: `${lang.icon} ${lang.name}`,
+        command: () => changeLanguage(lang.code),
+    }))
 );
 
 const toggleLanguageMenu = (event) => {
-  languageMenu.value.toggle(event);
+    languageMenu.value.toggle(event);
 };
 
 const changeLanguage = (langCode) => {
-  selectedLanguage.value = langCode;
-  locale.value = langCode;
-  localStorage.setItem("locale", langCode);
-  selectedLanguageLabel.value = languages.find((l) => l.code === langCode)?.name;
-  // Optional: window.location.reload();
+    selectedLanguage.value = langCode;
+    locale.value = langCode;
+    localStorage.setItem("locale", langCode);
+    selectedLanguageLabel.value = languages.find((l) => l.code === langCode)?.name;
 };
 
 // Request OTP
 const getOtp = async () => {
-  loading.value = true;
-  try {
-    const response = await backend.get(`/get-otp-with-email?email=${email.value}`);
-    if (response.status === 200) {
-      step.value = 2;
-      otp.value = String(response.data.otp); // testing only
+    loading.value = true;
+    try {
+        const response = await backend.get(`/get-otp-with-email?email=${email.value}`);
+        if (response.status === 200) {
+            step.value = 2;
+            otp.value = String(response.data.otp); // testing only
+        }
+    } catch (error) {
+        console.error(error);
+    } finally {
+        loading.value = false;
     }
-  } catch (error) {
-    console.error(error);
-  } finally {
-    loading.value = false;
-  }
 };
 
 // Verify OTP
 const confirmOtp = async () => {
-  loading.value = true;
-  try {
-    const response = await backend.post("/verify-email-otp", {
-      email: email.value,
-      otp: otp.value,
-    });
-    if (response.status === 200) {
-      localStorage.setItem("adminToken", response.data.token);
-      localStorage.setItem("userPermissions", JSON.stringify(response.data.user?.permissions));
-      localStorage.setItem("userInfo", JSON.stringify(response.data.user));
-      router.push("/admin-panel");
+    loading.value = true;
+    try {
+        const response = await backend.post("/verify-email-otp", {
+            email: email.value,
+            otp: otp.value,
+        });
+        if (response.status === 200) {
+            localStorage.setItem("adminToken", response.data.token);
+            localStorage.setItem("userPermissions", JSON.stringify(response.data.user?.permissions));
+            localStorage.setItem("userInfo", JSON.stringify(response.data.user));
+            router.push("/admin-panel");
+        }
+    } catch (error) {
+        console.error(error);
+    } finally {
+        loading.value = false;
     }
-  } catch (error) {
-    console.error(error);
-  } finally {
-    loading.value = false;
-  }
 };
 
 // Decide action
 const handleAction = () => {
-  step.value === 1 ? getOtp() : confirmOtp();
+    step.value === 1 ? getOtp() : confirmOtp();
 };
 
 // testing/live switch
 const checked = ref(localStorage.getItem("mode") === "testing");
 
 watch(checked, (newVal) => {
-  localStorage.setItem("mode", newVal ? "testing" : "live");
+    localStorage.setItem("mode", newVal ? "testing" : "live");
 });
 </script>
