@@ -50,13 +50,15 @@
                         </Column>
                         <Column headerStyle="background-color: #2E3192; color: white;" field="created_at"
                             :header="$t('created_date')" />
-                        <Column headerStyle="background-color: #2E3192; color: white;" :header="$t('image')">
+                        <Column headerStyle="background-color: #2E3192; color: white;" :header="$t('label')">
                             <template #body="slotProps">
-                                <img :src="slotProps.data.image?.url" :alt="slotProps.data.image?.id"
-                                    class="w-24 rounded mx-auto" />
+                                <div class="flex items-center gap-2">
+                                    <img :src="slotProps.data.image?.url" :alt="slotProps.data.image?.id"
+                                        class="w-10 h-10" />
+                                    <span>{{ slotProps.data.name }}</span>
+                                </div>
                             </template>
                         </Column>
-                        <Column headerStyle="background-color: #2E3192; color: white;" field="name" :header="$t('label')" />
                         <Column headerStyle="background-color: #2E3192; color: white;" field="quantity"
                             :header="$t('quantity')" />
                         <Column headerStyle="background-color: #2E3192; color: white;" field="created_by"

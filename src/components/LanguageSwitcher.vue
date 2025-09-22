@@ -1,6 +1,7 @@
 <template>
   <div class="flex items-center gap-2">
-    <i class="text-2xl cursor-pointer opacity-50 hover:opacity-100 transition-all" v-html="selectedLanguageIcon" @click="toggleLanguageMenu"></i>
+    <p class="text-xl cursor-pointer opacity-50 hover:opacity-100 transition-all" @click="toggleLanguageMenu">{{
+      selectedLanguageIcon }}</p>
     <Menu ref="languageMenu" :model="languageMenuItems" :popup="true" />
   </div>
 </template>
@@ -14,7 +15,7 @@ const { locale } = useI18n();
 const languageMenu = ref(null);
 
 const languages = [
-  { name: "English", code: "en", icon: "🇬🇧" },
+  { name: "English", code: "en", icon: "🌐" },
   { name: "မြန်မာ", code: "mm", icon: "🇲🇲" },
 ];
 
