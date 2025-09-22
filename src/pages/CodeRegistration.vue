@@ -20,11 +20,6 @@
                         }}</span>
                     </FloatLabel>
 
-                    <!-- <FloatLabel variant="on">
-                        <InputText v-model="form.shop_address" fluid autocomplete="off" disabled />
-                        <label for="shop_address">{{ $t("shop_address") }}</label>
-                    </FloatLabel> -->
-
                     <FloatLabel variant="on">
                         <InputText v-model="form.invoice_no" fluid autocomplete="off" />
                         <label for="invoice_no">{{ $t("voucher_no") }}</label>
@@ -57,22 +52,6 @@
 
         <Dialog v-model:visible="activationDialogVisible" :closable="false" :show-header="false" modal
             :style="{ width: '60%' }">
-            <!-- <div class="mb-4">
-                <h3 class="text-lg font-bold mb-2">Confirm Activation</h3>
-                <p>{{ $t('please_confirm_details') }}</p>
-                <ul class="list-disc list-inside mt-2">
-                    <li><strong>Invoice No:</strong> {{ dialogData.invoice_no }}</li>
-                    <li><strong>Amount:</strong> {{ dialogData.amount }}</li>
-                    <li><strong>Phone:</strong> {{ dialogData.phone }}</li>
-                    <li><strong>Chance to Win:</strong> {{ dialogData.chance }}</li>
-                </ul>
-            </div>
-            <div class="flex justify-end gap-2">
-                <Button type="button" label="Cancel" severity="secondary" @click="resetDialog" :disabled="loading"></Button>
-                <Button type="button" :label="$t('save')" @click="activate" :loading="loading" :disabled="loading"
-                    style="background-color: #2E3192;"></Button>
-            </div> -->
-
             <div class="p-6">
                 <h3 class="text-xl mb-4 text-[#2E3192]">
                     {{ $t("confirm_activation") }}
@@ -164,7 +143,7 @@ const calculateTicket = async () => {
     loading.value = true;
 
     try {
-        const response = await backend.post("/lucky-draw-t/calculate-tickets", {
+        const response = await backend.post("/lucky-draw-tickets/calculate-tickets", {
             amount: form.amount,
         });
         if (response.status === 200) {

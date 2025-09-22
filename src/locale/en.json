@@ -152,5 +152,6 @@
   "registration_failed": "Registration Failed",
   "registration_error": "An error occurred during registration.",
   "error_message": "Error Message",
-  "server_error": "Server Error!"
+  "server_error": "Server Error!",
+  "phone_no_must_be_start_with_959": "Phone number must start with 959"
 }

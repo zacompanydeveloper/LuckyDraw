@@ -165,5 +165,6 @@
   "registration_failed": "မှတ်ပုံတင်ခြင်း အမှားရှိပါသည်",
   "registration_error": "မှတ်ပုံတင်ရာတွင် အမှားရှိပါသည်။",
   "error_message": "အမှားမက်ဆေ့ခ်",
-  "server_error": "ဆာဗာအမှား!"
+  "server_error": "ဆာဗာအမှား!",
+  "phone_no_must_be_start_with_959": "ဖုန်းနံပါတ်သည် ၀၉၀ ဖြင့် စရမည်"
 }
