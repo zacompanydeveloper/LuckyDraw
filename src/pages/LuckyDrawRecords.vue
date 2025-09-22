@@ -27,10 +27,14 @@
                         <label for="businessType">{{ $t('business_type') }}</label>
                     </FloatLabel>
 
-                    <Button @click="searchProduct" type="button" icon="pi pi-filter" iconPos="left" :label="$t('search')"
-                        severity="success" raised class="cursor-pointer  w-35" />
+                    <Button @click="searchProduct" type="button" icon="pi pi-filter" iconPos="left"
+                        :label="$t('search')" severity="success" raised class="cursor-pointer  w-35" />
                     <Button @click="clearFilters" type="button" icon="pi pi-refresh" iconPos="left" raised
                         style="color: #2E3192;" class="cursor-pointer" variant="outlined" />
+                </div>
+                <div>
+                    <Button type="button" v-tooltip.top="'Download Ticket'" iconPos="right" icon="pi pi-download"
+                        @click="exportData" raised style="background-color: #2E3192;" />
                 </div>
             </div>
 
@@ -45,7 +49,7 @@
                     <Column headerStyle="background-color: #2E3192; color: white; width:3rem" class="table-header"
                         :header="$t('no')">
                         <template #body="slotProps">
-                            {{ pagination.from + slotProps.index + 1 }}
+                            {{ pagination.from + slotProps.index }}
                         </template>
                     </Column>
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
@@ -148,15 +152,15 @@
                             <Button v-if="record.status === 'pending' || record.status === 'approved'" class=" w-full"
                                 label="Reject" severity="danger" variant="outlined" :loading="loading.reject"
                                 @click="confirmStatus('rejected', record.id)" />
-                            <Button v-if="record.status === 'pending' && record.can_send_sms" class=" w-full" label="Retry Sms" severity="info"
-                                variant="outlined" :loading="loading.retry" @click="retrySms(record.id)" />
+                            <Button v-if="record.status === 'pending' && record.can_send_sms" class=" w-full"
+                                label="Retry Sms" severity="info" variant="outlined" :loading="loading.retry"
+                                @click="retrySms(record.id)" />
                         </div>
                     </template>
                 </Dialog>
 
                 <!-- Reject Dialog -->
-                <Dialog v-model:visible="rejectVisible" modal :style="{ width: '25rem' }"
-                    :closable="false">
+                <Dialog v-model:visible="rejectVisible" modal :style="{ width: '25rem' }" :closable="false">
                     <div class="flex items-center gap-4 mb-8">
                         <InputText id="remark" class="flex-auto" placeholder="Remark" v-model="remark"
                             autocomplete="off" />
@@ -232,7 +236,7 @@ const businessTypeOptions = [
 const getLuckyDrawRecords = async (page = 1) => {
     try {
         loading.table = true;
-        const response = await backend.get("/lucky-draw/records", {
+        const response = await backend.get("/lucky-draw-tickets/records", {
             params: {
                 page,
                 status: filterMode.value.value,
@@ -281,7 +285,7 @@ const record = ref({});
 
 const getDetail = async (id) => {
     try {
-        const response = await backend.get(`/lucky-draw/${id}`);
+        const response = await backend.get(`/lucky-draw-tickets/${id}`);
         if (response.status === 200) {
             record.value = response.data.data;
             detailDialog.value = true;
@@ -322,7 +326,7 @@ const changeStatus = async (id, status) => {
     try {
         loading.approve = true;
         loading.reject = true;
-        const response = await backend.post(`/lucky-draw/records/${id}/${status}`,
+        const response = await backend.post(`/lucky-draw-tickets/records/${id}/${status}`,
             {
                 status: status,
                 remark: remark.value || ''
@@ -363,7 +367,7 @@ const rejectConfirm = () => {
 const retrySms = async (id) => {
     try {
         loading.retry = true;
-        const response = await backend.post(`/lucky-draw/send-sms/${id}`);
+        const response = await backend.post(`/lucky-draw-tickets/send-sms/${id}`);
         if (response.status === 200) {
             toast.add({ severity: "success", summary: "SMS retried successfully", life: 5000 });
         }
@@ -372,6 +376,35 @@ const retrySms = async (id) => {
         toast.add({ severity: "error", summary: t('error'), detail: error.response?.data?.message || t('error_occurred'), life: 5000 });
     } finally {
         loading.retry = false;
+    }
+};
+
+const exportData = async () => {
+    try {
+        loading.table = true;
+        const { data, status } = await backend.get("/lucky-draw-tickets/export", {
+            params: {
+                status: filterMode.value.value,
+                from_date: fromDate.value || null,
+                to_date: toDate.value || null,
+                search: search.value || null,
+                business_type: businessType.value?.value ?? null,
+            },
+        });
+        if (status === 200) {
+            const url = data.url
+            const link = document.createElement('a')
+            link.href = url
+            link.download = ''
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+        }
+    } catch (error) {
+        console.error("Error exporting data:", error);
+        toast.add({ severity: "error", summary: t('error'), detail: error.response?.data?.message || t('error_occurred'), life: 5000 });
+    } finally {
+        loading.table = false;
     }
 };
 

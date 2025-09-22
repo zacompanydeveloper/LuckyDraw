@@ -184,7 +184,7 @@ const openRetryDialog = (id) => {
 
 const retrySms = async (id) => {
     try {
-        const response = await backend.post(`lucky-draw/retry-sms/${id}`);
+        const response = await backend.post(`lucky-draw-tickets/retry-sms/${id}`);
         if (response.status === 200) {
             retryVisible.value = false;
             toast.add({ severity: 'success', summary: t('success'), detail: t('sms_retry_success'), life: 3000 });

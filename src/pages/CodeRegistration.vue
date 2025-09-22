@@ -164,7 +164,7 @@ const calculateTicket = async () => {
     loading.value = true;
 
     try {
-        const response = await backend.post("/lucky-draw/calculate-tickets", {
+        const response = await backend.post("/lucky-draw-t/calculate-tickets", {
             amount: form.amount,
         });
         if (response.status === 200) {
@@ -198,7 +198,7 @@ const activate = async () => {
     loading.value = true;
 
     try {
-        const response = await backend.post("/lucky-draw/create-by-retail", {
+        const response = await backend.post("/lucky-draw-tickets/create-by-retail", {
             invoice_no: form.invoice_no,
             amount: form.amount,
             phone: form.phone,
