@@ -94,24 +94,25 @@
                         <!-- Voucher No -->
                         <div>
                             <label class="block text-gray-700 mb-1">{{ $t('voucher_no') }}</label>
-                            <div class="bg-indigo-50 rounded-md px-4 py-2 text-gray-800">
-                                {{ record.invoice_no }}
+                            <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
+                                :class="{ 'text-red-500': !record.invoice_no }">
+                                {{ record.invoice_no || '-' }}
                             </div>
                         </div>
 
                         <!-- Amount -->
                         <div>
                             <label class="block text-gray-700 mb-1">{{ $t('amount') }}</label>
-                            <div class="bg-indigo-50 rounded-md px-4 py-2 text-gray-800"
+                            <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
                                 :class="{ 'text-red-500': !record.amount }">
-                                {{ helper.priceFormat(record.amount) || '-' }} Ks
+                                {{ record.amount ? helper.priceFormat(record.amount) + ' ' + $t('ks') : '-' }}
                             </div>
                         </div>
 
                         <!-- Name -->
                         <div>
                             <label class="block text-gray-700 mb-1">{{ $t('name') }}</label>
-                            <div class="bg-indigo-50 rounded-md px-4 py-2 text-gray-800"
+                            <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
                                 :class="{ 'text-red-500': !record.customer_name }">
                                 {{ record.customer_name || '-' }}
                             </div>
@@ -120,7 +121,7 @@
                         <!-- Phone Number -->
                         <div>
                             <label class="block text-gray-700 mb-1">{{ $t('phone_number') }}</label>
-                            <div class="bg-indigo-50 rounded-md px-4 py-2 text-gray-800"
+                            <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
                                 :class="{ 'text-red-500': !record.phone }">
                                 {{ record.phone || '-' }}
                             </div>
@@ -129,7 +130,7 @@
                         <!-- NRC No -->
                         <div>
                             <label class="block text-gray-700 mb-1">{{ $t('nrc_no') }}</label>
-                            <div class="bg-indigo-50 rounded-md px-4 py-2 text-gray-800"
+                            <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
                                 :class="{ 'text-red-500': !record.nrc }">
                                 {{ record.nrc || '-' }}
                             </div>
@@ -138,7 +139,7 @@
                         <!-- Township -->
                         <div>
                             <label class="block text-gray-700 mb-1">{{ $t('township') }}</label>
-                            <div class="bg-indigo-50 rounded-md px-4 py-2 text-gray-800"
+                            <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
                                 :class="{ 'text-red-500': !record.township }">
                                 {{ record.township || '-' }}
                             </div>

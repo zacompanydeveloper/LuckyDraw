@@ -1,8 +1,9 @@
 import { useBreakpoints } from '@vueuse/core'
-import en from "@/locale/en.json";
-import mm from "@/locale/mm.json";
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n'
+import enLocale from "@/locale/en.json";
+import mmLocale from "@/locale/mm.json";
 
+// ---------- Mobile check ----------
 export function isMobile() {
   const breakpoints = useBreakpoints({
     mobile: 0,
@@ -14,6 +15,7 @@ export function isMobile() {
   return breakpoints.smaller('tablet')
 }
 
+// ---------- Error handling ----------
 export const errorResponse = (error) => {
   console.log("error", error?.statusCode);
   if (error?.statusCode === 401) {
@@ -21,186 +23,105 @@ export const errorResponse = (error) => {
   }
 };
 
-export const errorUnauthorized = (code) => {
+export const errorUnauthorized = () => {
   return navigateTo("/login");
 };
 
-export const cloneJson = (json) => {
-  if (!json) {
-    return json;
-  }
-  return JSON.parse(JSON.stringify(json));
-};
+// ---------- Utilities ----------
+export const cloneJson = (json) => json ? JSON.parse(JSON.stringify(json)) : json;
 
 export const spaceImageFix = (image) => {
   if (image && typeof image === "string") {
-    // return image.includes(" ") ? image.replace(" ", "%20") : image;
     return image.includes(" ") ? image.replace(/ /g, "%20") : image;
   } else {
     return "https://shassets.sgp1.cdn.digitaloceanspaces.com/home_mall/svg/default_product_image.svg";
   }
 };
 
-export const findByKeyword = (list, key, value, lastIndex, consoleTrace) => {
+// ---------- Find by keyword ----------
+export const findByKeyword = (list, key, value, lastIndex = false, consoleTrace = false) => {
   if (!key || !value) {
-    consoleTraceForFindByKeyword(consoleTrace, [
-      "Key or Value is invalid ",
-      key,
-      value,
-    ]);
+    consoleTraceForFindByKeyword(consoleTrace, ["Key or Value is invalid ", key, value]);
     return null;
   }
 
-  if (typeof list != "array" && typeof list != "object") {
-    consoleTraceForFindByKeyword(consoleTrace, [
-      "list is not array nor object",
-      list,
-    ]);
+  if (!Array.isArray(list) && typeof list !== "object") {
+    consoleTraceForFindByKeyword(consoleTrace, ["list is not array nor object", list]);
     return null;
   }
 
-  if (lastIndex) {
-    list = list.reverse();
+  if (lastIndex && Array.isArray(list)) list = [...list].reverse();
+
+  const val = typeof list === "object" ? Object.values(list) : list;
+
+  const result = val.find(item => value.toString() === getNestedValue(key, item)?.toString());
+
+  if (!result && consoleTrace) {
+    console.error("Not Found", value, "may be value is not correct");
   }
 
-  if (typeof list === "object") {
-    const val = Object.values(list);
-
-    if (typeof val == "undefined") return null;
-
-    const result = val.find((item) => {
-      return value.toString() === getNestedValue(key, item).toString();
-    });
-
-    if (!result) {
-      consoleTraceForFindByKeyword(consoleTrace, [
-        "Not Found ",
-        value,
-        " may be value is not correct",
-      ]);
-    }
-
-    return result;
-  }
-
-  consoleTraceForFindByKeyword(consoleTrace, "nested value ", val);
-
-  return list.find(
-    (item) => getNestedValue(key, item).toString() === value.toString()
-  );
+  return result;
 };
 
 const consoleTraceForFindByKeyword = (consoleTrace, message) => {
-  if (consoleTrace) {
-    console.error(...message);
-  }
+  if (consoleTrace) console.error(...message);
 };
 
-export const getNestedValue = (keys, list, defaultValue) => {
-  // defaultValue = defaultValue || typeof defaultValue == 'boolean' ? defaultValue : undefined;
-
-  if (!has(keys) || !has(list)) {
-    return defaultValue;
-  }
+// ---------- Nested value ----------
+export const getNestedValue = (keys, obj, defaultValue) => {
+  if (!has(keys) || !has(obj)) return defaultValue;
 
   keys = keys.split(".");
-
-  let key = keys.shift();
+  const key = keys.shift();
 
   if (keys.length > 0) {
-    return getNestedValue(keys.join("."), list[key], defaultValue);
+    return getNestedValue(keys.join("."), obj[key], defaultValue);
   } else {
-    return has(list[key]) ? list[key] : defaultValue;
+    return has(obj[key]) ? obj[key] : defaultValue;
   }
 };
 
 const has = (value) => {
-  if (typeof value == "boolean") {
-    return true;
-  }
-
-  if (Array.isArray(value)) {
-    return value.length > 0;
-  }
-
-  if (typeof value == "number") {
-    return true;
-  }
-
+  if (typeof value === "boolean" || typeof value === "number") return true;
+  if (Array.isArray(value)) return value.length > 0;
   return !!value;
 };
 
+// ---------- Input validation ----------
 export const checkKeywords = (value) => {
-  var regex = new RegExp(
-    /^[^!"`'#%&,:;<>={}~\$\*\+\/\\\?\[\]\^\|]+$/
-    // /^[^!"`'#%&,:;<>={}~\$\(\)\*\+\/\\\?\[\]\^\|]+$/
-    // /[ !“`‘#%&,:;<>=@{}~\$\(\)\*\+\/\\\?\[\]\^\|]+/
-  );
-  if (!regex.test(value)) {
-    return false;
-  }
-  return true;
+  const regex = /^[^!"`'#%&,:;<>={}~\$\*\+\/\\\?\[\]\^\|]+$/;
+  return regex.test(value);
 };
 
 export const formCheckValidate = (form) => {
-  let test = Object.values(form);
-
-  let result = test.every((i) => {
-    if (Array.isArray(i)) {
-      const iterator = i.values();
-      for (const value of iterator) {
-        // console.log(i, checkKeywords(value));
-        return checkKeywords(value);
-      }
-    } else if (typeof i === "object") {
-      for (const key in i) {
-        // console.log(i, checkKeywords(i[key]));
-        return checkKeywords(i[key]);
-      }
-    } else {
-      // console.log('i',i);
-      // console.log(i, checkKeywords(i));
-      return i;
-    }
+  return Object.values(form).every((i) => {
+    if (Array.isArray(i)) return i.every(v => checkKeywords(v));
+    if (typeof i === "object") return Object.values(i).every(v => checkKeywords(v));
+    return checkKeywords(i);
   });
-  console.log("result", result);
-  return result;
 };
 
-export const numberWithCommas = (x) => {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
+// ---------- Number formatting ----------
+export const numberWithCommas = (x) => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-const localeIndex = (num, messageList) => {
-  let numArr = String(num).split("");
-  numArr = numArr.map((i) => {
-    return getNestedValue(i, messageList, i);
-  });
-  return numArr.join("");
-};
+// ---------- Myanmar / English number conversion ----------
+const enDigits = ['0','1','2','3','4','5','6','7','8','9'];
+const mmDigits = ['၀','၁','၂','၃','၄','၅','၆','၇','၈','၉'];
 
-const currencyFormat = (value, decimal) => {
-  if (!value) {
-    return "0";
-  }
+const localeIndex = (str, localeDigits) => 
+  str.toString().split('').map(ch => enDigits.includes(ch) ? localeDigits[enDigits.indexOf(ch)] : ch).join('');
 
-  if (decimal) {
-    value = parseFloat(value).toFixed(decimal);
-  }
+const currencyFormat = (num) => new Intl.NumberFormat('en-US').format(num);
 
-  return value.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1, ");
-};
+export const en2mm = (num) => localeIndex(num, mmDigits);
 
 export const priceFormat = (num) => {
-  const v18n = useI18n();
-  let locale = v18n.locale.value === "mm" ? mm : en;
-  return localeIndex(
-    currencyFormat(num),
-    //   i18n.global.messages[i18n.global.locale]['message']
-    locale
-  );
+  const { locale } = useI18n();
+  const digits = locale.value === 'mm' ? mmDigits : enDigits;
+  return localeIndex(currencyFormat(num), digits);
 };
 
+// ---------- String & Array utils ----------
 export function ucfirst(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
@@ -208,69 +129,52 @@ export function ucfirst(str) {
 export function sliceIntoChunks(arr, chunkSize) {
   const res = [];
   for (let i = 0; i < arr.length; i += chunkSize) {
-    const chunk = arr.slice(i, i + chunkSize);
-    res.push(chunk);
+    res.push(arr.slice(i, i + chunkSize));
   }
   return res;
 }
 
+// ---------- Countdown ----------
 function updateCountdown(seconds) {
-  const dayInSeconds = 86400; // 24 hours * 60 minutes * 60 seconds
-  const hourInSeconds = 3600; // 60 minutes * 60 seconds
-  const minuteInSeconds = 60; // 60 seconds
-
+  const dayInSeconds = 86400, hourInSeconds = 3600, minuteInSeconds = 60;
   const days = Math.floor(seconds / dayInSeconds);
   seconds %= dayInSeconds;
-
   const hours = Math.floor(seconds / hourInSeconds);
   seconds %= hourInSeconds;
-
   const minutes = Math.floor(seconds / minuteInSeconds);
   seconds %= minuteInSeconds;
-
-  return {
-    days: days,
-    hours: hours,
-    minutes: minutes,
-    seconds: seconds,
-  };
+  return { days, hours, minutes, seconds };
 }
 
 function formatCountdown(countdown) {
-  let countdownText = "";
-  if (countdown?.days > 0) {
-    countdownText += `${countdown.days} d, `;
-  }
-  countdownText += `${countdown.hours} h, ${countdown.minutes} m, ${countdown.seconds} s`;
-  return countdownText;
+  let text = countdown.days > 0 ? `${countdown.days} d, ` : '';
+  return text + `${countdown.hours} h, ${countdown.minutes} m, ${countdown.seconds} s`;
 }
 
 export function startCountdown(totalSeconds, ui) {
   if (!ui) return;
   const countdownElement = ui;
-
   function update() {
     if (totalSeconds <= 0 && timer) {
       clearInterval(timer);
-      // countdownElement.innerHTML = "Countdown expired!";
       countdownElement.style.display = "none";
     } else {
       const countdown = updateCountdown(totalSeconds);
-      const formattedCountdown = formatCountdown(countdown);
-      countdownElement.innerHTML = formattedCountdown;
+      countdownElement.innerHTML = formatCountdown(countdown);
       totalSeconds--;
     }
   }
-
-  update(); // Call update immediately to avoid 1-second delay at the start
-  const timer = setInterval(update, 1000); // Update every second
+  update();
+  const timer = setInterval(update, 1000);
 }
 
+// ---------- Auth ----------
 export function authUser() {
   const userInfo = localStorage.getItem("userInfo");
   return userInfo ? JSON.parse(userInfo) : null;
 }
 
+// ---------- Export ----------
 export default {
   isMobile,
   errorUnauthorized,
@@ -287,6 +191,7 @@ export default {
   numberWithCommas,
   spaceImageFix,
   priceFormat,
+  en2mm,
   startCountdown,
   authUser
 };
