@@ -35,10 +35,7 @@ router.beforeEach((to, from, next) => {
   if (to.meta.permissions && to.meta.permissions.length > 0) {
     const hasPermission = to.meta.permissions.every((perm) =>
       userPermissions.includes(perm)
-    )
-
-    console.log("Checking permissions for route:", to.name, "Required:", to.meta.permissions, "User has:", userPermissions, "Result:", hasPermission);
-    
+    )    
 
     if (!hasPermission) {
       // Option 1: redirect to a 403 page

@@ -6,7 +6,7 @@
         <div v-else>
             <DesktopLayout>
                 <!-- Page Content -->
-                <h2 class="text-2xl font-bold text-[#2E3192]">{{ $t('pre_print_code_page') }}</h2>
+                <h2 class="text-2xl font-bold text-[#2E3192]">{{ $t('sms_records') }}</h2>
                 <div class="flex justify-between items-center mt-2">
                     <!-- filters -->
                     <div class="flex gap-3">
@@ -24,18 +24,18 @@
                             <InputText id="search" v-model="search" autocomplete="off" />
                             <label for="search">{{ $t('search') }}</label>
                         </FloatLabel>
-                        <Button @click="searchProduct" type="button" icon="pi pi-filter" iconPos="left" :label="$t('search')"
-                            severity="success" raised class="cursor-pointer  w-35" />
+                        <Button @click="searchProduct" type="button" icon="pi pi-filter" iconPos="left"
+                            :label="$t('search')" severity="success" raised class="cursor-pointer  w-35" />
                         <Button @click="clearFilters" type="button" icon="pi pi-refresh" iconPos="left" raised
                             style="color: #2E3192;" class="cursor-pointer" variant="outlined" />
                     </div>
                 </div>
                 <!-- Table -->
                 <div class="card mt-5 mb-10">
-                    <DataTable dataKey="id" stripedRows :value="smsRecords" :loading="loading.table" scrollable
+                    <DataTable dataKey="id" showGridlines stripedRows :value="smsRecords" :loading="loading.table" scrollable
                         scrollHeight="460px" tableStyle="min-width: 50rem">
 
-                        <Column header="#" headerStyle="width:3rem; background-color: #2E3192; color: white;">
+                        <Column :header="$t('no')" headerStyle="width:3rem; background-color: #2E3192; color: white;">
                             <template #body="slotProps">
                                 {{ pagination.from + slotProps.index }}
                             </template>
@@ -47,21 +47,23 @@
                         <Column headerStyle="background-color: #2E3192; color: white;" field="phone"
                             :header="$t('phone_number')" />
 
-                        <Column headerStyle="background-color: #2E3192; color: white;" field="type" :header="$t('sms_type')">
+                        <Column headerStyle="background-color: #2E3192; color: white;" field="type"
+                            :header="$t('sms_type')">
                             <template #body="slotProps">
-                                {{ slotProps.data.type === 'lucky_draw_link' ? $t('registration_link') : $t('successful')
+                                {{ slotProps.data.type === 'lucky_draw_link' ? $t('registration_link') :
+                                    $t('successful')
                                 }}
                             </template>
                         </Column>
 
-                        <Column headerStyle="background-color: #2E3192; color: white;" field="amount"
-                            :header="$t('amount_kyats')" />
-
                         <Column headerStyle="background-color: #2E3192; color: white;" field="sms_poh_id"
                             :header="$t('message_id')" />
 
+                        <Column headerStyle="background-color: #2E3192; color: white;" field="amount"
+                            :header="$t('amount_kyats')" />
+
                         <!-- Action column -->
-                        <Column headerStyle="background-color: #2E3192; color: white;" :header="$t('action')"
+                        <!-- <Column headerStyle="background-color: #2E3192; color: white;" :header="$t('action')"
                             class="w-24 !text-end" :headerStyle="{ textAlign: 'right' }">
                             <template #body="{ data }">
                                 <div class="flex justify-end items-center gap-2">
@@ -70,12 +72,12 @@
                                         rounded />
                                 </div>
                             </template>
-                        </Column>
+                        </Column> -->
 
                         <ColumnGroup type="footer" class=" font-bold mt-4">
                             <Row>
                                 <Column :footer="$t('totals_kyats')" :colspan="5" footerStyle="text-align:left" />
-                                <Column :colspan="2" :footer="totalAmount" footerStyle="text-align:center" />
+                                <Column :colspan="2" :footer="totalAmount" />
                             </Row>
                         </ColumnGroup>
 
@@ -192,7 +194,7 @@ const retrySms = async (id) => {
     } catch (error) {
         console.error("Error retrying SMS:", error);
         toast.add({ severity: 'error', summary: t('error'), detail: t('sms_retry_failed'), life: 3000 });
-    }finally {
+    } finally {
         retryVisible.value = false;
         getSmsRecords(pagination.page);
     }

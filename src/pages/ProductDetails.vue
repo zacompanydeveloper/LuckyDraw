@@ -40,26 +40,31 @@
                             class="border border-gray-200 my-2" :options="filterOptions" />
                     </div>
 
-                    <DataTable dataKey="id" showGridlines :value="codes" :loading="loading" scrollable scrollHeight="460px"
-                        tableStyle="min-width: 50rem">
-                        <Column header="#" headerStyle="width:3rem">
+                    <DataTable dataKey="id" showGridlines :value="codes" :loading="loading" scrollable
+                        scrollHeight="460px" tableStyle="min-width: 50rem">
+                        <Column :header="$t('no')" headerStyle="width:3rem ; background-color: #2E3192; color: white;">
                             <template #body="slotProps">
-                                {{ pagination.from + slotProps.index - 1 }}
+                                {{ pagination.from + slotProps.index }}
                             </template>
                         </Column>
-                        <Column field="created_at" header="Created Date" />
-                        <Column field="product" header="Name" />
-                        <Column field="tracking_code" header="Gift Code" />
-                        <Column field="serial_code" header="Serial Code" />
-                        <Column field="status" header="Status" />
+                        <Column headerStyle="background-color: #2E3192; color: white;" field="created_at"
+                            :header="$t('created_date')" />
+                        <Column headerStyle="background-color: #2E3192; color: white;" field="product"
+                            :header="$t('name')" />
+                        <Column headerStyle="background-color: #2E3192; color: white;" field="tracking_code"
+                            :header="$t('gift_code')" />
+                        <Column headerStyle="background-color: #2E3192; color: white;" field="serial_code"
+                            :header="$t('serial_code')" />
+                        <Column headerStyle="background-color: #2E3192; color: white;" field="status"
+                            :header="$t('status')" />
 
                         <!-- Action column -->
-                        <Column v-if="
+                        <Column headerStyle="background-color: #2E3192; color: white;" v-if="
                             filterMode.value === 'inactive' ||
                             filterMode.value === 'active'
-                        " header="Action" class="w-24 !text-end" :headerStyle="{ textAlign: 'right' }">
+                        " :header="$t('action')" class="w-24">
                             <template #body="{ data }">
-                                <div class="flex justify-end items-center gap-2">
+                                <div class="flex justify-center items-center gap-2">
                                     <Button v-if="filterMode.value === 'inactive'" v-tooltip.top="'Approve'"
                                         icon="pi pi-check" @click="openApproveDialog('single', data.id)"
                                         severity="success" rounded />
@@ -150,6 +155,7 @@ import helper from "@/helper";
 import backend from "@/api/backend";
 import NotFound from "@/views/NotFound.vue";
 import DesktopLayout from "@/layouts/DesktopLayout.vue";
+import router from "@/router";
 
 // -------------------
 // Constants
@@ -172,7 +178,9 @@ const toast = useToast();
 const codes = ref([]);
 const loading = ref(false);
 
-const filterMode = ref(filterOptions[0]); // Default: Inactive
+const filterMode = ref(
+    filterOptions.find(opt => opt.value === (router.currentRoute.value.query.status || "inactive")) || filterOptions[0]
+); // Default: Inactive
 const rejectVisible = ref(false);
 const approveVisible = ref(false);
 const remark = ref("");
@@ -206,6 +214,9 @@ watch(filterMode, () => {
 const fetchProductDetails = async (page = pagination.page) => {
     try {
         loading.value = true;
+        router.replace({
+            query: { status: filterMode.value.value },
+        });
         const { data, status } = await backend.get(
             `/preprint-products/${route.params.id}`,
             {
@@ -379,7 +390,6 @@ const viewDetails = async (codeId) => {
     try {
         const { data, status } = await backend.get(`/preprint-products/preprint-codes/${codeId}`);
         if (status === 200) {
-            console.log("Code Details:", data);
             codeDetail.value = data.data
             codeDetailVisible.value = true;
         }

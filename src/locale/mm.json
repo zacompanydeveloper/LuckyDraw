@@ -132,6 +132,7 @@
   "customer": "ဖောက်သည်",
   "customer_phone": "ဖောက်သည်ဖုန်း",
   "serial_code": "စီရီယလ်ကုဒ်",
+  "gift_code": "လက်ဆောင်ကုဒ်",
   "status": "အခြေအနေ",
   "details": "အသေးစိတ်",
   "lucky_draw_activation_detail": "ကံစမ်းမဲ အတည်ပြုချက် အသေးစိတ်",
@@ -166,5 +167,8 @@
   "registration_error": "မှတ်ပုံတင်ရာတွင် အမှားရှိပါသည်။",
   "error_message": "အမှားမက်ဆေ့ခ်",
   "server_error": "ဆာဗာအမှား!",
-  "phone_no_must_be_start_with_959": "ဖုန်းနံပါတ်သည် ၀၉၀ ဖြင့် စရမည်"
+  "phone_no_must_be_start_with_959": "ဖုန်းနံပါတ်သည် ၀၉၀ ဖြင့် စရမည်",
+  "name_placeholder": "အမည်",
+  "description_placeholder": "အကြောင်းအရာ",
+  "quantity_placeholder": "အရေအတွက်"
 }

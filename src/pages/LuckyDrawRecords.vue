@@ -44,8 +44,8 @@
                     <SelectButton v-model="filterMode" optionLabel="label" dataKey="label"
                         class="border border-gray-200 my-2" :options="filterOptions" />
                 </div>
-                <DataTable dataKey="id" showGridlines :value="luckyDrawRecords" :loading="loading.table" scrollable
-                    scrollDirection="both" scrollHeight="460px" tableStyle="min-width: 80rem">
+                <DataTable dataKey="id" showGridlines stripedRows :value="luckyDrawRecords" :loading="loading.table"
+                    scrollable scrollDirection="both" scrollHeight="460px" tableStyle="min-width: 80rem">
                     <Column headerStyle="background-color: #2E3192; color: white; width:3rem" class="table-header"
                         :header="$t('no')">
                         <template #body="slotProps">
@@ -54,8 +54,8 @@
                     </Column>
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
                         field="created_at" :header="$t('created_date')" />
-                    <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
-                        field="customer_name" :header="$t('customer')" />
+                    <!-- <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
+                        field="customer_name" :header="$t('customer')" /> -->
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header" field="phone"
                         :header="$t('customer_phone')" />
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
@@ -191,6 +191,7 @@ import helper from "@/helper";
 import NotFound from "@/views/NotFound.vue";
 import { useToast } from "primevue/usetoast";
 import { useConfirm } from "primevue/useconfirm";
+import router from "@/router";
 
 const { t } = useI18n();
 const rejectVisible = ref(false);
@@ -212,7 +213,9 @@ const filterOptions = [
     { label: 'Rejected', value: 'rejected' },
     { label: 'Used', value: 'used' }
 ];
-const filterMode = ref(filterOptions[0]);
+const filterMode = ref(
+    filterOptions.find(opt => opt.value === (router.currentRoute.value.query.status || "pending")) || filterOptions[0]
+); // Default: Pending
 
 watch(filterMode, () => {
     getLuckyDrawRecords(1);
@@ -236,6 +239,12 @@ const businessTypeOptions = [
 
 const getLuckyDrawRecords = async (page = 1) => {
     try {
+        router.replace({
+            query: {
+                status: filterMode.value.value,
+                page: page,
+            },
+        });
         loading.table = true;
         const response = await backend.get("/lucky-draw-tickets/records", {
             params: {

@@ -82,7 +82,7 @@
                         <span>{{ dialogData.chance }}</span>
                     </div>
                 </div>
-                <div class="flex gap-2 w-[80%] gap-4 mx-auto">
+                <div class="flex w-[80%] gap-4 mx-auto">
                     <Button type="button" class="w-full" :label="$t('cancel')" severity="secondary" @click="resetDialog"
                         :disabled="loading"></Button>
                     <Button type="button" class="w-full" :label="$t('activate')" @click="activate" :loading="loading"
@@ -147,7 +147,6 @@ const calculateTicket = async () => {
             amount: form.amount,
         });
         if (response.status === 200) {
-            console.log("Calculation successful! =>", response);
             const chance = response.data.chance;
             dialogData.invoice_no = form.invoice_no;
             dialogData.amount = form.amount;
@@ -184,7 +183,6 @@ const activate = async () => {
         });
         if (response.status === 200) {
             resetDialog();
-            console.log("Activation successful! =>", response);
             form.invoice_no = "";
             form.amount = "";
             form.phone = "";

@@ -6,49 +6,54 @@
         <div v-else>
             <DesktopLayout>
                 <!-- Page Content -->
-                <h2 class="text-2xl font-bold text-[#2E3192]">Pre-Print Code</h2>
+                <h2 class="text-2xl font-bold text-[#2E3192]">{{ $t('pre_print_code') }}</h2>
                 <div class="flex justify-between items-center mt-2">
                     <!-- filters -->
                     <div class="flex gap-3">
                         <FloatLabel variant="on">
                             <DatePicker v-model="fromDate" dateFormat="dd-mm-yy" inputId="from_date" showIcon
                                 iconDisplay="input" />
-                            <label for="from_date">From Date</label>
+                            <label for="from_date">{{ $t('from_date') }}</label>
                         </FloatLabel>
                         <FloatLabel variant="on">
                             <DatePicker v-model="toDate" dateFormat="dd-mm-yy" inputId="to_date" showIcon
                                 iconDisplay="input" />
-                            <label for="to_date">To Date</label>
+                            <label for="to_date">{{ $t('to_date') }}</label>
                         </FloatLabel>
                         <FloatLabel variant="on">
                             <InputText id="search" v-model="search" autocomplete="off" />
-                            <label for="search">Search</label>
+                            <label for="search">{{ $t('search') }}</label>
                         </FloatLabel>
-                        <Button @click="searchProduct" type="button" icon="pi pi-filter" iconPos="left" label="Search"
-                            severity="success" raised class="cursor-pointer  w-35" />
+                        <Button @click="fetchProducts" type="button" icon="pi pi-filter" iconPos="left"
+                            :label="$t('search')" severity="success" raised class="cursor-pointer  w-35" />
                         <Button @click="clearFilters" type="button" icon="pi pi-refresh" iconPos="left" raised
                             style="color: #2E3192;" class="cursor-pointer" variant="outlined" />
                     </div>
-                    <Button type="button" iconPos="right" label="Create" @click="openDialog('right')"
+                    <Button type="button" iconPos="right" :label="$t('create')" @click="openDialog('right')"
                         class="cursor-pointer hover:opacity-90 w-35" style="background-color: #2E3192;" />
                 </div>
 
                 <!-- Table -->
                 <div class="card mt-5 mb-10">
-                    <DataTable :value="products" showGridlines scrollable scrollHeight="550px" tableStyle="min-width: 50rem"
-                        :loading="loading.table">
-                        <Column header="#" headerStyle="width:3rem">
+                    <DataTable :value="products" showGridlines stripedRows scrollable scrollHeight="550px"
+                        tableStyle="min-width: 50rem" :loading="loading.table">
+                        <Column :header="$t('no')" headerStyle="width:3rem; background-color: #2E3192; color: white;">
                             <template #body="slotProps">
                                 {{ slotProps.index + 1 }}
                             </template>
                         </Column>
-                        <Column field="name" header="Name" />
-                        <Column field="quantity" header="Quantity" />
-                        <Column field="created_at" header="Created Date" />
-                        <Column field="created_by" header="Created By" />
-                        <Column class="w-24 !text-end" header="Action" :headerStyle="{ textAlign: 'right' }">
+                        <Column headerStyle="background-color: #2E3192; color: white;" field="created_at"
+                            :header="$t('created_date')" />
+                        <Column headerStyle="background-color: #2E3192; color: white;" field="name"
+                            :header="$t('name')" />
+                        <Column headerStyle="background-color: #2E3192; color: white;" field="quantity"
+                            :header="$t('quantity')" />
+                        <Column headerStyle="background-color: #2E3192; color: white;" field="created_by"
+                            :header="$t('created_by')" />
+                        <Column headerStyle="background-color: #2E3192; color: white;" class="w-24"
+                            :header="$t('action')">
                             <template #body="{ data }">
-                                <div class="flex justify-end items-center gap-2">
+                                <div class="flex justify-center items-center gap-2">
                                     <Button v-tooltip.top="'Details'" icon="pi pi-search" @click="goToDetails(data.id)"
                                         severity="info" rounded />
                                     <Button v-tooltip.top="'Download'" icon="pi pi-download" @click="downloadFile(data)"
@@ -69,17 +74,17 @@
                             <!-- Form -->
                             <div class="mb-10">
                                 <div class="flex flex-col gap-2 mb-4">
-                                    <label for="name" class="w-24">Name</label>
+                                    <label for="name" class="w-24">{{ $t('name') }}</label>
                                     <InputText id="name" v-model="form.name" class="flex-auto" autocomplete="off"
-                                        placeholder="Name" />
+                                       :placeholder="$t('name_placeholder')" />
                                 </div>
                                 <div class="flex flex-col gap-2 mb-4">
-                                    <label for="description" class="w-24">Description</label>
+                                    <label for="description" class="w-24">{{ $t('description') }}</label>
                                     <InputText id="description" v-model="form.description" class="flex-auto"
-                                        autocomplete="off" placeholder="Description" />
+                                        autocomplete="off" :placeholder="$t('description_placeholder')" />
                                 </div>
                                 <div class="flex flex-col gap-2 mb-2">
-                                    <label for="quantity" class="w-24">Quantity</label>
+                                    <label for="quantity" class="w-24">{{ $t('quantity') }}</label>
                                     <!-- 35000 max -->
                                     <InputText class="w-full" type="text" id="quantity" v-model="form.quantity"
                                         maxlength="5" v-keyfilter.num autocomplete="off" placeholder="0" />
@@ -88,7 +93,7 @@
 
                             <!-- Actions -->
                             <div class="flex justify-end gap-2">
-                                <Button type="button" iconPos="right" label="Create" :loading="loading.create"
+                                <Button type="button" iconPos="right" :label="$t('create')" :loading="loading.create"
                                     :disabled="!isFormValid || loading.create"
                                     class="cursor-pointer hover:opacity-90 w-35" @click="createProduct"
                                     style="background-color: #2E3192;" />
@@ -219,15 +224,6 @@ const clearFilters = () => {
     fromDate.value = null
     toDate.value = null
     search.value = ""
-    fetchProducts()
-}
-
-const searchProduct = () => {
-    console.log('Searching products with filters:', {
-        from_date: fromDate.value,
-        to_date: toDate.value,
-        search: search.value,
-    })
     fetchProducts()
 }
 

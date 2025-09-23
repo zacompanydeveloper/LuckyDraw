@@ -119,6 +119,7 @@
   "customer": "Customer",
   "customer_phone": "Customer Phone",
   "serial_code": "Serial Code",
+  "gift_code": "Gift Code",
   "status": "Status",
   "details": "Details",
   "lucky_draw_activation_detail": "Lucky Draw Activation List Detail",
@@ -153,5 +154,8 @@
   "registration_error": "An error occurred during registration.",
   "error_message": "Error Message",
   "server_error": "Server Error!",
-  "phone_no_must_be_start_with_959": "Phone number must start with 959"
+  "phone_no_must_be_start_with_959": "Phone number must start with 959",
+  "name_placeholder": "Name",
+  "description_placeholder": "Description",
+  "quantity_placeholder": "Quantity"
 }

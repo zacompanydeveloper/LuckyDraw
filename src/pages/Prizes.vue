@@ -41,7 +41,7 @@
                 </div>
 
                 <div class="card mt-5 mb-10">
-                    <DataTable :value="prizeList" showGridlines scrollable scrollHeight="500px"
+                    <DataTable :value="prizeList" showGridlines stripedRows scrollable scrollHeight="500px"
                         tableStyle="min-width: 50rem" :loading="loading.table">
                         <Column :header="$t('no')" headerStyle="width:3rem ;background-color: #2E3192; color: white;">
                             <template #body="slotProps">
@@ -185,7 +185,6 @@ function onFileSelect(event) {
     reader.onload = async (e) => {
         src.value = e.target.result;
         form.image = file;
-        console.log("Selected file:", file);
     };
 
     reader.readAsDataURL(file);
@@ -201,8 +200,6 @@ const removeImage = () => {
 }
 
 const createPrize = async () => {
-    console.log("Creating prize...")
-    console.log(form);
     loading.create = true;
     try {
         const { data } = await backend.filePost("/lucky-draw-prizes", form);
@@ -231,7 +228,6 @@ const getPrizes = async (page = 1) => {
             search: search.value || null,
             page: page,
         });
-        console.log("Fetched prizes:", data);
         prizeList.value = data.data || [];
 
         // Update pagination info
