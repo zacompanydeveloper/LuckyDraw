@@ -53,7 +53,7 @@ export const routes = [
     component: () => import("@/pages/CodeRegistration.vue"),
     meta: {
       requiresAdminAuth: true,
-      permissions: ["view-registration"],
+      permissions: ["activate-lucky-draw"],
     }, // protected route
   },
   {
@@ -89,7 +89,7 @@ export const routes = [
     component: () => import("@/pages/Prizes.vue"),
     meta: {
       requiresAdminAuth: true,
-      // permissions: ["view-prizes"],
+      permissions: ["manage-prize"],
     }, // protected route
   },
   {

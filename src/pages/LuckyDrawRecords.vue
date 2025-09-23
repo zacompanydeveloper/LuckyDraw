@@ -33,48 +33,58 @@
                         style="color: #2E3192;" class="cursor-pointer" variant="outlined" />
                 </div>
                 <div class="flex gap-2">
-                    <Button v-if="filterMode.value === 'in_review'" type="button" v-tooltip.top="$t('approve_all')"
-                        iconPos="right" icon="pi pi-check" severity="success" @click="confirmApproveAll" raised />
-                    <Button type="button" v-tooltip.top="$t('download_ticket')" iconPos="right" icon="pi pi-download"
-                        @click="exportData" raised style="background-color: #2E3192;" />
+                    <Button v-can="'manage-lucky-draw'" v-if="filterMode.value === 'in_review'" type="button"
+                        v-tooltip.top="$t('approve_all')" iconPos="right" icon="pi pi-check" severity="success"
+                        @click="confirmApproveAll" raised />
+                    <Button v-can="'export-lucky-draw'" type="button" v-tooltip.top="$t('download_ticket')"
+                        iconPos="right" icon="pi pi-download" @click="exportData" raised
+                        style="background-color: #2E3192;" />
                 </div>
             </div>
 
             <!-- Table -->
             <div class="card mt-2">
-                <div class="flex justify-center">
+                <div v-can="'manage-lucky-draw'" class="flex justify-center">
                     <SelectButton v-model="filterMode" optionLabel="label" dataKey="label"
                         class="border border-gray-200 my-2" :options="filterOptions" />
                 </div>
                 <DataTable dataKey="id" showGridlines stripedRows :value="luckyDrawRecords" :loading="loading.table"
                     scrollable scrollDirection="both" scrollHeight="460px" tableStyle="min-width: 80rem">
+                    
                     <Column headerStyle="background-color: #2E3192; color: white; width:3rem" class="table-header"
                         :header="$t('no')">
                         <template #body="slotProps">
                             {{ pagination.from + slotProps.index }}
                         </template>
                     </Column>
+
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
                         field="created_at" :header="$t('created_date')" />
+
                     <!-- <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
                         field="customer_name" :header="$t('customer')" /> -->
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header" field="phone"
                         :header="$t('customer_phone')" />
+
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
                         field="business_type" :header="$t('business_type')">
                         <template #body="slotProps">
                             {{ $t(slotProps.data.business_type) }}
                         </template>
                     </Column>
+
+                    <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
+                        field="tracking_code" :header="$t('gift_code')" />
+
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
                         field="serial_code" :header="$t('serial_code')" />
 
-                    <Column headerStyle="background-color: #2E3192; color: white;" class="table-header" field="status"
+                    <!-- <Column headerStyle="background-color: #2E3192; color: white;" class="table-header" field="status"
                         :header="$t('status')">
                         <template #body="slotProps">
-                                {{ $t(slotProps.data.status) }}
+                            {{ $t(slotProps.data.status) }}
                         </template>
-                    </Column>
+                    </Column> -->
 
                     <Column headerStyle="background-color: #2E3192; color: white;" :header="$t('action')"
                         class="w-24 table-header" :headerStyle="{ textAlign: 'right' }">

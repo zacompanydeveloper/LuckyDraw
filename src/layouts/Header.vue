@@ -13,7 +13,7 @@
                         </router-link>
                     </li>
 
-                    <li v-can="'view-registration'">
+                    <li v-can="'activate-lucky-draw'">
                         <router-link to="/admin-panel/code-registration" active-class=" bg-[#2E3192]/10"
                             class="w-full flex items-center gap-2 text-[#2E3192] hover:bg-[#2E3192]/10 px-3 py-2 rounded-md transition-colors">
                             <i class="pi pi-file-edit"></i>
@@ -37,7 +37,7 @@
                         </router-link>
                     </li>
 
-                    <li>
+                    <li v-can="'manage-prize'">
                         <router-link to="/admin-panel/prizes" active-class="bg-[#2E3192]/10"
                             class="w-full flex items-center gap-2 text-[#2E3192] hover:bg-[#2E3192]/10 px-3 py-2 rounded-md transition-colors">
                             <i class="pi pi-trophy"></i>
@@ -55,10 +55,10 @@
                 </ul>
                 <template #footer class="p-0">
                     <div class="flex flex-col gap-2">
-                        <div class="flex justify-between items-center no-wrap gap-2 text-[#2E3192] px-3 pb-2">
+                        <div class="flex justify-between items-center no-wrap gap-2 text-[#2E3192] pb-2">
                             <div class="flex items-center gap-2">
                                 <i class="pi pi-user border rounded-full p-1"></i>
-                                <span>{{ name }} </span>
+                                <span class=" text-nowrap">{{ name }} </span>
                                 <span class=" text-red-500 text-xs">({{ role }})</span>
                             </div>
                             <i class="pi pi-sign-out cursor-pointer" style="color: red" @click="logout"></i>
