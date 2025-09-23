@@ -1,5 +1,4 @@
 {
-  "pending": "အွန်လိုင်းအာမခံ မလုပ်ရသေးပါ",
   "active": "အွန်လိုင်းအာမခံ လုပ်ပြီပြီး",
   "returned": "အွန်လိုင်းအာမခံ ပြန်သွင်းပြီး",
   "warranty_activate": "အွန်လိုင်းအာမခံ လုပ်ရန်",
@@ -41,7 +40,6 @@
   "activate" : "အတည်ပြုရန်",
   "home" : "ပင်မစာမျက်နှာ",
   "region": "တိုင်းဒေသကြီး",
-  "township": "မြို့နယ်",
   "shop_address" : "ဆိုင်လိပ်စာ",
   "lucky_draw_ticket": "ကံစမ်းမဲလက်မှတ်များ",
   "confirm": "အတည်ပြုမည်",
@@ -71,7 +69,6 @@
   "loading_please_wait": "ဖတ်နေသည်... ခဏစောင့်ပါ",
   "view_sms_records": "စာတိုမှတ်တမ်းများ ကြည့်ရန်",
   "no_sms_records_found": "စာတိုမှတ်တမ်းများ မတွေ့ပါ",
-  "refresh": "ပြန်လည်သွင်းမည်",
   "back_to_home": "ပင်မစာမျက်နှာသို့ ပြန်သွားမည်",
   "language": "ဘာသာစကား",
   "select_language": "ဘာသာစကား ရွေးချယ်ပါ",
@@ -130,7 +127,6 @@
   "refresh": "ပြန်လည်စတင်မည်",
   "business_type": "လုပ်ငန်းအမျိုးအစား",
   "customer": "ဖောက်သည်",
-  "customer_phone": "ဖောက်သည်ဖုန်း",
   "serial_code": "စီရီယလ်ကုဒ်",
   "gift_code": "လက်ဆောင်ကုဒ်",
   "status": "အခြေအနေ",
@@ -170,5 +166,13 @@
   "phone_no_must_be_start_with_959": "ဖုန်းနံပါတ်သည် ၀၉၀ ဖြင့် စရမည်",
   "name_placeholder": "အမည်",
   "description_placeholder": "အကြောင်းအရာ",
-  "quantity_placeholder": "အရေအတွက်"
+  "quantity_placeholder": "အရေအတွက်",
+  "approve_all": "အားလုံးကို အတည်ပြုမည်",
+  "download_ticket": "လက်မှတ်များ ဒေါင်းလုပ်မည်",
+  "pending" : "ဆိုင်းငံ့ထားသည်",
+  "in_review" : "စစ်ဆေးနေသည်",
+  "approved" : "အတည်ပြုထားသည်",
+  "rejected" : "ပယ်ဖျက်ထားသည်",
+  "retail": "Retail",
+  "b2b": "Business"
 }

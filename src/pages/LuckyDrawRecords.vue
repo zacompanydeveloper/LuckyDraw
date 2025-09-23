@@ -32,8 +32,10 @@
                     <Button @click="clearFilters" type="button" icon="pi pi-refresh" iconPos="left" raised
                         style="color: #2E3192;" class="cursor-pointer" variant="outlined" />
                 </div>
-                <div>
-                    <Button type="button" v-tooltip.top="'Download Ticket'" iconPos="right" icon="pi pi-download"
+                <div class="flex gap-2">
+                    <Button v-if="filterMode.value === 'in_review'" type="button" v-tooltip.top="$t('approve_all')"
+                        iconPos="right" icon="pi pi-check" severity="success" @click="confirmApproveAll" raised />
+                    <Button type="button" v-tooltip.top="$t('download_ticket')" iconPos="right" icon="pi pi-download"
                         @click="exportData" raised style="background-color: #2E3192;" />
                 </div>
             </div>
@@ -59,11 +61,20 @@
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header" field="phone"
                         :header="$t('customer_phone')" />
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
-                        field="business_type" :header="$t('business_type')" />
+                        field="business_type" :header="$t('business_type')">
+                        <template #body="slotProps">
+                            {{ $t(slotProps.data.business_type) }}
+                        </template>
+                    </Column>
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
                         field="serial_code" :header="$t('serial_code')" />
+
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header" field="status"
-                        :header="$t('status')" />
+                        :header="$t('status')">
+                        <template #body="slotProps">
+                                {{ $t(slotProps.data.status) }}
+                        </template>
+                    </Column>
 
                     <Column headerStyle="background-color: #2E3192; color: white;" :header="$t('action')"
                         class="w-24 table-header" :headerStyle="{ textAlign: 'right' }">
@@ -147,12 +158,13 @@
                     </div>
                     <template #footer>
                         <div class="grid grid-cols-3 gap-2 justify-items-end pt-4 w-full">
-                            <Button v-if="record.status === 'pending'" class=" w-full" label="Approve"
+                            <Button v-if="record.status === 'in_review'" class=" w-full" label="Approve"
                                 severity="success" variant="outlined" :loading="loading.approve"
                                 @click="confirmStatus('approved', record.id)" />
-                            <Button v-if="record.status === 'pending' || record.status === 'approved'" class=" w-full"
-                                label="Reject" severity="danger" variant="outlined" :loading="loading.reject"
-                                @click="confirmStatus('rejected', record.id)" />
+                            <Button
+                                v-if="record.status === 'pending' || record.status === 'in_review' || record.status === 'approved'"
+                                class=" w-full" label="Reject" severity="danger" variant="outlined"
+                                :loading="loading.reject" @click="confirmStatus('rejected', record.id)" />
                             <Button v-if="record.status === 'pending' && record.can_send_sms" class=" w-full"
                                 label="Retry Sms" severity="info" variant="outlined" :loading="loading.retry"
                                 @click="retrySms(record.id)" />
@@ -209,6 +221,7 @@ const isMobile = helper.isMobile();
 
 const filterOptions = [
     { label: 'Pending', value: 'pending' },
+    { label: 'In Review', value: 'in_review' },
     { label: 'Approved', value: 'approved' },
     { label: 'Rejected', value: 'rejected' },
     { label: 'Used', value: 'used' }
@@ -326,6 +339,46 @@ const confirmStatus = (action, id) => {
                 return;
             }
             changeStatus(id, action);
+        },
+        reject: () => {
+        }
+    });
+};
+
+const approveAllTickets = async () => {
+    try {
+        loading.approve = true;
+        const response = await backend.post(`/lucky-draw-tickets/approve-all`, {
+            status: 'approved'
+        });
+        if (response.status === 200) {
+            toast.add({ severity: "success", summary: t('success'), life: 5000 });
+            getLuckyDrawRecords(pagination.page);
+        }
+    } catch (error) {
+        console.error("Error approving all tickets:", error);
+        toast.add({ severity: "error", summary: t('error'), detail: error.response?.data?.message || t('error_occurred'), life: 5000 });
+    } finally {
+        loading.approve = false;
+    }
+};
+
+const confirmApproveAll = () => {
+    confirm.require({
+        message: 'Are you sure you want to approve all?',
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+            label: 'Cancel',
+            severity: 'secondary',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'Yes',
+            severity: 'success',
+            outlined: true
+        },
+        accept: () => {
+            approveAllTickets();
         },
         reject: () => {
         }

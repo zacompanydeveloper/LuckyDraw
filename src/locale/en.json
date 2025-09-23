@@ -1,5 +1,4 @@
 {
-  "pending" : "Warranty Pending",
   "active": "Warranty Activated",
   "returned": "Warranty Returned",
   "warranty_activate" : "E Warranty Activate",
@@ -117,7 +116,6 @@
   "refresh": "Refresh",
   "business_type": "Business Type",
   "customer": "Customer",
-  "customer_phone": "Customer Phone",
   "serial_code": "Serial Code",
   "gift_code": "Gift Code",
   "status": "Status",
@@ -143,7 +141,6 @@
   "please_confirm_details": "Please confirm the following details before activation:",
   "save": "Save",
   "register": "Register",
-  "township": "Township",
   "search_township": "Search township",
   "registration_successfully": "Registration Successfully!",
   "thank_you_joining": "Thank you for joining our lucky draw!",
@@ -157,5 +154,13 @@
   "phone_no_must_be_start_with_959": "Phone number must start with 959",
   "name_placeholder": "Name",
   "description_placeholder": "Description",
-  "quantity_placeholder": "Quantity"
+  "quantity_placeholder": "Quantity",
+  "approve_all": "Approve All",
+  "download_ticket": "Download Tickets",
+  "pending" : "Pending",
+  "in_review" : "In Review",
+  "approved" : "Approved",
+  "rejected" : "Rejected",
+  "retail": "Retail",
+  "b2b": "Business"
 }
