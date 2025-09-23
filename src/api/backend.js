@@ -5,7 +5,7 @@ import router from "@/router";
 const testing = localStorage.getItem("mode") === "testing";
 
 const API_BASE_URL = testing
-  ? "https://testing.sweetyhomemm.com/api/b2c/v1" // testing URL
+  ? "https://testing.sweetyhome.net.mm/api/b2c/v1" // testing URL
   : import.meta.env.VITE_BACKEND_URL; // live URL from env
 
 // Interceptors
