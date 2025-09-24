@@ -46,9 +46,9 @@
             <div class="card mt-2">
                 <div v-can="'manage-lucky-draw'" class="flex justify-center">
                     <SelectButton v-model="filterMode" optionLabel="label" dataKey="label"
-                        class="border border-gray-200 my-2" :options="filterOptions" />
+                        class="border border-gray-200 mt-2" :options="filterOptions" />
                 </div>
-                <DataTable dataKey="id" showGridlines stripedRows :value="luckyDrawRecords" :loading="loading.table"
+                <DataTable class="mt-2" dataKey="id" showGridlines stripedRows :value="luckyDrawRecords" :loading="loading.table"
                     scrollable scrollDirection="both" scrollHeight="460px" tableStyle="min-width: 80rem">
 
                     <Column headerStyle="background-color: #2E3192; color: white; width:3rem" class="table-header"
