@@ -70,36 +70,6 @@ const otp = ref("");
 const loading = ref(false);
 const step = ref(1);
 
-const languageMenu = ref();
-
-const languages = [
-    { name: "English", code: "en", icon: "🇬🇧" },
-    { name: "မြန်မာ", code: "mm", icon: "🇲🇲" },
-];
-
-const selectedLanguage = ref(localStorage.getItem("locale") || locale.value || "mm");
-const selectedLanguageLabel = ref(
-    languages.find((l) => l.code === selectedLanguage.value)?.name || "မြန်မာ"
-);
-
-const languageMenuItems = ref(
-    languages.map((lang) => ({
-        label: `${lang.icon} ${lang.name}`,
-        command: () => changeLanguage(lang.code),
-    }))
-);
-
-const toggleLanguageMenu = (event) => {
-    languageMenu.value.toggle(event);
-};
-
-const changeLanguage = (langCode) => {
-    selectedLanguage.value = langCode;
-    locale.value = langCode;
-    localStorage.setItem("locale", langCode);
-    selectedLanguageLabel.value = languages.find((l) => l.code === langCode)?.name;
-};
-
 // Request OTP
 const getOtp = async () => {
     loading.value = true;
@@ -107,7 +77,6 @@ const getOtp = async () => {
         const response = await backend.get(`/get-otp-with-email?email=${email.value}`);
         if (response.status === 200) {
             step.value = 2;
-            otp.value = String(response.data.otp); // testing only
         }
     } catch (error) {
         console.error(error);
