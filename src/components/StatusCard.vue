@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col justify-center items-center px-6 w-full">
+  <div class="flex flex-col justify-center items-center px-6 w-full z-50">
     <div class="w-full rounded-md bg-white shadow-lg text-center p-4">
       <!-- Top message -->
       <div class="rounded-md py-2 mb-4 font-semibold" :class="type === 'success'
