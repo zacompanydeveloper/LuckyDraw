@@ -50,7 +50,7 @@
                 </div>
                 <DataTable dataKey="id" showGridlines stripedRows :value="luckyDrawRecords" :loading="loading.table"
                     scrollable scrollDirection="both" scrollHeight="460px" tableStyle="min-width: 80rem">
-                    
+
                     <Column headerStyle="background-color: #2E3192; color: white; width:3rem" class="table-header"
                         :header="$t('no')">
                         <template #body="slotProps">
@@ -112,66 +112,109 @@
                     :style="{ width: '30rem', height: '100%', color: '#2E3192' }" :modal="true" :draggable="false"
                     position="right">
                     <div class="space-y-4 min-h-[700px]">
-                        <!-- Voucher No -->
-                        <div>
-                            <label class="block text-gray-700 mb-1">{{ $t('voucher_no') }}</label>
-                            <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
-                                :class="{ 'text-red-500': !record.invoice_no }">
-                                {{ record.invoice_no || '-' }}
+
+                        <div class=" border border-gray-200 rounded-md p-4 pt-2 grid grid-cols-1 gap-4">
+                            <!-- Shop Name -->
+                            <div>
+                                <label class="block text-gray-700 mb-1">{{ $t('shop') }}</label>
+                                <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
+                                    :class="{ 'text-red-500': !record.shop_name }">
+                                    {{ record.shop_name || '-' }}
+                                </div>
+                            </div>
+
+                            <!-- Creator -->
+                            <div>
+                                <label class="block text-gray-700 mb-1">{{ $t('created_by') }}</label>
+                                <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
+                                    :class="{ 'text-red-500': !record.creator_name }">
+                                    {{ record.creator_name || '-' }}
+                                </div>
+                            </div>
+
+                            <!-- Serial Code -->
+                            <div>
+                                <label class="block text-gray-700 mb-1">{{ $t('serial_code') }}</label>
+                                <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
+                                    :class="{ 'text-red-500': !record.serial_code }">
+                                    {{ record.serial_code || '-' }}
+                                </div>
+                            </div>
+
+                            <!-- Tracking Code -->
+                            <div>
+                                <label class="block text-gray-700 mb-1">{{ $t('gift_code') }}</label>
+                                <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
+                                    :class="{ 'text-red-500': !record.tracking_code }">
+                                    {{ record.tracking_code || '-' }}
+                                </div>
+                            </div>
+
+                            <!-- Voucher No -->
+                            <div>
+                                <label class="block text-gray-700 mb-1">{{ $t('voucher_no') }}</label>
+                                <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
+                                    :class="{ 'text-red-500': !record.invoice_no }">
+                                    {{ record.invoice_no || '-' }}
+                                </div>
+                            </div>
+
+                            <!-- Amount -->
+                            <div>
+                                <label class="block text-gray-700 mb-1">{{ $t('amount') }}</label>
+                                <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
+                                    :class="{ 'text-red-500': !record.amount }">
+                                    {{ record.amount ? helper.priceFormat(record.amount) + ' ' + $t('ks') : '-' }}
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Amount -->
-                        <div>
-                            <label class="block text-gray-700 mb-1">{{ $t('amount') }}</label>
-                            <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
-                                :class="{ 'text-red-500': !record.amount }">
-                                {{ record.amount ? helper.priceFormat(record.amount) + ' ' + $t('ks') : '-' }}
+                        <div class="border border-gray-200 rounded-md p-4 pt-2 grid grid-cols-1 gap-4">
+                            <!-- Name -->
+                            <div>
+                                <label class="block text-gray-700 mb-1">{{ $t('customer_name') }}</label>
+                                <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
+                                    :class="{ 'text-red-500': !record.customer_name }">
+                                    {{ record.customer_name || '-' }}
+                                </div>
+                            </div>
+
+                            <!-- Phone Number -->
+                            <div>
+                                <label class="block text-gray-700 mb-1">{{ $t('phone_number') }}</label>
+                                <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
+                                    :class="{ 'text-red-500': !record.phone }">
+                                    {{ record.phone || '-' }}
+                                </div>
+                            </div>
+
+                            <!-- NRC No -->
+                            <div>
+                                <label class="block text-gray-700 mb-1">{{ $t('nrc_no') }}</label>
+                                <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
+                                    :class="{ 'text-red-500': !record.nrc }">
+                                    {{ record.nrc || '-' }}
+                                </div>
+                            </div>
+
+                            <!-- Township -->
+                            <div>
+                                <label class="block text-gray-700 mb-1">{{ $t('township') }}</label>
+                                <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
+                                    :class="{ 'text-red-500': !record.township }">
+                                    {{ record.township || '-' }}
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Name -->
-                        <div>
-                            <label class="block text-gray-700 mb-1">{{ $t('name') }}</label>
-                            <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
-                                :class="{ 'text-red-500': !record.customer_name }">
-                                {{ record.customer_name || '-' }}
-                            </div>
-                        </div>
 
-                        <!-- Phone Number -->
-                        <div>
-                            <label class="block text-gray-700 mb-1">{{ $t('phone_number') }}</label>
-                            <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
-                                :class="{ 'text-red-500': !record.phone }">
-                                {{ record.phone || '-' }}
-                            </div>
-                        </div>
-
-                        <!-- NRC No -->
-                        <div>
-                            <label class="block text-gray-700 mb-1">{{ $t('nrc_no') }}</label>
-                            <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
-                                :class="{ 'text-red-500': !record.nrc }">
-                                {{ record.nrc || '-' }}
-                            </div>
-                        </div>
-
-                        <!-- Township -->
-                        <div>
-                            <label class="block text-gray-700 mb-1">{{ $t('township') }}</label>
-                            <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
-                                :class="{ 'text-red-500': !record.township }">
-                                {{ record.township || '-' }}
-                            </div>
-                        </div>
                     </div>
                     <template #footer>
                         <div class="grid grid-cols-3 gap-2 justify-items-end pt-4 w-full">
-                            <Button v-if="record.status === 'in_review'" class=" w-full" label="Approve"
-                                severity="success" variant="outlined" :loading="loading.approve"
+                            <Button v-can="'manage-lucky-draw'" v-if="record.status === 'in_review'" class=" w-full"
+                                label="Approve" severity="success" variant="outlined" :loading="loading.approve"
                                 @click="confirmStatus('approved', record.id)" />
-                            <Button
+                            <Button v-can="'manage-lucky-draw'"
                                 v-if="record.status === 'pending' || record.status === 'in_review' || record.status === 'approved'"
                                 class=" w-full" label="Reject" severity="danger" variant="outlined"
                                 :loading="loading.reject" @click="confirmStatus('rejected', record.id)" />
