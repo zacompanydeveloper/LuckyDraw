@@ -51,12 +51,14 @@
                 </main>
             </div>
         </div>
+        <Toast />
     </div>
 </template>
 
 <script setup>
 import { ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
+import { useToast } from 'primevue/usetoast';
 import helper from "@/helper";
 import bgImage from "@/assets/svg/bg.svg";
 import NotFound from "@/views/NotFound.vue";
@@ -64,6 +66,7 @@ import backend from "@/api/backend";
 import router from "@/router";
 
 const { locale } = useI18n();
+const toast = useToast();
 const isMobile = helper.isMobile();
 const email = ref("");
 const otp = ref("");
@@ -77,9 +80,21 @@ const getOtp = async () => {
         const response = await backend.get(`/get-otp-with-email?email=${email.value}`);
         if (response.status === 200) {
             step.value = 2;
+            toast.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'OTP sent to your email successfully',
+                life: 3000
+            });
         }
     } catch (error) {
         console.error(error);
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.response?.data?.message || 'Failed to send OTP. Please try again.',
+            life: 5000
+        });
     } finally {
         loading.value = false;
     }
@@ -97,10 +112,22 @@ const confirmOtp = async () => {
             localStorage.setItem("adminToken", response.data.token);
             localStorage.setItem("userPermissions", JSON.stringify(response.data.user?.permissions));
             localStorage.setItem("userInfo", JSON.stringify(response.data.user));
+            toast.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Login successful! Welcome back.',
+                life: 3000
+            });
             router.push("/admin-panel");
         }
     } catch (error) {
         console.error(error);
+        toast.add({
+            severity: 'error',
+            summary: 'Invalid OTP',
+            detail: error.response?.data?.message || 'Invalid OTP code. Please check and try again.',
+            life: 5000
+        });
     } finally {
         loading.value = false;
     }
