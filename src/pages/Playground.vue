@@ -1,117 +1,189 @@
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen bg-[#16213e]">
-    <div class="p-5 bg-[#0f3460] rounded-md">
+  <div class="flex flex-col items-center justify-center min-h-screen bg-contain bg-x-repeat"
+    :style="{ backgroundImage: `url(${bgImage})` }">
+    <div class="rounded-md w-full px-[10%]">
       <!-- Slots -->
-      <div class="grid grid-cols-3 gap-5 p-5 bg-black/20 rounded-md mb-2.5">
-        <div v-for="(slot, index) in slots" :key="index" class="w-[100px] h-[100px] overflow-hidden">
-          <div :ref="el => slotRefs[index] = el">
-            <img v-for="(prize, pIndex) in slot" :key="pIndex" :src="prize" :width="defaultSize" :height="defaultSize"
-              class="block" />
+      <div class="bg-linear-to-b from-[#1218FF] via-[#FFFFFF] to-[#1218FF] px-1.5 mb-16">
+        <div class="grid grid-cols-2 p-5 bg-[#000DFF] divide-x divide-white/20 rounded-md shadow-white">
+          <!-- Customer slot -->
+          <div class="text-center bg-gradient-to-r from-[#1218FF] via-[#FFFFFF] to-[#1218FF] py-1.5">
+            <div class="w-full h-[150px] overflow-hidden bg-[#000DFF]">
+              <div :ref="el => slotRefs[0] = el">
+                <div v-for="(customer, i) in slots[0]" :key="`c-${i}`"
+                  class="h-[150px] flex items-center justify-center text-white font-semibold text-4xl capitalize px-2">
+                  {{ customer }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Prize slot -->
+          <div class="text-center bg-gradient-to-r from-[#1218FF] via-[#FFFFFF] to-[#1218FF] py-1.5">
+            <div class="w-full h-[150px] overflow-hidden bg-[#000DFF]">
+              <div :ref="el => slotRefs[1] = el">
+                <div v-for="(prize, i) in slots[1]" :key="`p-${i}`"
+                  class="h-[150px] flex items-center justify-center text-white font-semibold text-4xl capitalize px-2">
+                  {{ prize }}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Button -->
-      <button type="button" @click="startAnimation"
-        class="block w-full h-10 bg-[#5c2e7e] text-white uppercase text-lg rounded-md hover:opacity-70">
-        Roll
-      </button>
-
-      <!-- Log -->
-      <div class="max-w-[380px] text-white text-sm mt-2 break-words">
-        Ganhou: {{ playerWon ? 'Sim' : 'Não' }}<br />
-        <span v-if="playerWon">Item sorteado: {{ winningItem }}</span>
+      <!-- Roll Button -->
+      <div class="flex justify-center">
+        <button type="button" @click="startAnimation" :disabled="processing"
+          class="w-[200px] h-14 hover:opacity-90 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed">
+          <img src="@/assets/svg/button.svg" alt="btn" />
+        </button>
       </div>
     </div>
+
+    <Toast />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, nextTick } from 'vue'
+import { useToast } from 'primevue/usetoast'
+import bgImage from '@/assets/svg/slot_bg.svg'
 
-const prizes = [
-  'https://access.cdndata.cloud/marketplace/pos-lite/proxyImg/174955058326tBK_400_400.webp',
-  'https://access.cdndata.cloud/marketplace/pos-lite/proxyImg/1741859175FtPU2_400_400.webp',
-  'https://access.cdndata.cloud/marketplace/pos-lite/proxyImg/1749636404vZvs2_400_400.webp',
-  'https://access.cdndata.cloud/marketplace/pos-lite/proxyImg/1745555594GWQBo_400_400.webp',
-  'https://access.cdndata.cloud/marketplace/pos-lite/proxyImg/1741151150MHniG_400_400.webp',
-  'https://access.cdndata.cloud/marketplace/pos-lite/proxyImg/174963606957CYP_400_400.webp',
-  'https://access.cdndata.cloud/marketplace/pos-lite/proxyImg/1749463488isUux_400_400.webp'
+// -----------------
+// CONSTANTS
+// -----------------
+const ITEM_HEIGHT = 150
+const TOTAL_DUPLICATES = 30
+const ANIMATION_BASE_DURATION = 3000
+const ANIMATION_DELAY_STEP = 500
+
+// -----------------
+// STATE
+// -----------------
+const allCustomers = [
+  'Ei Ei Phyo', 'Ms Myint Myint San', 'Ms Yoon Nandar', 'Ms Thin Thin Yee',
+  'Mr Wai Linn Aung', 'Ms. Phyu Zar Khin', 'Mr Myo Zaw', 'Thazin Store',
+  'Family Mall', 'We Love Natogyi'
 ]
 
-const slots = ref([[], [], []])
-const defaultSize = 100
-const totalDuplicates = 7
+const allPrizes = [
+  'iPhone 15', 'Samsung Galaxy', 'MacBook Pro', 'iPad Air', 'Apple Watch',
+  'AirPods Pro', 'Sony WH-1000XM5', 'Dell XPS 13', 'Google Pixel 8', 'Amazon Echo'
+]
 
-const playerWon = ref(false)
-const winningItem = ref('')
+const remainingCustomers = ref([...allCustomers])
+const remainingPrizes = ref([...allPrizes])
+const winners = ref([])
+
+const slots = ref([['---'], ['---']])
 const slotRefs = []
+const processing = ref(false)
 
-const shuffle = (array) => {
-  let currentIndex = array.length, randomIndex
-  while (currentIndex !== 0) {
-    randomIndex = Math.floor(Math.random() * currentIndex)
-    currentIndex--
-      ;[array[currentIndex], array[randomIndex]] = [
-        array[randomIndex],
-        array[currentIndex],
-      ]
+const toast = useToast()
+
+// -----------------
+// HELPERS
+// -----------------
+function shuffle(array) {
+  const arr = [...array]
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+      ;[arr[i], arr[j]] = [arr[j], arr[i]]
   }
-  return array
+  return arr
 }
 
-const getRandomInt = (min, max) => {
-  min = Math.ceil(min)
-  max = Math.floor(max)
-  return Math.floor(Math.random() * (max - min + 1)) + min
+function getRandomIndex(array) {
+  return Math.floor(Math.random() * array.length)
 }
 
-const buildItemLists = (won, item, randomDifference = 0) => {
-  playerWon.value = won
-  winningItem.value = item
+// -----------------
+// BUILD LISTS
+// -----------------
+function buildSlotLists() {
+  if (!remainingCustomers.value.length || !remainingPrizes.value.length) return null
 
-  slots.value = slots.value.map((_, s) => {
-    let randomPrizes = shuffle(
-      prizes.flatMap(i => Array(totalDuplicates).fill(i))
-    )
+  const cIndex = getRandomIndex(remainingCustomers.value)
+  const pIndex = getRandomIndex(remainingPrizes.value)
 
-    if (won) {
-      randomPrizes.push(item)
-    } else {
-      const position = s < 2 ? 0 : s
-      randomPrizes.push(prizes[position + randomDifference])
-    }
+  const winnerCustomer = remainingCustomers.value[cIndex]
+  const winnerPrize = remainingPrizes.value[pIndex]
 
-    return randomPrizes
-  })
+  const newRemainingCustomers = remainingCustomers.value.filter((_, i) => i !== cIndex)
+  const newRemainingPrizes = remainingPrizes.value.filter((_, i) => i !== pIndex)
+
+  // Build spinning lists
+  const customerList = [
+    ...shuffle(Array(TOTAL_DUPLICATES - 1).fill(winnerCustomer)),
+    ...shuffle(newRemainingCustomers.flatMap(c => Array(TOTAL_DUPLICATES).fill(c))),
+    ...shuffle(winners.value.map(w => w.customer).flatMap(c => Array(TOTAL_DUPLICATES).fill(c))),
+    winnerCustomer // Winner at the end
+  ]
+
+  const prizeList = [
+    ...shuffle(newRemainingPrizes.flatMap(p => Array(TOTAL_DUPLICATES).fill(p))),
+    ...shuffle(Array(TOTAL_DUPLICATES - 1).fill(winnerPrize)),
+    ...shuffle(winners.value.map(w => w.prize).flatMap(p => Array(TOTAL_DUPLICATES).fill(p))),
+    winnerPrize // Winner at the end
+  ]
+
+  slots.value[0] = customerList
+  slots.value[1] = prizeList
+
+  return { winnerCustomer, winnerPrize, newRemainingCustomers, newRemainingPrizes, customerList, prizeList }
 }
 
-const startAnimation = async () => {
-  const won = Math.random() < 0.5
-  const item = prizes[getRandomInt(0, prizes.length - 1)]
-  const randomDifference = getRandomInt(0, prizes.length - 3)
+// -----------------
+// ANIMATION
+// -----------------
+async function startAnimation() {
+  if (processing.value) return
+  processing.value = true
 
-  buildItemLists(won, item, randomDifference)
+  const result = buildSlotLists()
+  if (!result) {
+    processing.value = false
+    return alert('No more remaining customers or prizes!')
+  }
 
   await nextTick()
-  const totalHeight =
-    prizes.length * totalDuplicates * defaultSize
 
+  const totalHeightCustomer = (result.customerList.length * ITEM_HEIGHT) - ITEM_HEIGHT
+  const totalHeightPrize = (result.prizeList.length * ITEM_HEIGHT) - ITEM_HEIGHT
+
+  // animate both slots
   slotRefs.forEach((slot, s) => {
+    const distance = s === 0 ? totalHeightCustomer : totalHeightPrize
     slot.animate(
       [
         { transform: 'translateY(0)' },
-        { transform: `translateY(-${totalHeight}px)` },
+        { transform: `translateY(-${distance}px)` }
       ],
       {
-        duration: 3000 + s * 500,
+        duration: ANIMATION_BASE_DURATION + s * ANIMATION_DELAY_STEP,
         fill: 'forwards',
+        easing: 'ease-out'
       }
     )
   })
+
+  setTimeout(() => {
+    winners.value.push({ customer: result.winnerCustomer, prize: result.winnerPrize })
+    remainingCustomers.value = result.newRemainingCustomers
+    remainingPrizes.value = result.newRemainingPrizes
+    processing.value = false
+    successToast(`🎉 ${result.winnerCustomer} won ${result.winnerPrize} 🎉`)
+  }, ANIMATION_BASE_DURATION + slotRefs.length * ANIMATION_DELAY_STEP)
 }
 
+function successToast(message) {
+  toast.add({ severity: 'success', summary: 'Congratulations', detail: message, life: 10000 })
+}
+
+// -----------------
+// INIT
+// -----------------
 onMounted(() => {
-  buildItemLists(false, '')
+  slots.value = [['---'], ['---']]
 })
 </script>
