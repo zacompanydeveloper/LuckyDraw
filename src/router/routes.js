@@ -97,6 +97,15 @@ export const routes = [
     name: "forbidden",
     component: () => import("@/views/Forbidden.vue"),
   },
+  {
+    path: "/admin-panel/playground",
+    name: "admin-panel-playground",
+    component: () => import("@/pages/Playground.vue"),
+    // meta: {
+    //   requiresAdminAuth: true,
+    //   // permissions: ["view-playground"],
+    // }, // protected route
+  }
 ];
 
 export default routes;
