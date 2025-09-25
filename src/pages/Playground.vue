@@ -40,6 +40,7 @@
       </div>
     </div>
 
+    <canvas ref="confettiCanvas" class="pointer-events-none w-full h-full fixed bottom-0 right-0 left-0 top-0"></canvas>
     <Toast />
   </div>
 </template>
@@ -48,13 +49,16 @@
 import { ref, onMounted, nextTick } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import bgImage from '@/assets/svg/slot_bg.svg'
+import confetti from 'canvas-confetti'
+
+const confettiCanvas = ref(null)
 
 // -----------------
 // CONSTANTS
 // -----------------
 const ITEM_HEIGHT = 150
 const TOTAL_DUPLICATES = 30
-const ANIMATION_BASE_DURATION = 3000
+const ANIMATION_BASE_DURATION = 6000
 const ANIMATION_DELAY_STEP = 500
 
 // -----------------
@@ -173,12 +177,54 @@ async function startAnimation() {
     remainingPrizes.value = result.newRemainingPrizes
     processing.value = false
     successToast(`🎉 ${result.winnerCustomer} won ${result.winnerPrize} 🎉`)
+    launchConfetti()
   }, ANIMATION_BASE_DURATION + slotRefs.length * ANIMATION_DELAY_STEP)
 }
 
 function successToast(message) {
   toast.add({ severity: 'success', summary: 'Congratulations', detail: message, life: 10000 })
 }
+
+function launchConfetti() {
+
+  if (!confettiCanvas.value) return
+  const myConfetti = confetti.create(confettiCanvas.value, { resize: true, useWorker: true })
+
+  // A nice burst:
+  myConfetti({
+    particleCount: 150,
+    spread: 100,
+    origin: { y: 0.6 },
+    colors: ['#bb0000', '#ffffff', '#00bb00', '#0000bb', '#ffdd00'],
+  })
+
+  // Optional second burst for extra effect
+  setTimeout(() => {
+    myConfetti({
+      particleCount: 120,
+      angle: 60,
+      spread: 100,
+      origin: { x: 0 },
+    })
+    myConfetti({
+      particleCount: 120,
+      angle: 120,
+      spread: 100,
+      origin: { x: 1 },
+    })
+  }, 250)
+
+  // Optional third burst for extra effect
+  setTimeout(() => {
+    myConfetti({
+      particleCount: 150,
+      spread: 100,
+      origin: { y: 0.6 },
+      colors: ['#bb0000', '#ffffff', '#00bb00', '#0000bb', '#ffdd00'],
+    })
+  }, 500)
+}
+
 
 // -----------------
 // INIT
