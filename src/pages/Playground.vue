@@ -42,6 +42,21 @@
 
     <canvas ref="confettiCanvas" class="pointer-events-none w-full h-full fixed bottom-0 right-0 left-0 top-0"></canvas>
     <Toast />
+    <Dialog v-model:visible="successBox" modal header="Edit Profile" :style="{ width: '25rem' }">
+      <span class="text-surface-500 dark:text-surface-400 block mb-8">Update your information.</span>
+      <div class="flex items-center gap-4 mb-4">
+        <label for="username" class="font-semibold w-24">Username</label>
+        <InputText id="username" class="flex-auto" autocomplete="off" />
+      </div>
+      <div class="flex items-center gap-4 mb-8">
+        <label for="email" class="font-semibold w-24">Email</label>
+        <InputText id="email" class="flex-auto" autocomplete="off" />
+      </div>
+      <div class="flex justify-end gap-2">
+        <Button type="button" label="Cancel" severity="secondary" @click="visible = false"></Button>
+        <Button type="button" label="Save" @click="visible = false"></Button>
+      </div>
+    </Dialog>
   </div>
 </template>
 
@@ -52,6 +67,7 @@ import bgImage from '@/assets/svg/slot_bg.svg'
 import confetti from 'canvas-confetti'
 
 const confettiCanvas = ref(null)
+const successBox = ref(false)
 
 // -----------------
 // CONSTANTS
@@ -67,10 +83,31 @@ const ANIMATION_DELAY_STEP = 500
 const allCustomers = [
   'Ei Ei Phyo', 'Ms Myint Myint San', 'Ms Yoon Nandar', 'Ms Thin Thin Yee',
   'Mr Wai Linn Aung', 'Ms. Phyu Zar Khin', 'Mr Myo Zaw', 'Thazin Store',
-  'Family Mall', 'We Love Natogyi'
+  'Family Mall', 'We Love Natogyi', 'Happy Mart', 'Super Shop', 'Daily Needs',
+  'Shop & Save', 'Budget Bazaar', 'Quick Pick', 'Urban Market', 'Fresh Finds',
+  'Grocery Hub', 'Value Mart', 'City Store', 'Neighborhood Market', 'Local Goods',
+  'Everyday Essentials', 'Smart Shop', 'Mega Mart', ' Shop Easy', 'Best Buy', 'Shop Smart',
+  'Daily Deals', 'Family Store', 'Super Saver', 'Market Place', 'Shop & Go' ,'Quick Mart', 'Urban Shop', 'Fresh Market', 'Grocery World', 'Value Shop', 'City Market', 'Neighborhood Store', 'Local Mart', 'Everyday Shops', 'Smart Mart', 'Mega Shop', 'Shop Now', 'Best Deals',
+  'Shop Right', 'Daily Shop', 'Family Mart', 'Super Market', 'Market Hub', 'Shop Plus', 'Quick Shop', 'Urban Mart', 'Fresh Shop', 'Grocery Store', 'Value Market', 'City Shop', 'Neighborhood Mart', 'Local Store', 'Everyday Market', 'Smart Store', 'Mega Market', 'Shop & Save', 'Best Store',
+  'Shop Easy', 'Daily Needs', 'Family Goods', 'Super Shop', 'Market Place', 'Shop & Go', 'Quick Mart', 'Urban Shop', 'Fresh Market', 'Grocery World', 'Value Shop', 'City Market', 'Neighborhood Store', 'Local Mart', 'Everyday Shops', 'Smart Mart', 'Mega Shop', 'Shop Now', 'Best Deals',
+  'Shop Right', 'Daily Shop', 'Family Mart', 'Super Market', 'Market Hub', 'Shop Plus', 'Quick Shop', 'Urban Mart', 'Fresh Shop', 'Grocery Store', 'Value Market', 'City Shop', 'Neighborhood Mart', 'Local Store', 'Everyday Market', 'Smart Store', 'Mega Market',
+  'Shop & Save', 'Best Store', 'Shop Easy', 'Daily Needs', 'Family Goods', 'Super Shop', 'Market Place', 'Shop & Go', 'Quick Mart', 'Urban Shop', 'Fresh Market', 'Grocery World', 'Value Shop', 'City Market', 'Neighborhood Store', 'Local Mart', 'Everyday Shops', 'Smart Mart', 'Mega Shop', 'Shop Now', 'Best Deals',
+  'Shop Right', 'Daily Shop', 'Family Mart', 'Super Market', 'Market Hub', 'Shop Plus', 'Quick Shop', 'Urban Mart', 'Fresh Shop', 'Grocery Store', 'Value Market', 'City Shop', 'Neighborhood Mart', 'Local Store', 'Everyday Market', 'Smart Store', 'Mega Market'
 ]
 
 const allPrizes = [
+  'iPhone 15', 'Samsung Galaxy', 'MacBook Pro', 'iPad Air', 'Apple Watch',
+  'AirPods Pro', 'Sony WH-1000XM5', 'Dell XPS 13', 'Google Pixel 8', 'Amazon Echo',
+  'Fitbit Charge 5', 'Nintendo Switch', 'GoPro HERO11', 'Kindle Paperwhite', 'Bose QuietComfort 45',
+  'Microsoft Surface Pro 9', 'Jabra Elite 7 Pro', 'HP Spectre x360', 'Logitech MX Master 3', 'Razer Blade 15', 'Anker PowerCore 20100',
+  'iPhone 15', 'Samsung Galaxy', 'MacBook Pro', 'iPad Air', 'Apple Watch',
+  'AirPods Pro', 'Sony WH-1000XM5', 'Dell XPS 13', 'Google Pixel 8', 'Amazon Echo',
+  'Fitbit Charge 5', 'Nintendo Switch', 'GoPro HERO11', 'Kindle Paperwhite', 'Bose QuietComfort 45',
+  'Microsoft Surface Pro 9', 'Jabra Elite 7 Pro', 'HP Spectre x360', 'Logitech MX Master 3', 'Razer Blade 15', 'Anker PowerCore 20100',
+  'iPhone 15', 'Samsung Galaxy', 'MacBook Pro', 'iPad Air', 'Apple Watch',
+  'AirPods Pro', 'Sony WH-1000XM5', 'Dell XPS 13', 'Google Pixel 8', 'Amazon Echo',
+  'Fitbit Charge 5', 'Nintendo Switch', 'GoPro HERO11', 'Kindle Paperwhite', 'Bose QuietComfort 45',
+  'Microsoft Surface Pro 9', 'Jabra Elite 7 Pro', 'HP Spectre x360', 'Logitech MX Master 3', 'Razer Blade 15', 'Anker PowerCore 20100',
   'iPhone 15', 'Samsung Galaxy', 'MacBook Pro', 'iPad Air', 'Apple Watch',
   'AirPods Pro', 'Sony WH-1000XM5', 'Dell XPS 13', 'Google Pixel 8', 'Amazon Echo'
 ]
@@ -117,19 +154,23 @@ function buildSlotLists() {
   const newRemainingPrizes = remainingPrizes.value.filter((_, i) => i !== pIndex)
 
   // Build spinning lists
-  const customerList = [
-    ...shuffle(Array(TOTAL_DUPLICATES - 1).fill(winnerCustomer)),
-    ...shuffle(newRemainingCustomers.flatMap(c => Array(TOTAL_DUPLICATES).fill(c))),
-    ...shuffle(winners.value.map(w => w.customer).flatMap(c => Array(TOTAL_DUPLICATES).fill(c))),
+  let customerList = [
+    ...shuffle(newRemainingCustomers),
+    ...shuffle(winners.value.map(w => w.customer).flatMap(c => Array(1).fill(c))),
     winnerCustomer // Winner at the end
-  ]
+  ];
 
-  const prizeList = [
-    ...shuffle(newRemainingPrizes.flatMap(p => Array(TOTAL_DUPLICATES).fill(p))),
-    ...shuffle(Array(TOTAL_DUPLICATES - 1).fill(winnerPrize)),
-    ...shuffle(winners.value.map(w => w.prize).flatMap(p => Array(TOTAL_DUPLICATES).fill(p))),
+  // Extra shuffle for stronger randomness
+  customerList = [...shuffle(customerList.slice(0, -1)), customerList.at(-1)];
+
+  let prizeList = [
+    ...shuffle(newRemainingPrizes),
+    ...shuffle(winners.value.map(w => w.prize).flatMap(p => Array(1).fill(p))),
     winnerPrize // Winner at the end
-  ]
+  ];
+
+  // Extra shuffle for stronger randomness
+  prizeList = [...shuffle(prizeList.slice(0, -1)), prizeList.at(-1)];
 
   slots.value[0] = customerList
   slots.value[1] = prizeList
@@ -183,6 +224,7 @@ async function startAnimation() {
 
 function successToast(message) {
   toast.add({ severity: 'success', summary: 'Congratulations', detail: message, life: 10000 })
+  // successBox.value = true
 }
 
 function launchConfetti() {
