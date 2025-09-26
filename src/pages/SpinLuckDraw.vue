@@ -53,14 +53,16 @@ import { ref, onMounted, nextTick } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import bgImage from '@/assets/svg/slot_bg.svg'
 import confetti from 'canvas-confetti'
-import backend from '@/api/backend'
+import { useLuckyDraw } from '@/composables/useLuckyDraw'
 
-const ITEM_HEIGHT = 150
-const ANIMATION_BASE_DURATION = 6000
+const CONFIG = {
+    ITEM_HEIGHT: 150,
+    ANIMATION_BASE_DURATION: 6000,
+    VIRTUAL_COUNT: 5,
+    CONFETTI_DELAY: 250
+}
 
 const confettiCanvas = ref(null)
-const virtualPrizes = ref([])
-const virtualCustomers = ref([])
 const winners = ref([])
 const slots = ref([['---'], ['---']]) // [customers, prizes]
 const slotRefs = ref([null, null])
@@ -69,6 +71,7 @@ const selectedCustomer = ref(null)
 const selectedPrize = ref(null)
 
 const toast = useToast()
+const { virtualPrizes, virtualCustomers, fetchPrizes, fetchCustomers, shufflePrize, shuffleCustomer } = useLuckyDraw()
 
 function setSlotRef(index, el) {
     slotRefs.value[index] = el
@@ -83,16 +86,27 @@ function cancelSlotAnimations(slotEl) {
     } catch (e) { }
 }
 
+function animateSlot(slotEl, itemCount) {
+    if (!slotEl) return
+    cancelSlotAnimations(slotEl)
+    const totalHeight = (itemCount * CONFIG.ITEM_HEIGHT) - CONFIG.ITEM_HEIGHT
+    slotEl.animate(
+        [{ transform: 'translateY(0)' }, { transform: `translateY(-${totalHeight}px)` }],
+        { duration: CONFIG.ANIMATION_BASE_DURATION, fill: 'forwards', easing: 'ease-out' }
+    )
+}
+
 // -----------------
 // PRIZE SPIN
 // -----------------
 async function spinPrize() {
     if (!virtualPrizes.value.length || !virtualCustomers.value.length) {
         processing.value = false
-        return alert('No more prizes or customers!')
+        toast.add({ severity: 'warn', summary: 'Cannot Spin', detail: 'No more prizes or customers!', life: 5000 })
+        return
     }
 
-    const VIRTUAL_COUNT = Math.min(5, virtualPrizes.value.length)
+    const VIRTUAL_COUNT = Math.min(CONFIG.VIRTUAL_COUNT, virtualPrizes.value.length)
     const virtualPrizeList = virtualPrizes.value.slice(0, VIRTUAL_COUNT)
     slots.value[1] = virtualPrizeList
 
@@ -100,30 +114,17 @@ async function spinPrize() {
     const prizeSlotEl = slotRefs.value[1]
     if (!prizeSlotEl) return
 
-    cancelSlotAnimations(prizeSlotEl)
-    const totalHeight = (virtualPrizeList.length * ITEM_HEIGHT) - ITEM_HEIGHT
-    prizeSlotEl.animate(
-        [{ transform: 'translateY(0)' }, { transform: `translateY(-${totalHeight}px)` }],
-        { duration: ANIMATION_BASE_DURATION, fill: 'forwards', easing: 'ease-out' }
-    )
+    animateSlot(prizeSlotEl, virtualPrizeList.length)
 
-    let realPrize = null
-    try {
-        const res = await backend.get('/lucky-draw-prizes/shuffle-prize')
-        realPrize = res.data?.data ?? null
-    } catch (err) {
-        console.error('Failed to fetch real prize', err)
-    }
+    const realPrize = await shufflePrize()
 
     setTimeout(() => {
-        console.log('Selected Prize:', realPrize);
-
         if (realPrize) {
             selectedPrize.value = { ...realPrize }
         }
         slots.value[1].splice(-1, 1, selectedPrize.value)
-        setTimeout(() => spinCustomerAfterPrize(), ANIMATION_BASE_DURATION / 2)
-    }, ANIMATION_BASE_DURATION / 4)
+        setTimeout(() => spinCustomerAfterPrize(), CONFIG.ANIMATION_BASE_DURATION / 2)
+    }, CONFIG.ANIMATION_BASE_DURATION / 4)
 }
 
 // -----------------
@@ -132,12 +133,12 @@ async function spinPrize() {
 async function spinCustomerAfterPrize() {
     if (!virtualCustomers.value.length) {
         processing.value = false
-        return alert('No more customers!')
+        toast.add({ severity: 'warn', summary: 'Cannot Spin', detail: 'No more customers!', life: 5000 })
+        return
     }
 
-    const VIRTUAL_COUNT = Math.min(5, virtualCustomers.value.length)
+    const VIRTUAL_COUNT = Math.min(CONFIG.VIRTUAL_COUNT, virtualCustomers.value.length)
     const virtualCustomerList = virtualCustomers.value.slice(0, VIRTUAL_COUNT)
-    console.log('Virtual Customers:', virtualCustomerList);
 
     slots.value[0] = virtualCustomerList
 
@@ -145,35 +146,15 @@ async function spinCustomerAfterPrize() {
     const customerSlotEl = slotRefs.value[0]
     if (!customerSlotEl) return
 
-    cancelSlotAnimations(customerSlotEl)
-    const totalHeight = (virtualCustomerList.length * ITEM_HEIGHT) - ITEM_HEIGHT
-    customerSlotEl.animate(
-        [{ transform: 'translateY(0)' }, { transform: `translateY(-${totalHeight}px)` }],
-        { duration: ANIMATION_BASE_DURATION, fill: 'forwards', easing: 'ease-out' }
-    )
+    animateSlot(customerSlotEl, virtualCustomerList.length)
 
-    let realCustomer = { hash_id: null, name: null }
-    try {
-        const res = await backend.get('/lucky-draw-tickets/shuffle-customer')
-
-        realCustomer.hash_id = res.data?.data?.id ?? null
-        realCustomer.name = res.data?.data?.customer_name ?? null
-
-        console.log('Fetched Real Customer:', realCustomer);
-
-    } catch (err) {
-        console.error('Failed to fetch real customer', err)
-    }
-
-    console.log('Selected Customer:', realCustomer);
+    const realCustomer = await shuffleCustomer()
 
     setTimeout(() => {
         if (realCustomer) {
             selectedCustomer.value = { ...realCustomer }
         }
         slots.value[0].splice(-1, 1, selectedCustomer.value)
-
-        console.log('Winner:', selectedCustomer.value);
 
         setTimeout(() => {
             winners.value.push({
@@ -184,8 +165,8 @@ async function spinCustomerAfterPrize() {
             successToast(`🎉 ${selectedCustomer.value.name} won ${selectedPrize.value.name} 🎉`)
             launchConfetti()
             setTimeout(() => resetForNextRound(), 3000)
-        }, ANIMATION_BASE_DURATION)
-    }, ANIMATION_BASE_DURATION / 4)
+        }, CONFIG.ANIMATION_BASE_DURATION)
+    }, CONFIG.ANIMATION_BASE_DURATION / 4)
 }
 
 // -----------------
@@ -201,11 +182,18 @@ function resetForNextRound() {
 // -----------------
 // START
 // -----------------
-function startSpinning() {
+async function startSpinning() {
     if (processing.value) return
-    resetForNextRound()
-    processing.value = true
-    spinPrize()
+
+    try {
+        resetForNextRound()
+        processing.value = true
+        await spinPrize()
+    } catch (error) {
+        console.error('Error during spinning:', error)
+        toast.add({ severity: 'error', summary: 'Spin Error', detail: 'An error occurred during spinning', life: 5000 })
+        processing.value = false
+    }
 }
 
 // -----------------
@@ -228,52 +216,13 @@ function launchConfetti() {
     }, 500)
 }
 
-// -----------------
-// FETCH DATA
-// -----------------
-const getPrizes = async () => {
-    try {
-        const response = await backend.get('/lucky-draw-prizes', { params: { withoutPaginate: true } })
-        const prizesData = response.data?.data
-        if (Array.isArray(prizesData) && prizesData.length) {
-            virtualPrizes.value = prizesData.map(p => ({
-                hash_id: p.id,
-                name: p.name,
-                image: p.image?.url
-            }))
-        } else {
-            toast.add({ severity: 'warn', summary: 'No Prizes', detail: 'No prizes available', life: 5000 })
-        }
-    } catch (err) {
-        console.error('Error fetching prizes:', err)
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to fetch prizes', life: 5000 })
-    }
-}
-
-const getCustomers = async () => {
-    try {
-        const response = await backend.get('/lucky-draw-tickets/customers', { params: { withoutPaginate: true } })
-        const customersData = response.data?.data
-        if (Array.isArray(customersData) && customersData.length) {
-            virtualCustomers.value = customersData.map(c => ({
-                hash_id: c.id,
-                name: c.customer_name
-            }))
-        } else {
-            toast.add({ severity: 'warn', summary: 'No Customers', detail: 'No customers available', life: 5000 })
-        }
-    } catch (err) {
-        console.error('Error fetching customers:', err)
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to fetch customers', life: 5000 })
-    }
-}
 
 // -----------------
 // INIT
 // -----------------
 onMounted(() => {
     slots.value = [['---'], ['---']]
-    getPrizes()
-    getCustomers()
+    fetchPrizes()
+    fetchCustomers()
 })
 </script>
