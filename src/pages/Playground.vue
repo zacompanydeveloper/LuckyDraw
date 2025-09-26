@@ -33,7 +33,7 @@
 
       <!-- Roll Button -->
       <div class="flex justify-center">
-        <button type="button" @click="startAnimation" :disabled="processing"
+        <button type="button" @click="startSpinning" :disabled="processing"
           class="w-[200px] h-14 hover:opacity-90 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed">
           <img src="@/assets/svg/button.svg" alt="btn" />
         </button>
@@ -87,7 +87,7 @@ const allCustomers = [
   'Shop & Save', 'Budget Bazaar', 'Quick Pick', 'Urban Market', 'Fresh Finds',
   'Grocery Hub', 'Value Mart', 'City Store', 'Neighborhood Market', 'Local Goods',
   'Everyday Essentials', 'Smart Shop', 'Mega Mart', ' Shop Easy', 'Best Buy', 'Shop Smart',
-  'Daily Deals', 'Family Store', 'Super Saver', 'Market Place', 'Shop & Go' ,'Quick Mart', 'Urban Shop', 'Fresh Market', 'Grocery World', 'Value Shop', 'City Market', 'Neighborhood Store', 'Local Mart', 'Everyday Shops', 'Smart Mart', 'Mega Shop', 'Shop Now', 'Best Deals',
+  'Daily Deals', 'Family Store', 'Super Saver', 'Market Place', 'Shop & Go', 'Quick Mart', 'Urban Shop', 'Fresh Market', 'Grocery World', 'Value Shop', 'City Market', 'Neighborhood Store', 'Local Mart', 'Everyday Shops', 'Smart Mart', 'Mega Shop', 'Shop Now', 'Best Deals',
   'Shop Right', 'Daily Shop', 'Family Mart', 'Super Market', 'Market Hub', 'Shop Plus', 'Quick Shop', 'Urban Mart', 'Fresh Shop', 'Grocery Store', 'Value Market', 'City Shop', 'Neighborhood Mart', 'Local Store', 'Everyday Market', 'Smart Store', 'Mega Market', 'Shop & Save', 'Best Store',
   'Shop Easy', 'Daily Needs', 'Family Goods', 'Super Shop', 'Market Place', 'Shop & Go', 'Quick Mart', 'Urban Shop', 'Fresh Market', 'Grocery World', 'Value Shop', 'City Market', 'Neighborhood Store', 'Local Mart', 'Everyday Shops', 'Smart Mart', 'Mega Shop', 'Shop Now', 'Best Deals',
   'Shop Right', 'Daily Shop', 'Family Mart', 'Super Market', 'Market Hub', 'Shop Plus', 'Quick Shop', 'Urban Mart', 'Fresh Shop', 'Grocery Store', 'Value Market', 'City Shop', 'Neighborhood Mart', 'Local Store', 'Everyday Market', 'Smart Store', 'Mega Market',
@@ -119,6 +119,8 @@ const winners = ref([])
 const slots = ref([['---'], ['---']])
 const slotRefs = []
 const processing = ref(false)
+const selectedCustomer = ref(null)
+const selectedPrize = ref(null)
 
 const toast = useToast()
 
@@ -141,21 +143,17 @@ function getRandomIndex(array) {
 // -----------------
 // BUILD LISTS
 // -----------------
-function buildSlotLists() {
-  if (!remainingCustomers.value.length || !remainingPrizes.value.length) return null
+function buildCustomerList() {
+  if (!remainingCustomers.value.length) return null
 
   const cIndex = getRandomIndex(remainingCustomers.value)
-  const pIndex = getRandomIndex(remainingPrizes.value)
-
   const winnerCustomer = remainingCustomers.value[cIndex]
-  const winnerPrize = remainingPrizes.value[pIndex]
 
-  const newRemainingCustomers = remainingCustomers.value.filter((_, i) => i !== cIndex)
-  const newRemainingPrizes = remainingPrizes.value.filter((_, i) => i !== pIndex)
+  const otherCustomers = remainingCustomers.value.filter((_, i) => i !== cIndex)
 
-  // Build spinning lists
+  // Build spinning list
   let customerList = [
-    ...shuffle(newRemainingCustomers),
+    ...shuffle(otherCustomers),
     ...shuffle(winners.value.map(w => w.customer).flatMap(c => Array(1).fill(c))),
     winnerCustomer // Winner at the end
   ];
@@ -163,8 +161,22 @@ function buildSlotLists() {
   // Extra shuffle for stronger randomness
   customerList = [...shuffle(customerList.slice(0, -1)), customerList.at(-1)];
 
+  slots.value[0] = customerList
+
+  return { winnerCustomer, customerList, cIndex }
+}
+
+function buildPrizeList() {
+  if (!remainingPrizes.value.length) return null
+
+  const pIndex = getRandomIndex(remainingPrizes.value)
+  const winnerPrize = remainingPrizes.value[pIndex]
+
+  const otherPrizes = remainingPrizes.value.filter((_, i) => i !== pIndex)
+
+  // Build spinning list
   let prizeList = [
-    ...shuffle(newRemainingPrizes),
+    ...shuffle(otherPrizes),
     ...shuffle(winners.value.map(w => w.prize).flatMap(p => Array(1).fill(p))),
     winnerPrize // Winner at the end
   ];
@@ -172,54 +184,115 @@ function buildSlotLists() {
   // Extra shuffle for stronger randomness
   prizeList = [...shuffle(prizeList.slice(0, -1)), prizeList.at(-1)];
 
-  slots.value[0] = customerList
   slots.value[1] = prizeList
 
-  return { winnerCustomer, winnerPrize, newRemainingCustomers, newRemainingPrizes, customerList, prizeList }
+  return { winnerPrize, prizeList, pIndex }
 }
 
 // -----------------
 // ANIMATION
 // -----------------
-async function startAnimation() {
-  if (processing.value) return
-  processing.value = true
-
-  const result = buildSlotLists()
+async function spinCustomer() {
+  const result = buildCustomerList()
   if (!result) {
     processing.value = false
-    return alert('No more remaining customers or prizes!')
+    return alert('No more remaining customers!')
   }
 
   await nextTick()
 
-  const totalHeightCustomer = (result.customerList.length * ITEM_HEIGHT) - ITEM_HEIGHT
-  const totalHeightPrize = (result.prizeList.length * ITEM_HEIGHT) - ITEM_HEIGHT
+  const totalHeight = (result.customerList.length * ITEM_HEIGHT) - ITEM_HEIGHT
 
-  // animate both slots
-  slotRefs.forEach((slot, s) => {
-    const distance = s === 0 ? totalHeightCustomer : totalHeightPrize
-    slot.animate(
-      [
-        { transform: 'translateY(0)' },
-        { transform: `translateY(-${distance}px)` }
-      ],
-      {
-        duration: ANIMATION_BASE_DURATION + s * ANIMATION_DELAY_STEP,
-        fill: 'forwards',
-        easing: 'ease-out'
-      }
-    )
-  })
+  // animate customer slot only
+  slotRefs[0].animate(
+    [
+      { transform: 'translateY(0)' },
+      { transform: `translateY(-${totalHeight}px)` }
+    ],
+    {
+      duration: ANIMATION_BASE_DURATION,
+      fill: 'forwards',
+      easing: 'ease-out'
+    }
+  )
 
   setTimeout(() => {
-    winners.value.push({ customer: result.winnerCustomer, prize: result.winnerPrize })
-    remainingCustomers.value = result.newRemainingCustomers
-    remainingPrizes.value = result.newRemainingPrizes
+    selectedCustomer.value = { name: result.winnerCustomer, index: result.cIndex }
+    // toast.add({ severity: 'info', summary: 'Customer Selected', detail: `${result.winnerCustomer} has been selected!`, life: 5000 })
+
+    // Automatically spin prize after a short delay
+    setTimeout(() => {
+      spinPrize()
+    }, 500)
+  }, ANIMATION_BASE_DURATION)
+}
+
+async function spinPrize() {
+  if (!selectedCustomer.value) return
+
+  const result = buildPrizeList()
+  if (!result) {
     processing.value = false
-    successToast(`🎉 ${result.winnerCustomer} won ${result.winnerPrize} 🎉`)
+    return alert('No more remaining prizes!')
+  }
+
+  await nextTick()
+
+  const totalHeight = (result.prizeList.length * ITEM_HEIGHT) - ITEM_HEIGHT
+
+  // animate prize slot only
+  slotRefs[1].animate(
+    [
+      { transform: 'translateY(0)' },
+      { transform: `translateY(-${totalHeight}px)` }
+    ],
+    {
+      duration: ANIMATION_BASE_DURATION,
+      fill: 'forwards',
+      easing: 'ease-out'
+    }
+  )
+
+  setTimeout(() => {
+    selectedPrize.value = { name: result.winnerPrize, index: result.pIndex }
+
+    // Record winner and update remaining lists
+    winners.value.push({ customer: selectedCustomer.value.name, prize: result.winnerPrize })
+    remainingCustomers.value = remainingCustomers.value.filter((_, i) => i !== selectedCustomer.value.index)
+    remainingPrizes.value = remainingPrizes.value.filter((_, i) => i !== result.pIndex)
+
+    processing.value = false
+    successToast(`🎉 ${selectedCustomer.value.name} won ${result.winnerPrize} 🎉`)
     launchConfetti()
-  }, ANIMATION_BASE_DURATION + slotRefs.length * ANIMATION_DELAY_STEP)
+
+    // Reset for next round
+    setTimeout(() => {
+      resetForNextRound()
+    }, 3000)
+  }, ANIMATION_BASE_DURATION)
+}
+
+function resetForNextRound() {
+  // Reset arrays
+  slots.value = [['---'], ['---']]
+  selectedCustomer.value = null
+  selectedPrize.value = null
+
+  // **Reset the transform of each slot container immediately**
+  slotRefs.forEach(slot => {
+    if (slot) {
+      // cancel any animation frames still running
+      slot.getAnimations().forEach(a => a.cancel())
+      slot.style.transform = 'translateY(0)'
+    }
+  })
+}
+
+function startSpinning() {
+  if (processing.value) return
+  resetForNextRound() // optional if you want clean reset before spin
+  processing.value = true
+  spinCustomer()
 }
 
 function successToast(message) {
