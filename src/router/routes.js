@@ -114,6 +114,15 @@ export const routes = [
       requiresAdminAuth: true,
       // permissions: ["manage-spin-luck-draw"],
     }, // protected route
+  },
+  {
+    path: "/admin-panel/ticket-winner",
+    name: "admin-panel-ticket-winner",
+    component: () => import("@/pages/TicketWinner.vue"),
+    meta: {
+      requiresAdminAuth: true,
+      // permissions: ["manage-ticket-winner"],
+    }, // protected route
   }
 ];
 
