@@ -2,13 +2,13 @@
     <div>
         <div
             class="top-0 right-0 fixed m-4 flex justify-center items-center gap-2 rounded-full min-w-[90px] min-h-[36px] px-3">
-            <ToggleSwitch v-model="checked">
+            <!-- <ToggleSwitch v-model="checked">
                 <template #handle="{ checked }">
                     <span class="text-[10px] font-semibold" :class="checked ? 'text-red-500' : 'text-red-500'">
                         {{ checked ? $t('testing') : $t('live') }}
                     </span>
                 </template>
-            </ToggleSwitch>
+            </ToggleSwitch> -->
             <LanguageSwitcher />
         </div>
 
@@ -18,15 +18,6 @@
         <div v-else>
             <DesktopLuckyDrawPage />
         </div>
-        <!-- Footer -->
-        <div class="fixed bottom-0 w-full text-right p-4
-        ">
-            <div class="text-sm text-[#2E3192] flex justify-between items-center gap-4">
-                <span> &COPY; {{ new Date().getFullYear() }} Sweety Home</span>
-                <span class="flex items-center gap-2"> Developed By <img src="@/assets/svg/za.svg" alt=""></span>
-            </div>
-        </div>
-
     </div>
 </template>
 <script setup>

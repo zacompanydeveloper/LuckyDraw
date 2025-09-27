@@ -19,7 +19,7 @@
                 </header>
 
                 <!-- Mode toggle -->
-                <div class="bottom-0 right-0 fixed m-4 flex items-center gap-2 rounded-full shadow-lg min-w-[90px] min-h-[36px] px-3"
+                <!-- <div class="bottom-0 right-0 fixed m-4 flex items-center gap-2 rounded-full shadow-lg min-w-[90px] min-h-[36px] px-3"
                     :class="checked ? '' : 'opacity-50'">
                     <ToggleSwitch v-model="checked">
                         <template #handle="{ value }">
@@ -29,7 +29,7 @@
                     <p class="!text-xs min-w-[50px]" :class="checked ? 'text-blue-500' : 'text-red-500'">
                         {{ $t(checked ? 'testing' : 'live') }}
                     </p>
-                </div>
+                </div> -->
 
                 <!-- Main -->
                 <main class="flex flex-col justify-center items-center gap-4 mt-20">

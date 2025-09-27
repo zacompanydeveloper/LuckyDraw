@@ -2,7 +2,7 @@ import axios from "axios";
 import defaultSetting from "@/api/config.js";
 import router from "@/router";
 
-const testing = localStorage.getItem("mode") === "testing";
+const testing =  true;//localStorage.getItem("mode") === "testing";
 
 const API_BASE_URL = testing
   ? "https://testing.sweetyhome.net.mm/api/b2c/v1" // testing URL

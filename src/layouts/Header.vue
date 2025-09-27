@@ -67,11 +67,11 @@
                 </template>
             </Drawer>
             <i class="pi pi-bars text-2xl text-[#2E3192] cursor-pointer" @click="visible = true"></i>
-            <p class="!text-sm border px-2" :class="checked ? 'text-blue-500 bg-blue-100' : 'text-red-500 bg-red-100'">
+            <!-- <p class="!text-sm border px-2" :class="checked ? 'text-blue-500 bg-blue-100' : 'text-red-500 bg-red-100'">
                 {{ checked ?
                     'testing'
                     : 'live'
-                }}</p>
+                }}</p> -->
         </div>
 
 
