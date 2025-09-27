@@ -111,7 +111,7 @@ export const routes = [
     name: "admin-panel-spin-luck-draw",
     component: () => import("@/pages/SpinLuckDraw.vue"),
     meta: {
-      // requiresAdminAuth: true,
+      requiresAdminAuth: true,
       // permissions: ["manage-spin-luck-draw"],
     }, // protected route
   }

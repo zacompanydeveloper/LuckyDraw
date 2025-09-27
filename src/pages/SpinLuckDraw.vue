@@ -8,13 +8,19 @@
                     <!-- Prize slot -->
                     <div class="text-center bg-gradient-to-r from-[#1218FF] via-[#FFFFFF] to-[#1218FF] py-1.5">
                         <div class="w-full h-[150px] overflow-hidden bg-[#000DFF]">
-                            <div :ref="el => setSlotRef(1, el)">
+                            <div v-if="slots[1].length" :ref="el => setSlotRef(1, el)">
                                 <div v-for="(prize, i) in slots[1]" :key="`p-${i}`"
                                     class="h-[150px] flex items-center justify-center text-white font-semibold text-4xl px-2">
                                     <span class="text-white text-4xl">
-                                        {{ prize.name || '---' }}
+                                        {{ prize.name }}
                                     </span>
                                 </div>
+                            </div>
+                            <div v-else
+                                class="h-[150px] flex items-center justify-center text-white font-semibold text-4xl px-2">
+                                <span class="text-white text-4xl">
+                                    ---
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -22,11 +28,17 @@
                     <!-- Customer slot -->
                     <div class="text-center bg-gradient-to-r from-[#1218FF] via-[#FFFFFF] to-[#1218FF] py-1.5">
                         <div class="w-full h-[150px] overflow-hidden bg-[#000DFF]">
-                            <div :ref="el => setSlotRef(0, el)">
+                            <div v-if="slots[0].length" :ref="el => setSlotRef(0, el)">
                                 <div v-for="(customer, i) in slots[0]" :key="`c-${i}`"
                                     class="h-[150px] flex items-center justify-center text-white font-semibold text-4xl capitalize px-2">
-                                    {{ customer.name || '---' }}
+                                    {{ customer.name }}
                                 </div>
+                            </div>
+                            <div v-else
+                                class="h-[150px] flex items-center justify-center text-white font-semibold text-4xl px-2">
+                                <span class="text-white text-4xl">
+                                    ---
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -35,9 +47,10 @@
 
             <!-- Roll Button -->
             <div class="flex justify-center">
-                <button type="button" @click="startSpinning" :disabled="processing"
+                <button type="button" :disabled="processing"
                     class="w-[200px] h-14 hover:opacity-90 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed">
-                    <img src="@/assets/svg/button.svg" alt="btn" />
+                    <img v-if="!showNextBtn" @click="startSpinning" src="@/assets/svg/button.svg" alt="btn" />
+                    <img v-else @click="goToNextStep" src="@/assets/svg/next.svg" alt="btn" />
                 </button>
             </div>
         </div>
@@ -54,7 +67,8 @@
                     <h3 class=" text-3xl uppercase">Winner is</h3>
                 </div>
                 <div class="flex flex-col items-center gap-2 w-full relative">
-                    <p class=" text-2xl font-semibold uppercase bg-[#E5F2FF] p-2 px-4">{{ selectedCustomer?.shop_name }}</p>
+                    <p class=" text-2xl font-semibold uppercase bg-[#E5F2FF] p-2 px-4">{{ selectedCustomer?.shop_name }}
+                    </p>
                     <h1 class=" text-3xl font-semibold">{{ selectedCustomer?.name || 'Khaing Yin Mon' }}</h1>
                     <h1
                         class="text-2xl font-semibold text-white bg-[#000DFF] p-3 w-full border border-[#3B43FF] text-shadow-lg rounded ">
@@ -91,12 +105,13 @@ const CONFIG = {
 
 const confettiCanvas = ref(null)
 const winners = ref([])
-const slots = ref([['---'], ['---']]) // [customers, prizes]
+const slots = ref([[], []]) // [customers, prizes]
 const slotRefs = ref([null, null])
 const processing = ref(false)
 const selectedCustomer = ref(null)
 const selectedPrize = ref(null)
 const successDialogVisible = ref(false)
+const showNextBtn = ref(false)
 
 const toast = useToast()
 const { virtualPrizes, virtualCustomers, fetchPrizes, fetchCustomers, shufflePrize, shuffleCustomer } = useLuckyDraw()
@@ -149,8 +164,6 @@ async function spinPrize() {
     if (!realPrize) {
         processing.value = false
         toast.add({ severity: 'error', summary: 'Spin Error', detail: 'Failed to fetch prize', life: 5000 })
-        virtualPrizes.value = []
-        fetchPrizes()
         resetForNextRound()
         return
     }
@@ -160,8 +173,16 @@ async function spinPrize() {
             selectedPrize.value = { ...realPrize }
         }
         slots.value[1].splice(-1, 1, selectedPrize.value)
-        setTimeout(() => spinCustomerAfterPrize(), CONFIG.ANIMATION_BASE_DURATION / 2)
+        setTimeout(() => {
+            showNextBtn.value = true
+            processing.value = false
+        }, CONFIG.ANIMATION_BASE_DURATION / 1.5)
     }, CONFIG.ANIMATION_BASE_DURATION / 4)
+}
+
+function goToNextStep() {
+    processing.value = true
+    spinCustomerAfterPrize()
 }
 
 // -----------------
@@ -190,8 +211,6 @@ async function spinCustomerAfterPrize() {
     if (!realCustomer) {
         processing.value = false
         toast.add({ severity: 'error', summary: 'Spin Error', detail: 'Failed to fetch customer', life: 5000 })
-        virtualCustomers.value = []
-        fetchCustomers()
         resetForNextRound()
         return
     }
@@ -207,23 +226,30 @@ async function spinCustomerAfterPrize() {
                 customer: selectedCustomer.value.name,
                 prize: selectedPrize.value
             })
-            processing.value = false
             // successToast(`🎉 ${selectedCustomer.value.name} won ${selectedPrize.value.name} 🎉`)
             successDialogVisible.value = true
             launchConfetti()
-        }, CONFIG.ANIMATION_BASE_DURATION / 3)
-    }, CONFIG.ANIMATION_BASE_DURATION / 8)
+        }, CONFIG.ANIMATION_BASE_DURATION)
+    }, CONFIG.ANIMATION_BASE_DURATION / 10)
 }
 
 // -----------------
 // RESET
 // -----------------
 function resetForNextRound() {
-    slots.value = [['---'], ['---']]
+    slots.value = [[], []]
     selectedCustomer.value = null
     selectedPrize.value = null
     slotRefs.value.forEach(slotEl => cancelSlotAnimations(slotEl))
     successDialogVisible.value = false
+    processing.value = false
+    showNextBtn.value = false
+
+    // Check if more prizes/customers are available     
+    virtualPrizes.value = [];
+    virtualCustomers.value = [];
+    fetchPrizes();
+    fetchCustomers();
 }
 
 // -----------------
@@ -267,7 +293,7 @@ function launchConfetti() {
 // INIT
 // -----------------
 onMounted(() => {
-    slots.value = [['---'], ['---']]
+    slots.value = [[], []]
     fetchPrizes()
     fetchCustomers()
 })
