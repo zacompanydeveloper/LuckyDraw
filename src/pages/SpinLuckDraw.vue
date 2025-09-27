@@ -244,11 +244,6 @@ function resetForNextRound() {
     successDialogVisible.value = false
     processing.value = false
     showNextBtn.value = false
-
-    // Check if more prizes/customers are available     
-    virtualPrizes.value = [];
-    virtualCustomers.value = [];
-    Promise.all([fetchPrizes(), fetchCustomers()]);
 }
 
 // -----------------
