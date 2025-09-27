@@ -45,6 +45,33 @@
         <canvas ref="confettiCanvas"
             class="pointer-events-none w-full h-full fixed bottom-0 right-0 left-0 top-0"></canvas>
         <Toast />
+
+        <Dialog v-model:visible="successDialogVisible" modal :closable="false" :show-header="false" :show-footer="false"
+            :style="{ width: '40%', backgroundColor: '#FFF' }">
+            <div class="text-center text-[#2E3192] pt-4 flex flex-col items-center gap-4 w-full">
+                <div>
+                    <h1 class=" text-[#2E3192] text-4xl font-semibold uppercase mb-2">Congratulations</h1>
+                    <h3 class=" text-3xl uppercase">Winner is</h3>
+                </div>
+                <div class="flex flex-col items-center gap-2 w-full relative">
+                    <p class=" text-2xl font-semibold uppercase bg-[#E5F2FF] p-2 px-4">{{ selectedCustomer?.shop_name }}</p>
+                    <h1 class=" text-3xl font-semibold">{{ selectedCustomer?.name || 'Khaing Yin Mon' }}</h1>
+                    <h1
+                        class="text-2xl font-semibold text-white bg-[#000DFF] p-3 w-full border border-[#3B43FF] text-shadow-lg rounded ">
+                        {{ selectedPrize?.name ||
+                            'iPhone 16 Pro White Titanium' }}</h1>
+                    <img :src="selectedPrize?.image?.url || ''" alt="img" srcset=""
+                        class="w-20 h-20 object-contain mt-4 absolute bottom-2 left-2 rounded border border-slate-100" />
+                </div>
+            </div>
+            <div class="flex justify-center mt-10">
+                <button type="button" @click="resetForNextRound" :disabled="processing"
+                    class="w-[200px] h-14 hover:opacity-90 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed">
+                    <img src="@/assets/svg/button.svg" alt="btn" />
+                </button>
+            </div>
+        </Dialog>
+
     </div>
 </template>
 
@@ -58,7 +85,7 @@ import { useLuckyDraw } from '@/composables/useLuckyDraw'
 const CONFIG = {
     ITEM_HEIGHT: 150,
     ANIMATION_BASE_DURATION: 6000,
-    VIRTUAL_COUNT: 5,
+    VIRTUAL_COUNT: 1000,
     CONFETTI_DELAY: 250
 }
 
@@ -69,6 +96,7 @@ const slotRefs = ref([null, null])
 const processing = ref(false)
 const selectedCustomer = ref(null)
 const selectedPrize = ref(null)
+const successDialogVisible = ref(false)
 
 const toast = useToast()
 const { virtualPrizes, virtualCustomers, fetchPrizes, fetchCustomers, shufflePrize, shuffleCustomer } = useLuckyDraw()
@@ -118,6 +146,15 @@ async function spinPrize() {
 
     const realPrize = await shufflePrize()
 
+    if (!realPrize) {
+        processing.value = false
+        toast.add({ severity: 'error', summary: 'Spin Error', detail: 'Failed to fetch prize', life: 5000 })
+        virtualPrizes.value = []
+        fetchPrizes()
+        resetForNextRound()
+        return
+    }
+
     setTimeout(() => {
         if (realPrize) {
             selectedPrize.value = { ...realPrize }
@@ -148,7 +185,16 @@ async function spinCustomerAfterPrize() {
 
     animateSlot(customerSlotEl, virtualCustomerList.length)
 
-    const realCustomer = await shuffleCustomer()
+    const realCustomer = await shuffleCustomer(selectedPrize.value?.id)
+
+    if (!realCustomer) {
+        processing.value = false
+        toast.add({ severity: 'error', summary: 'Spin Error', detail: 'Failed to fetch customer', life: 5000 })
+        virtualCustomers.value = []
+        fetchCustomers()
+        resetForNextRound()
+        return
+    }
 
     setTimeout(() => {
         if (realCustomer) {
@@ -162,11 +208,12 @@ async function spinCustomerAfterPrize() {
                 prize: selectedPrize.value
             })
             processing.value = false
-            successToast(`🎉 ${selectedCustomer.value.name} won ${selectedPrize.value.name} 🎉`)
+            // successToast(`🎉 ${selectedCustomer.value.name} won ${selectedPrize.value.name} 🎉`)
+            successDialogVisible.value = true
             launchConfetti()
-            setTimeout(() => resetForNextRound(), 3000)
-        }, CONFIG.ANIMATION_BASE_DURATION)
-    }, CONFIG.ANIMATION_BASE_DURATION / 4)
+            // setTimeout(() => resetForNextRound(), 3000)
+        }, CONFIG.ANIMATION_BASE_DURATION / 5)
+    }, CONFIG.ANIMATION_BASE_DURATION / 12)
 }
 
 // -----------------
@@ -177,6 +224,7 @@ function resetForNextRound() {
     selectedCustomer.value = null
     selectedPrize.value = null
     slotRefs.value.forEach(slotEl => cancelSlotAnimations(slotEl))
+    successDialogVisible.value = false
 }
 
 // -----------------
@@ -186,7 +234,6 @@ async function startSpinning() {
     if (processing.value) return
 
     try {
-        resetForNextRound()
         processing.value = true
         await spinPrize()
     } catch (error) {
