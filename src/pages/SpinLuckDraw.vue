@@ -211,9 +211,8 @@ async function spinCustomerAfterPrize() {
             // successToast(`🎉 ${selectedCustomer.value.name} won ${selectedPrize.value.name} 🎉`)
             successDialogVisible.value = true
             launchConfetti()
-            // setTimeout(() => resetForNextRound(), 3000)
-        }, CONFIG.ANIMATION_BASE_DURATION / 5)
-    }, CONFIG.ANIMATION_BASE_DURATION / 12)
+        }, CONFIG.ANIMATION_BASE_DURATION / 3)
+    }, CONFIG.ANIMATION_BASE_DURATION / 8)
 }
 
 // -----------------
