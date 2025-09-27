@@ -79,7 +79,7 @@
                 </div>
             </div>
             <div class="flex justify-center mt-10">
-                <button type="button" @click="resetForNextRound" :disabled="processing"
+                <button type="button" @click="resetForNextRound"
                     class="w-[200px] h-14 hover:opacity-90 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed">
                     <img src="@/assets/svg/button.svg" alt="btn" />
                 </button>
@@ -248,8 +248,7 @@ function resetForNextRound() {
     // Check if more prizes/customers are available     
     virtualPrizes.value = [];
     virtualCustomers.value = [];
-    fetchPrizes();
-    fetchCustomers();
+    Promise.all([fetchPrizes(), fetchCustomers()]);
 }
 
 // -----------------
@@ -292,9 +291,8 @@ function launchConfetti() {
 // -----------------
 // INIT
 // -----------------
-onMounted(() => {
+onMounted(async () => {
     slots.value = [[], []]
-    fetchPrizes()
-    fetchCustomers()
+    await Promise.all([fetchPrizes(), fetchCustomers()])
 })
 </script>
