@@ -1,14 +1,7 @@
 <template>
     <div>
         <div
-            class="top-0 right-0 fixed m-4 flex justify-center items-center gap-2 rounded-full min-w-[90px] min-h-[36px] px-3">
-            <!-- <ToggleSwitch v-model="checked">
-                <template #handle="{ checked }">
-                    <span class="text-[10px] font-semibold" :class="checked ? 'text-red-500' : 'text-red-500'">
-                        {{ checked ? $t('testing') : $t('live') }}
-                    </span>
-                </template>
-            </ToggleSwitch> -->
+            class="top-0 right-0 fixed m-4 flex justify-center items-center rounded-full min-h-[36px]">
             <LanguageSwitcher />
         </div>
 
