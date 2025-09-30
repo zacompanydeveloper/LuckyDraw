@@ -1,49 +1,49 @@
 <template>
     <div class="flex flex-col items-center justify-center min-h-screen bg-contain bg-x-repeat"
         :style="{ backgroundImage: `url(${bgImage})` }">
-        <div class="rounded-md w-full px-[10%]">
+        <div class="rounded-md w-full px-[5%]">
             <!-- Slots -->
-            <div class="bg-linear-to-b from-[#1218FF] via-[#FFFFFF] to-[#1218FF] px-1.5 mb-16">
-                <div class="grid grid-cols-2 p-5 bg-[#000DFF] divide-x divide-white/20 rounded-md shadow-white">
-                    <!-- Prize slot -->
-                    <div class="text-center bg-gradient-to-r from-[#1218FF] via-[#FFFFFF] to-[#1218FF] py-1.5">
-                        <div class="w-full h-[150px] overflow-hidden bg-[#000DFF]">
-                            <div v-if="slots[1].length" :ref="el => setSlotRef(1, el)">
-                                <div v-for="(prize, i) in slots[1]" :key="`p-${i}`"
-                                    class="h-[150px] flex items-center justify-center text-white font-semibold text-4xl px-2">
-                                    <span class="text-white text-4xl">
-                                        {{ prize.name }}
-                                    </span>
-                                </div>
-                            </div>
-                            <div v-else
-                                class="h-[150px] flex items-center justify-center text-white font-semibold text-4xl px-2">
+            <div class="grid grid-cols-2 gap-6 mb-16">
+                <!-- Prize slot -->
+                <div class="text-center relative overflow-hidden h-[260px]">
+                    <div class="w-full h-[240px] overflow-hidden mt-2">
+                        <div v-if="slots[1].length" :ref="el => setSlotRef(1, el)" class="flex flex-col">
+                            <div v-for="(prize, i) in slots[1]" :key="`p-${i}`"
+                                class="h-[240px] flex items-center justify-center text-white font-semibold text-4xl px-2">
                                 <span class="text-white text-4xl">
-                                    ---
+                                    {{ prize.name }}
                                 </span>
                             </div>
                         </div>
+                        <div v-else
+                            class="h-[260px] flex items-center justify-center text-white font-semibold text-4xl px-2">
+                            <img src="@/assets/svg/vector.svg" alt="vector" class="w-35" />
+                        </div>
                     </div>
+                    <img src="@/assets/svg/box.svg" alt="box" class="absolute bottom-6 left-0 right-0 top-0" />
+                </div>
 
-                    <!-- Customer slot -->
-                    <div class="text-center bg-gradient-to-r from-[#1218FF] via-[#FFFFFF] to-[#1218FF] py-1.5">
-                        <div class="w-full h-[150px] overflow-hidden bg-[#000DFF]">
-                            <div v-if="slots[0].length" :ref="el => setSlotRef(0, el)">
-                                <div v-for="(customer, i) in slots[0]" :key="`c-${i}`"
-                                    class="h-[150px] flex items-center justify-center text-white font-semibold text-4xl capitalize px-2">
-                                    {{ customer.name }}
-                                </div>
-                            </div>
-                            <div v-else
-                                class="h-[150px] flex items-center justify-center text-white font-semibold text-4xl px-2">
+                <!-- Customer slot -->
+                <div class="text-center relative overflow-hidden h-[260px]">
+                    <div class="w-full h-[240px] overflow-hidden mt-2">
+                        <div v-if="slots[0].length" :ref="el => setSlotRef(0, el)" class="flex flex-col">
+                            <div v-for="(customer, i) in slots[0]" :key="`c-${i}`"
+                                class="h-[240px] flex items-center justify-center text-white font-semibold text-4xl px-2">
                                 <span class="text-white text-4xl">
-                                    ---
+                                    {{ customer.name }}
                                 </span>
                             </div>
                         </div>
+                        <div v-else
+                            class="h-[260px] flex items-center justify-center text-white font-semibold text-4xl px-2">
+                            <img src="@/assets/svg/vector.svg" alt="vector" class="w-35" />
+                        </div>
                     </div>
+                    <img src="@/assets/svg/box.svg" alt="box" class="absolute bottom-6 left-0 right-0 top-0" />
                 </div>
             </div>
+            <!-- End Slots -->
+
 
             <!-- Roll Button -->
             <div class="flex justify-center">
@@ -55,26 +55,34 @@
             </div>
         </div>
 
+        <!-- Confetti -->
         <canvas ref="confettiCanvas"
-            class="pointer-events-none w-full h-full fixed bottom-0 right-0 left-0 top-0"></canvas>
+            class="pointer-events-none w-full h-full fixed bottom-6 right-0 left-0 top-0"></canvas>
+
         <Toast />
 
+        <!-- Winner Dialog -->
         <Dialog v-model:visible="successDialogVisible" modal :closable="false" :show-header="false" :show-footer="false"
             :style="{ width: '40%', backgroundColor: '#FFF' }">
             <div class="text-center text-[#2E3192] pt-4 flex flex-col items-center gap-4 w-full">
                 <div>
-                    <h1 class=" text-[#2E3192] text-4xl font-semibold uppercase mb-2">Congratulations</h1>
-                    <h3 class=" text-3xl uppercase">Winner is</h3>
+                    <h1 class="text-[#2E3192] text-4xl font-semibold uppercase mb-2">
+                        Congratulations
+                    </h1>
+                    <h3 class="text-3xl uppercase">Winner is</h3>
                 </div>
                 <div class="flex flex-col items-center gap-2 w-full relative">
-                    <p class=" text-2xl font-semibold uppercase bg-[#E5F2FF] p-2 px-4">{{ selectedCustomer?.shop_name }}
+                    <p class="text-2xl font-semibold uppercase bg-[#E5F2FF] p-2 px-4">
+                        {{ selectedCustomer?.shop_name }}
                     </p>
-                    <h1 class=" text-3xl font-semibold">{{ selectedCustomer?.name || 'Khaing Yin Mon' }}</h1>
+                    <h1 class="text-3xl font-semibold">
+                        {{ selectedCustomer?.name || 'Khaing Yin Mon' }}
+                    </h1>
                     <h1
-                        class="text-2xl font-semibold text-white bg-[#000DFF] p-3 w-full border border-[#3B43FF] text-shadow-lg rounded ">
-                        {{ selectedPrize?.name ||
-                            'iPhone 16 Pro White Titanium' }}</h1>
-                    <img :src="selectedPrize?.image?.url || ''" alt="img" srcset=""
+                        class="text-2xl font-semibold text-white bg-[#000DFF] p-3 w-full border border-[#3B43FF] text-shadow-lg rounded">
+                        {{ selectedPrize?.name || 'iPhone 16 Pro White Titanium' }}
+                    </h1>
+                    <img :src="selectedPrize?.image?.url || ''" alt="prize"
                         class="w-20 h-20 object-contain mt-4 absolute bottom-2 left-2 rounded border border-slate-100" />
                 </div>
             </div>
@@ -85,7 +93,6 @@
                 </button>
             </div>
         </Dialog>
-
     </div>
 </template>
 
@@ -97,7 +104,7 @@ import confetti from 'canvas-confetti'
 import { useLuckyDraw } from '@/composables/useLuckyDraw'
 
 const CONFIG = {
-    ITEM_HEIGHT: 150,
+    ITEM_HEIGHT: 240,
     ANIMATION_BASE_DURATION: 6000,
     VIRTUAL_COUNT: 1000,
     CONFETTI_DELAY: 250
