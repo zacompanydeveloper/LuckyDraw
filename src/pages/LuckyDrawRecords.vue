@@ -277,7 +277,9 @@ const filterOptions = [
     { label: 'In Review', value: 'in_review' },
     { label: 'Approved', value: 'approved' },
     { label: 'Rejected', value: 'rejected' },
-    { label: 'Used', value: 'used' }
+    { label: 'Used', value: 'used' },
+    { label: 'Failed', value: 'failed' },
+    { label: 'Double Winner Rejected', value: 'double_winner_rejected' },
 ];
 const filterMode = ref(
     filterOptions.find(opt => opt.value === (router.currentRoute.value.query.status || "pending")) || filterOptions[0]
@@ -333,6 +335,7 @@ const getLuckyDrawRecords = async (page = 1) => {
         }
     } catch (error) {
         console.error("Error fetching lucky draw records:", error);
+        toast.add({ severity: "error", summary: t('error'), detail: error.response?.data?.message || t('error_occurred'), life: 5000 });
     } finally {
         loading.table = false;
     }
