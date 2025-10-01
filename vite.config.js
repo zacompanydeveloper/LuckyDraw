@@ -6,10 +6,26 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [tailwindcss(), vue(), vueDevTools()],
+  plugins: [
+    vue({
+      template: {
+        compilerOptions: {
+          // Ensure scoped styles work properly
+          scopeId: true,
+        },
+      },
+    }),
+    tailwindcss(),
+    vueDevTools(),
+  ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
+  css: {
+    postcss: {
+      plugins: [],
     },
   },
   server: {

@@ -6,40 +6,60 @@
             <div class="grid grid-cols-2 gap-6 mb-16">
                 <!-- Prize slot -->
                 <div class="text-center relative overflow-hidden h-[260px]">
-                    <div class="w-full h-[240px] overflow-hidden mt-2">
+                    <!-- Prize list container -->
+                    <div class="w-full h-[150px] overflow-hidden mt-14 relative z-30">
                         <div v-if="slots[1].length" :ref="el => setSlotRef(1, el)" class="flex flex-col">
                             <div v-for="(prize, i) in slots[1]" :key="`p-${i}`"
-                                class="h-[240px] flex items-center justify-center text-white font-semibold text-4xl px-2">
-                                <span class="text-white text-4xl">
-                                    {{ prize.name }}
-                                </span>
+                                class="h-[150px] min-w-xl flex items-center justify-start gap-4 text-white font-semibold text-4xl px-10">
+                                <img :src="prize.image" alt="" class="w-46 h-46 z-40" />
+
+                                <div class="flex flex-col gap-4 font-bold text-white">
+                                    <p class="text-white text-4xl z-40 text-start text-nowrap truncate max-w-[350px]">
+                                        {{ (prize.name || 'iPhone 16 Pro - Desert Titanium').split(' - ')[0] }}
+                                    </p>
+                                    <p class="z-40 text-center text-2xl">
+                                        {{ (prize.name || 'iPhone 16 Pro - Desert Titanium').split(' - ')[1] }}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                         <div v-else
-                            class="h-[260px] flex items-center justify-center text-white font-semibold text-4xl px-2">
-                            <img src="@/assets/svg/vector.svg" alt="vector" class="w-35" />
+                            class="h-full flex flex-col items-center justify-center text-white font-semibold text-4xl px-2">
+                            <img src="@/assets/svg/vector.svg" alt="vector" class="w-35 z-40" />
                         </div>
                     </div>
-                    <img src="@/assets/svg/box.svg" alt="box" class="absolute bottom-6 left-0 right-0 top-0" />
+
+                    <!-- Background layers -->
+                    <img src="@/assets/svg/box.svg" alt="box" class="absolute bottom-6 left-0 right-0 top-0 z-20" />
+                    <div
+                        class="m-4 absolute bottom-0 left-0 right-0 top-0 z-10 bg-gradient-to-b from-[#010671] via-[#000DFF] to-[#010671]">
+                    </div>
                 </div>
 
                 <!-- Customer slot -->
                 <div class="text-center relative overflow-hidden h-[260px]">
-                    <div class="w-full h-[240px] overflow-hidden mt-2">
+                    <!-- Customer list container -->
+                    <div class="w-full h-[150px] overflow-hidden mt-14 relative z-30">
                         <div v-if="slots[0].length" :ref="el => setSlotRef(0, el)" class="flex flex-col">
                             <div v-for="(customer, i) in slots[0]" :key="`c-${i}`"
-                                class="h-[240px] flex items-center justify-center text-white font-semibold text-4xl px-2">
-                                <span class="text-white text-4xl">
-                                    {{ customer.name }}
-                                </span>
+                                class="h-[150px] min-w-xl flex items-center justify-center gap-4 text-white font-semibold text-4xl px-10">
+                                <p
+                                    class="text-white example font-bold text-4xl z-40 text-center text-nowrap truncate max-w-[500px]">
+                                    {{ customer.name || 'Anonymous' }}
+                                </p>
                             </div>
                         </div>
                         <div v-else
-                            class="h-[260px] flex items-center justify-center text-white font-semibold text-4xl px-2">
-                            <img src="@/assets/svg/vector.svg" alt="vector" class="w-35" />
+                            class="h-full flex flex-col items-center justify-center text-white font-semibold text-4xl px-2">
+                            <img src="@/assets/svg/vector.svg" alt="vector" class="w-35 z-40" />
                         </div>
                     </div>
-                    <img src="@/assets/svg/box.svg" alt="box" class="absolute bottom-6 left-0 right-0 top-0" />
+
+                    <!-- Background layers -->
+                    <img src="@/assets/svg/box.svg" alt="box" class="absolute bottom-6 left-0 right-0 top-0 z-20" />
+                    <div
+                        class="m-4 absolute bottom-0 left-0 right-0 top-0 z-10 bg-gradient-to-b from-[#010671] via-[#000DFF] to-[#010671]">
+                    </div>
                 </div>
             </div>
             <!-- End Slots -->
@@ -62,7 +82,7 @@
         <Toast />
 
         <!-- Winner Dialog -->
-        <Dialog v-model:visible="successDialogVisible" modal :closable="false" :show-header="false" :show-footer="false"
+        <Dialog v-model:visible="successDialogVisible" modal :closable="false" :show-header="false" :show-footer="false" 
             :style="{ width: '40%', backgroundColor: '#FFF' }">
             <div class="text-center text-[#2E3192] pt-4 flex flex-col items-center gap-4 w-full">
                 <div>
@@ -104,7 +124,7 @@ import confetti from 'canvas-confetti'
 import { useLuckyDraw } from '@/composables/useLuckyDraw'
 
 const CONFIG = {
-    ITEM_HEIGHT: 240,
+    ITEM_HEIGHT: 150,
     ANIMATION_BASE_DURATION: 6000,
     VIRTUAL_COUNT: 1000,
     CONFETTI_DELAY: 250
@@ -177,7 +197,11 @@ async function spinPrize() {
 
     setTimeout(() => {
         if (realPrize) {
-            selectedPrize.value = { ...realPrize }
+            selectedPrize.value = {
+                'hash_id': realPrize.id,
+                'name': realPrize.name,
+                'image': realPrize.image?.url || ''
+            }
         }
         slots.value[1].splice(-1, 1, selectedPrize.value)
         setTimeout(() => {
@@ -213,7 +237,7 @@ async function spinCustomerAfterPrize() {
 
     animateSlot(customerSlotEl, virtualCustomerList.length)
 
-    const realCustomer = await shuffleCustomer(selectedPrize.value?.id)
+    const realCustomer = await shuffleCustomer(selectedPrize.value?.hash_id)
 
     if (!realCustomer) {
         processing.value = false
@@ -298,3 +322,9 @@ onMounted(async () => {
     await Promise.all([fetchPrizes(), fetchCustomers()])
 })
 </script>
+
+<style>
+.p-dialog {
+    border: 1px solid red !important;
+}
+</style>
