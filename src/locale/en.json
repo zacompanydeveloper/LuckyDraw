@@ -164,5 +164,6 @@
   "retail": "Retail",
   "business": "B2B",
   "spin_luck_draw": "Spin Luck Draw",
-  "ticket_winner": "Ticket Winner"
+  "ticket_winner": "Ticket Winner",
+  "remark": "Remark"
 }
