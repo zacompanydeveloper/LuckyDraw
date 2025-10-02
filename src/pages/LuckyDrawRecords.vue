@@ -48,8 +48,9 @@
                     <SelectButton v-model="filterMode" optionLabel="label" dataKey="label"
                         class="border border-gray-200 mt-2" :options="filterOptions" />
                 </div>
-                <DataTable class="mt-2" dataKey="id" showGridlines stripedRows :value="luckyDrawRecords" :loading="loading.table"
-                    scrollable scrollDirection="both" scrollHeight="460px" tableStyle="min-width: 80rem">
+                <DataTable class="mt-2" dataKey="id" showGridlines stripedRows :value="luckyDrawRecords"
+                    :loading="loading.table" scrollable scrollDirection="both" scrollHeight="460px"
+                    tableStyle="min-width: 80rem">
 
                     <Column headerStyle="background-color: #2E3192; color: white; width:3rem" class="table-header"
                         :header="$t('no')">
@@ -147,6 +148,15 @@
                                 <div class="bg-indigo-50 rounded-md p-2 text-gray-800"
                                     :class="{ 'text-red-500': !record.tracking_code }">
                                     {{ record.tracking_code || '-' }}
+                                </div>
+                            </div>
+
+                            <!-- Remark -->
+                            <div>
+                                <label class="block text-gray-700 mb-1">{{ $t('remark') }}</label>
+                                <div class="bg-indigo-50 rounded-md p-2 text-red-500"
+                                    :class="{ 'text-red-500': !record.remark }">
+                                    {{ record.remark || '-' }}
                                 </div>
                             </div>
 
