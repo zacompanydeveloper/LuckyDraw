@@ -1,10 +1,19 @@
+@import "tailwindcss";
+@import "primeicons/primeicons.css";
 
-@import 'tailwindcss';
-@import 'primeicons/primeicons.css';
+.audiowide-regular {
+  font-family: "Audiowide", sans-serif;
+}
 
+.inter-custom {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  /* font-weight: 600; */
+  font-style: normal;
+}
 
 :root {
-    --base-color : #161866;
-    --logo-text-color : #ed1d25;
-    --light-color : #e3eeff;
+  --base-color: #161866;
+  --logo-text-color: #ed1d25;
+  --light-color: #e3eeff;
 }

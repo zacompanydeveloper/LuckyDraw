@@ -1,7 +1,22 @@
 <template>
-    <div class="flex flex-col items-center justify-center min-h-screen bg-contain bg-x-repeat"
+    <div class="flex flex-col items-center justify-center min-h-screen bg-contain bg-repeat-x bg-center"
         :style="{ backgroundImage: `url(${bgImage})` }">
-        <div class="rounded-md w-full px-[5%]">
+        <div v-if="initialState" class="w-full px-[5%] flex flex-col items-center gap-16">
+            <h1 class="text-5xl text-center text-white audiowide-regular uppercase">
+                Thadingyut Lucky Draw
+            </h1>
+
+            <div class="rounded-xl h-full bg-gradient-to-r from-[#000DFF] via-[#343EFF] to-[#FFFFFF] p-[5px] cursor-pointer transition-transform duration-300 hover:scale-101 hover:shadow-lg"
+                @click.prevent="initialState = false">
+                <div
+                    class="flex h-full w-full items-center justify-center bg-gradient-to-r from-[#00047D] to-[#0008CE] rounded-lg hover:from-[#0015A8] hover:to-[#001FFF]">
+                    <h1 class="text-xl text-white uppercase audiowide-regular p-4">
+                        START Lucky Draw
+                    </h1>
+                </div>
+            </div>
+        </div>
+        <div v-else class="rounded-md w-full px-[5%]">
             <!-- Slots -->
             <div class="grid grid-cols-2 gap-6 mb-16">
                 <!-- Prize slot -->
@@ -10,10 +25,11 @@
                     <div class="w-full h-[150px] overflow-hidden mt-14 relative z-30">
                         <div v-if="slots[1].length" :ref="el => setSlotRef(1, el)" class="flex flex-col">
                             <div v-for="(prize, i) in slots[1]" :key="`p-${i}`"
-                                class="h-[150px] min-w-xl flex items-center justify-start gap-4 text-white font-semibold text-4xl px-10">
-                                <img :src="prize.image" alt="" class="w-46 h-46 z-40" />
+                                class="h-[150px] min-w-xl flex items-center justify-center gap-4 text-white font-semibold text-4xl px-10">
+                                <img :src="prize.image" alt="" class="w-30 z-40" />
 
-                                <div class="flex flex-col gap-4 font-bold text-white">
+                                <div
+                                    class="flex flex-col items-center justify-center gap-4 font-bold text-white w-[350px]">
                                     <p class="text-white text-4xl z-40 text-start text-nowrap truncate max-w-[350px]">
                                         {{ (prize.name || 'iPhone 16 Pro - Desert Titanium').split(' - ')[0] }}
                                     </p>
@@ -64,15 +80,18 @@
             </div>
             <!-- End Slots -->
 
-
             <!-- Roll Button -->
             <div class="flex justify-center">
-                <button type="button" :disabled="processing"
-                    class="w-[200px] h-14 hover:opacity-90 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed">
-                    <img v-if="!showNextBtn" @click="startSpinning" src="@/assets/svg/button.svg" alt="btn" />
-                    <img v-else @click="goToNextStep" src="@/assets/svg/next.svg" alt="btn" />
-                </button>
+                <div class="rounded-xl bg-gradient-to-r from-[#000DFF] via-[#343EFF] to-[#FFFFFF] p-[4px]">
+                    <button type="button" :disabled="processing" @click="handleRoll" :aria-disabled="processing"
+                        class="w-[200px] h-14 flex items-center justify-center bg-gradient-to-r from-[#00047D] to-[#0008CE] rounded-lg cursor-pointer hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed">
+                        <span class="text-[21px] text-center font-light text-white uppercase audiowide-regular">
+                            {{ showNextBtn ? 'NEXT' : 'START SPIN' }}
+                        </span>
+                    </button>
+                </div>
             </div>
+
         </div>
 
         <!-- Confetti -->
@@ -82,37 +101,51 @@
         <Toast />
 
         <!-- Winner Dialog -->
-        <Dialog v-model:visible="successDialogVisible" modal :closable="false" :show-header="false" :show-footer="false" 
-            :style="{ width: '40%', backgroundColor: '#FFF' }">
-            <div class="text-center text-[#2E3192] pt-4 flex flex-col items-center gap-4 w-full">
+        <Dialog v-model:visible="successDialogVisible" modal :closable="false" :show-header="false" :show-footer="false"
+            :style="{ backgroundColor: '#FFF', borderRadius: '5px !important', }"
+            class="winner-dialog flex items-center justify-center audiowide-regular min-w-3xl pt-6">
+
+            <div class="flex flex-col justify-between items-center gap-4 w-full h-full text-center text-[#080D88]">
                 <div>
-                    <h1 class="text-[#2E3192] text-4xl font-semibold uppercase mb-2">
-                        Congratulations
+                    <h1 class="text-[#080D88] text-5xl uppercase mb-4">
+                        Congratulation
                     </h1>
                     <h3 class="text-3xl uppercase">Winner is</h3>
                 </div>
-                <div class="flex flex-col items-center gap-2 w-full relative">
-                    <p class="text-2xl font-semibold uppercase bg-[#E5F2FF] p-2 px-4">
-                        {{ selectedCustomer?.shop_name }}
+
+                <div class="flex flex-col items-center gap-4 w-full max-w-2xl">
+                    <p class="text-2xl font-semibold uppercase bg-[#E5F2FF] p-2 px-4 inter-custom text-[#2E3192]">
+                        {{ selectedCustomer?.shop_name || 'Home Mall Backend' }}
                     </p>
-                    <h1 class="text-3xl font-semibold">
+                    <h1 class="text-4xl font-semibold">
                         {{ selectedCustomer?.name || 'Khaing Yin Mon' }}
                     </h1>
-                    <h1
-                        class="text-2xl font-semibold text-white bg-[#000DFF] p-3 w-full border border-[#3B43FF] text-shadow-lg rounded">
-                        {{ selectedPrize?.name || 'iPhone 16 Pro White Titanium' }}
-                    </h1>
-                    <img :src="selectedPrize?.image?.url || ''" alt="prize"
-                        class="w-20 h-20 object-contain mt-4 absolute bottom-2 left-2 rounded border border-slate-100" />
+                    <p class="text-xl font-light text-[#2E3192] inter-custom">
+                        {{ selectedCustomer?.nrc || '12/KA**** (N) ****00' }}
+                    </p>
+                    <div class=" relative w-full min-w-2xl mt-6">
+                        <img :src="selectedPrize?.image || 'http://sweetyhomebackend.test/sweety_home/prize/iPhone%2016%20Pro%20-%20Black%20Titanium.png'"
+                            alt="prize" class="w-34 h-34 object-contain absolute bottom-2" />
+                        <h1
+                            class="text-3xl inter-custom font-semibold text-white bg-[#000DFF] p-4 border border-[#3B43FF] text-shadow-lg ps-28">
+                            {{ selectedPrize?.name || 'iPhone 16 Pro White Titanium' }}
+                        </h1>
+                    </div>
+                </div>
+
+                <div class="flex justify-center ">
+                    <div class="rounded-xl bg-gradient-to-r from-[#000DFF] via-[#f1f0f0] to-[#000DFF] p-[4px]">
+                        <button type="button" @click="resetForNextRound"
+                            class="w-[200px] h-14 flex items-center justify-center bg-gradient-to-r from-[#00047D] to-[#0008CE] rounded-lg cursor-pointer hover:opacity-90">
+                            <span class="text-[21px] text-center font-light text-white uppercase audiowide-regular">
+                                SPRIN AGAIN
+                            </span>
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class="flex justify-center mt-10">
-                <button type="button" @click="resetForNextRound"
-                    class="w-[200px] h-14 hover:opacity-90 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed">
-                    <img src="@/assets/svg/button.svg" alt="btn" />
-                </button>
-            </div>
         </Dialog>
+
     </div>
 </template>
 
@@ -122,6 +155,7 @@ import { useToast } from 'primevue/usetoast'
 import bgImage from '@/assets/svg/slot_bg.svg'
 import confetti from 'canvas-confetti'
 import { useLuckyDraw } from '@/composables/useLuckyDraw'
+
 
 const CONFIG = {
     ITEM_HEIGHT: 150,
@@ -139,6 +173,7 @@ const selectedCustomer = ref(null)
 const selectedPrize = ref(null)
 const successDialogVisible = ref(false)
 const showNextBtn = ref(false)
+const initialState = ref(false)
 
 const toast = useToast()
 const { virtualPrizes, virtualCustomers, fetchPrizes, fetchCustomers, shufflePrize, shuffleCustomer } = useLuckyDraw()
@@ -165,6 +200,13 @@ function animateSlot(slotEl, itemCount) {
         { duration: CONFIG.ANIMATION_BASE_DURATION, fill: 'forwards', easing: 'ease-out' }
     )
 }
+
+const handleRoll = () => {
+    if (processing.value) return;
+    if (showNextBtn.value) goToNextStep();
+    else startSpinning();
+}
+
 
 // -----------------
 // PRIZE SPIN
@@ -322,9 +364,3 @@ onMounted(async () => {
     await Promise.all([fetchPrizes(), fetchCustomers()])
 })
 </script>
-
-<style>
-.p-dialog {
-    border: 1px solid red !important;
-}
-</style>

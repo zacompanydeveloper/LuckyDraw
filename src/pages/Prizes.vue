@@ -54,7 +54,7 @@
                             <template #body="slotProps">
                                 <div class="flex items-center gap-2">
                                     <img :src="slotProps.data.image?.url" :alt="slotProps.data.image?.id"
-                                        class="w-10 h-10" />
+                                        class="w-12" />
                                     <span>{{ slotProps.data.name }}</span>
                                 </div>
                             </template>
