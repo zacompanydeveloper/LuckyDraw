@@ -17,6 +17,26 @@
             </div>
         </div>
         <div v-else class="rounded-md w-full px-[5%]">
+            <!-- Marquee for Remaining Prizes -->
+            <div v-if="remainingPrizes.length"
+                class="overflow-hidden relative mx-auto max-w-6xl -mt-50 mb-10 bg-gradient-to-r from-[#CAD6F41A] via-[#FFFFFFCC] to-[#CAD6F41A]">
+                <div
+                    :class="['flex items-center justify-center gap-12 py-2', { 'marquee-container': remainingPrizes.length >= 4 }]">
+                    <div v-for="(prize, index) in remainingPrizes" :key="`marquee-${index}`"
+                        class="flex items-center gap-3 flex-shrink-0">
+                        <img :src="prize.image?.url || prize.image" alt="" class="w-24 h-24 object-contain" />
+                        <div class="flex flex-col text-center items-center justify-center">
+                            <p class="text-white text-xl font-bold whitespace-nowrap">
+                                {{ (prize.name || 'iPhone 16 Pro - Desert Titanium').split(' - ')[0] }}
+                            </p>
+                            <p class="text-white text-lg font-semibold whitespace-nowrap">
+                                {{ (prize.name || 'iPhone 16 Pro - Desert Titanium').split(' - ')[1] }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Slots -->
             <div class="grid grid-cols-2 gap-6 mb-16">
                 <!-- Prize slot -->
@@ -173,7 +193,8 @@ const selectedCustomer = ref(null)
 const selectedPrize = ref(null)
 const successDialogVisible = ref(false)
 const showNextBtn = ref(false)
-const initialState = ref(false)
+const initialState = ref(true)
+const remainingPrizes = ref([])
 
 const toast = useToast()
 const { virtualPrizes, virtualCustomers, fetchPrizes, fetchCustomers, shufflePrize, shuffleCustomer } = useLuckyDraw()
@@ -299,6 +320,10 @@ async function spinCustomerAfterPrize() {
                 customer: selectedCustomer.value.name,
                 prize: selectedPrize.value
             })
+            // Remove won prize from remainingPrizes
+            remainingPrizes.value = remainingPrizes.value.filter(
+                p => p.hash_id !== selectedPrize.value.hash_id
+            )
             // successToast(`🎉 ${selectedCustomer.value.name} won ${selectedPrize.value.name} 🎉`)
             successDialogVisible.value = true
             launchConfetti()
@@ -362,5 +387,27 @@ function launchConfetti() {
 onMounted(async () => {
     slots.value = [[], []]
     await Promise.all([fetchPrizes(), fetchCustomers()])
+    // Initialize remaining prizes with all virtual prizes
+    remainingPrizes.value = [...virtualPrizes.value]
 })
 </script>
+
+<style scoped>
+.marquee-container {
+    animation: marquee 30s linear infinite;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.marquee-container:hover {
+    animation-play-state: paused;
+}
+</style>
