@@ -76,7 +76,7 @@
         <!-- Link expired -->
         <div v-else class="h-full flex items-center justify-center">
           <StatusCard type="error" :title="$t('link_expired')" :message="$t('link_expired_message')"
-            :image="expiredImg" :contact="$t('contact_service')" phone="09 900000001" />
+            :image="expiredImg" :contact="$t('contact_service')" phone="09 772 8888 28" />
         </div>
       </div>
 
