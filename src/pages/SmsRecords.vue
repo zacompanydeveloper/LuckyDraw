@@ -200,6 +200,20 @@ const retrySms = async (id) => {
     }
 };
 
+const searchProduct = () => {
+    pagination.page = 1;
+    getSmsRecords();
+};
+
+const clearFilters = () => {
+    fromDate.value = null;
+    toDate.value = null;
+    search.value = null;
+    type.value = 'daily';
+    pagination.page = 1;
+    getSmsRecords();
+};
+
 onMounted(() => {
     getSmsRecords();
 });
