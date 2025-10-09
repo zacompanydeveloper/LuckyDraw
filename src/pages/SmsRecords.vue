@@ -29,11 +29,16 @@
                         <Button @click="clearFilters" type="button" icon="pi pi-refresh" iconPos="left" raised
                             style="color: #2E3192;" class="cursor-pointer" variant="outlined" />
                     </div>
+                    <div class=" flex">
+                        <Button v-can="'export-lucky-draw'" type="button" v-tooltip.top="$t('export')"
+                            iconPos="right" icon="pi pi-download" @click="exportData" raised
+                            style="background-color: #2E3192;" />
+                    </div>
                 </div>
                 <!-- Table -->
                 <div class="card mt-5 mb-10">
-                    <DataTable dataKey="id" showGridlines stripedRows :value="smsRecords" :loading="loading.table" scrollable
-                        scrollHeight="460px" tableStyle="min-width: 50rem">
+                    <DataTable dataKey="id" showGridlines stripedRows :value="smsRecords" :loading="loading.table"
+                        scrollable scrollHeight="460px" tableStyle="min-width: 50rem">
 
                         <Column :header="$t('no')" headerStyle="width:3rem; background-color: #2E3192; color: white;">
                             <template #body="slotProps">
@@ -212,6 +217,33 @@ const clearFilters = () => {
     type.value = 'daily';
     pagination.page = 1;
     getSmsRecords();
+};
+
+const exportData = async () => {
+    try {
+        loading.table = true;
+        const { data, status } = await backend.get("/lucky-draw-sms/export", {
+            params: {
+                from_date: fromDate.value || null,
+                to_date: toDate.value || null,
+                search: search.value || null,
+            },
+        });
+        if (status === 200) {
+            const url = data.url
+            const link = document.createElement('a')
+            link.href = url
+            link.download = ''
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+        }
+    } catch (error) {
+        console.error("Error exporting data:", error);
+        toast.add({ severity: "error", summary: t('error'), detail: error.response?.data?.message || t('error_occurred'), life: 5000 });
+    } finally {
+        loading.table = false;
+    }
 };
 
 onMounted(() => {
