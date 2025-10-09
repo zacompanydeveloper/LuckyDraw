@@ -84,14 +84,10 @@
                 </template>
             </Drawer>
             <i class="pi pi-bars text-2xl text-[#2E3192] cursor-pointer" @click="visible = true"></i>
-            <!-- <p class="!text-sm border px-2" :class="checked ? 'text-blue-500 bg-blue-100' : 'text-red-500 bg-red-100'">
-                {{ checked ?
-                    'testing'
-                    : 'live'
-                }}</p> -->
+            <p class="text-red-500 border px-2 bg-red-100">
+                {{ $t('testing') }}
+            </p>
         </div>
-
-
 
         <div class="flex items-center gap-2">
             <img src="@/assets/svg/logo.svg" alt="logo" class="w-50" />
@@ -138,8 +134,6 @@ const logout = () => {
     localStorage.clear();
     router.push("/admin-login")
 }
-
-const checked = ref(localStorage.getItem('mode') === 'testing');
 
 </script>
 

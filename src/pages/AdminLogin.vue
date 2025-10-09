@@ -12,24 +12,14 @@
                         <img src="@/assets/svg/logo.svg" alt="logo" class="" />
                         <span>|</span>
                         <div class="font-bold text-[#2E3192]">{{ $t('lucky_draw_app') }}</div>
+                        <span>|</span>
+                        <p class="text-red-500 border px-2 bg-red-100">
+                            {{ $t('testing') }}
+                        </p>
                     </div>
-
                     <!-- Language Selector -->
                     <LanguageSwitcher />
                 </header>
-
-                <!-- Mode toggle -->
-                <!-- <div class="bottom-0 right-0 fixed m-4 flex items-center gap-2 rounded-full shadow-lg min-w-[90px] min-h-[36px] px-3"
-                    :class="checked ? '' : 'opacity-50'">
-                    <ToggleSwitch v-model="checked">
-                        <template #handle="{ value }">
-                            <i :class="['!text-xs pi', { 'pi-check': value, 'pi-times': !value }]" />
-                        </template>
-                    </ToggleSwitch>
-                    <p class="!text-xs min-w-[50px]" :class="checked ? 'text-blue-500' : 'text-red-500'">
-                        {{ $t(checked ? 'testing' : 'live') }}
-                    </p>
-                </div> -->
 
                 <!-- Main -->
                 <main class="flex flex-col justify-center items-center gap-4 mt-20">
@@ -42,8 +32,8 @@
                         class="min-w-[336px] mt-4" autocomplete="off" />
 
                     <InputOtp v-if="step === 2" v-model="otp"
-                        class="flex justify-center items-center min-w-[336px] mt-4" variant="filled"
-                        :length="6" integerOnly />
+                        class="flex justify-center items-center min-w-[336px] mt-4" variant="filled" :length="6"
+                        integerOnly />
 
                     <Button type="button" iconPos="right" :label="$t(step === 1 ? 'login' : 'confirm')"
                         class="min-w-[336px] mt-4 cursor-pointer hover:opacity-90" :loading="loading"
@@ -137,11 +127,4 @@ const confirmOtp = async () => {
 const handleAction = () => {
     step.value === 1 ? getOtp() : confirmOtp();
 };
-
-// testing/live switch
-const checked = ref(localStorage.getItem("mode") === "testing");
-
-watch(checked, (newVal) => {
-    localStorage.setItem("mode", newVal ? "testing" : "live");
-});
 </script>
