@@ -50,7 +50,7 @@
                 </div>
                 <DataTable class="mt-2" dataKey="id" showGridlines stripedRows :value="luckyDrawRecords"
                     :loading="loading.table" scrollable scrollDirection="both" scrollHeight="460px"
-                    tableStyle="min-width: 80rem">
+                    tableStyle="min-width: 90rem">
 
                     <Column headerStyle="background-color: #2E3192; color: white; width:3rem" class="table-header"
                         :header="$t('no')">
@@ -68,13 +68,16 @@
                         :header="$t('customer_phone')" />
 
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
+                        field="invoice_no" :header="$t('voucher_no')" />
+
+                    <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
                         field="business_type" :header="$t('business_type')">
                         <template #body="slotProps">
                             {{ $t(slotProps.data.business_type) }}
                         </template>
                     </Column>
 
-                    <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
+                    <Column headerStyle="background-color: #2E3192; color: white; width: 40px;" class="table-header"
                         field="tracking_code" :header="$t('gift_code')" />
 
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
