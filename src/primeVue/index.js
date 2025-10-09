@@ -38,6 +38,7 @@ import Drawer from 'primevue/drawer';
 import DatePicker from 'primevue/datepicker';
 import Paginator from 'primevue/paginator';
 import ToggleSwitch from 'primevue/toggleswitch';
+import RadioButton from 'primevue/radiobutton';
 import Menu from 'primevue/menu';
 
 
@@ -102,3 +103,4 @@ app.component('Tag', Tag);
 app.component('ConfirmPopup', ConfirmPopup);
 app.component('FileUpload', FileUpload);
 app.component('Menu', Menu);
+app.component('RadioButton', RadioButton);
