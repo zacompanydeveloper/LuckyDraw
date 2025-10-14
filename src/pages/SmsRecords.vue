@@ -30,9 +30,8 @@
                             style="color: #2E3192;" class="cursor-pointer" variant="outlined" />
                     </div>
                     <div class=" flex">
-                        <Button v-can="'export-lucky-draw'" type="button" v-tooltip.top="$t('export')"
-                            iconPos="right" icon="pi pi-download" @click="exportData" raised
-                            style="background-color: #2E3192;" />
+                        <Button v-can="'export-lucky-draw'" type="button" v-tooltip.top="$t('export')" iconPos="right"
+                            icon="pi pi-download" @click="exportData" raised style="background-color: #2E3192;" />
                     </div>
                 </div>
                 <!-- Table -->
@@ -68,16 +67,16 @@
                             :header="$t('amount_kyats')" />
 
                         <!-- Action column -->
-                        <!-- <Column headerStyle="background-color: #2E3192; color: white;" :header="$t('action')"
-                            class="w-24 !text-end" :headerStyle="{ textAlign: 'right' }">
+                        <Column headerStyle="background-color: #2E3192; color: white;" :header="$t('action')"
+                            class="w-24 !text-end">
                             <template #body="{ data }">
-                                <div class="flex justify-end items-center gap-2">
-                                    <Button v-if="data.type === 'lucky_draw_link'" v-tooltip.top="$t('retry')"
-                                        icon="pi pi-replay" @click="openRetryDialog(data.id)" severity="success"
-                                        rounded />
+                                <div class="flex justify-center items-center gap-2">
+                                    <Button v-if="data.type === 'lucky_draw_link'"
+                                        v-tooltip.top="$t('check_sms_status')" icon="pi pi-eye" severity="success"
+                                        @click.prevent="checkSmsStatus(data.id)" rounded />
                                 </div>
                             </template>
-                        </Column> -->
+                        </Column>
 
                         <ColumnGroup type="footer" class=" font-bold mt-4">
                             <Row>
@@ -98,19 +97,33 @@
                     <Paginator class="mt-1" :rows="pagination.rows" :totalRecords="pagination.totalRecords"
                         @page="onPageChange" />
                     <Toast />
+
+                    <Dialog v-model:visible="checkSmsStatusVisible" modal header="Check SMS Status">
+                        <div v-if="smsStatus">
+                            <div v-for="(value, key) in smsStatus" :key="key"
+                                class="flex justify-between items-center gap-4 border-b border-slate-200 py-4">
+                                <span class="font-medium capitalize">{{ $t(key) }}</span>
+
+                                <span class="px-3 py-1 rounded text-sm font-semibold" :class="{
+                                    'bg-green-100 text-green-700': value === 'Success',
+                                    'bg-red-100 text-red-700': value === 'Failed',
+                                    'bg-gray-100 text-gray-700': value !== 'Success' && value !== 'Failed'
+                                }">
+                                    <template v-if="value === 'Success'">✅ {{ value }}</template>
+                                    <template v-else-if="value === 'Failed'">❌ {{ value }}</template>
+                                    <template v-else>{{ value }}</template>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div v-else>
+                            <p class="text-gray-500">No SMS status data available.</p>
+                        </div>
+                    </Dialog>
+
+
                 </div>
             </DesktopLayout>
-
-            <!-- Retry Dialog -->
-            <Dialog v-model:visible="retryVisible" :header="$t('retry_sms')" modal>
-                <div class="p-4">
-                    <p>{{ $t('retry_sms_confirm') }}</p>
-                </div>
-                <template #footer>
-                    <Button :label="$t('cancel')" icon="pi pi-times" @click="retryVisible = false" />
-                    <Button :label="$t('retry')" icon="pi pi-check" severity="success" @click="retrySms(selectedId)" />
-                </template>
-            </Dialog>
         </div>
     </div>
 </template>
@@ -132,11 +145,12 @@ const search = ref(null);
 const type = ref('daily');
 const totalAmount = ref(0);
 const selectedId = ref(null);
-const retryVisible = ref(false);
 const toast = useToast();
+const checkSmsStatusVisible = ref(false);
+const smsStatus = ref(null);
 
 const smsRecords = ref([]);
-const loading = ref({
+const loading = reactive({
     table: false,
 });
 
@@ -149,7 +163,7 @@ const pagination = reactive({
 
 const getSmsRecords = async (page = 1) => {
     try {
-        loading.value.table = true;
+        loading.table = true;
         const response = await backend.get("/lucky-draw-sms", {
             params: {
                 from_date: fromDate.value,
@@ -168,12 +182,12 @@ const getSmsRecords = async (page = 1) => {
             pagination.page = response.data?.meta.current_page;
             pagination.rows = response.data?.meta.per_page;
             pagination.from = response.data?.meta.from;
-            loading.value.table = false;
+            loading.table = false;
         }
 
     } catch (error) {
         console.error("Error fetching SMS records:", error);
-        loading.value.table = false;
+        loading.table = false;
         toast.add({ severity: 'error', summary: t('error'), detail: t('failed_fetch_sms'), life: 3000 });
     }
 };
@@ -182,27 +196,6 @@ const getSmsRecords = async (page = 1) => {
 const onPageChange = (event) => {
     pagination.page = event.page + 1;
     getSmsRecords(pagination.page);
-};
-
-const openRetryDialog = (id) => {
-    selectedId.value = id;
-    retryVisible.value = true;
-};
-
-const retrySms = async (id) => {
-    try {
-        const response = await backend.post(`lucky-draw-tickets/retry-sms/${id}`);
-        if (response.status === 200) {
-            retryVisible.value = false;
-            toast.add({ severity: 'success', summary: t('success'), detail: t('sms_retry_success'), life: 3000 });
-        }
-    } catch (error) {
-        console.error("Error retrying SMS:", error);
-        toast.add({ severity: 'error', summary: t('error'), detail: t('sms_retry_failed'), life: 3000 });
-    } finally {
-        retryVisible.value = false;
-        getSmsRecords(pagination.page);
-    }
 };
 
 const searchProduct = () => {
@@ -240,6 +233,22 @@ const exportData = async () => {
         }
     } catch (error) {
         console.error("Error exporting data:", error);
+        toast.add({ severity: "error", summary: t('error'), detail: error.response?.data?.message || t('error_occurred'), life: 5000 });
+    } finally {
+        loading.table = false;
+    }
+};
+
+const checkSmsStatus = async (id) => {
+    try {
+        loading.table = true;
+        const { data, status } = await backend.get(`/lucky-draw-sms/${id}/status`);
+        if (status === 200) {
+            smsStatus.value = data;
+            checkSmsStatusVisible.value = true;
+        }
+    } catch (error) {
+        console.error("Error checking SMS status:", error);
         toast.add({ severity: "error", summary: t('error'), detail: error.response?.data?.message || t('error_occurred'), life: 5000 });
     } finally {
         loading.table = false;
