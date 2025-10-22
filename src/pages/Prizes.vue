@@ -29,8 +29,8 @@
                             <label for="search">{{ $t('search') }}</label>
                         </FloatLabel>
 
-                        <Button @click="searchProduct" type="button" icon="pi pi-filter" iconPos="left" :label="$t('search')"
-                            severity="success" raised class="cursor-pointer w-35" />
+                        <Button @click="searchProduct" type="button" icon="pi pi-filter" iconPos="left"
+                            :label="$t('search')" severity="success" raised class="cursor-pointer w-35" />
 
                         <Button @click="clearFilters" type="button" icon="pi pi-refresh" iconPos="left" raised
                             style="color: #2E3192;" class="cursor-pointer" variant="outlined" />
@@ -80,7 +80,9 @@
                 <Dialog v-model:visible="dialog.visible" :header="$t('prize_registration')"
                     :style="{ width: '25rem', height: '100%' }" :position="dialog.position" :modal="true"
                     :draggable="false">
-                    <div class="flex flex-col justify-between h-full">
+
+                    <!-- Case 1 (Single Upload) -->
+                    <!-- <div class="flex flex-col justify-between h-full">
                         <div class="pt-2">
                             <FloatLabel variant="on" class="w-full mb-4">
                                 <InputText id="name" autocomplete="off" v-model="form.name" fluid />
@@ -107,14 +109,29 @@
 
                             </div>
                         </div>
-
                         <div
                             class="flex justify-end gap-2 mt-4 fixed bottom-0 left-0 right-0 bg-white p-4 rounded-b-lg">
                             <Button type="button" iconPos="right" :label="$t('create')" :loading="loading.create"
                                 :disabled="!isFormValid || loading.create" class="cursor-pointer hover:opacity-90 w-35"
                                 @click="createPrize" style="background-color: #2E3192;" />
                         </div>
+                    </div> -->
 
+                    <!-- Case 2 (Multiple Upload with Excel File) -->
+                    <div class="flex flex-col justify-between h-full">
+                        <div class="pt-2">
+                            <div class="border border-dashed border-gray-500 rounded-lg p-1">
+                                <FileUpload mode="basic" customUpload auto @select="onFileSelect"
+                                    :chooseLabel="$t('upload_excel_file')" class="p-button-outlined w-full" />
+                            </div>
+                        </div>
+
+                        <div
+                            class="flex justify-end gap-2 mt-4 fixed bottom-0 left-0 right-0 bg-white p-4 rounded-b-lg">
+                            <Button type="button" iconPos="right" :label="$t('upload')" :loading="loading.create"
+                                :disabled="!excelFile || loading.create" class="cursor-pointer hover:opacity-90 w-35"
+                                style="background-color: #2E3192;" @click="uploadExcelFile" />
+                        </div>
                     </div>
                 </Dialog>
 
@@ -178,17 +195,17 @@ const openDialog = (pos = "center") => {
 
 const src = ref(null);
 
-function onFileSelect(event) {
-    const file = event.files[0];
-    const reader = new FileReader();
+// function onFileSelect(event) {
+//     const file = event.files[0];
+//     const reader = new FileReader();
 
-    reader.onload = async (e) => {
-        src.value = e.target.result;
-        form.image = file;
-    };
+//     reader.onload = async (e) => {
+//         src.value = e.target.result;
+//         form.image = file;
+//     };
 
-    reader.readAsDataURL(file);
-}
+//     reader.readAsDataURL(file);
+// }
 
 const isFormValid = computed(() => {
     return form.name && form.quantity && form.image;
@@ -243,6 +260,75 @@ const getPrizes = async (page = 1) => {
         loading.table = false;
     }
 }
+
+const excelFile = ref(null); // store the selected Excel file
+
+function onFileSelect(event) {
+    const file = event.files[0];
+    if (!file) return;
+
+    // Validate file type (optional but recommended)
+    const allowedTypes = [
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/vnd.ms-excel"
+    ];
+    if (!allowedTypes.includes(file.type)) {
+        toast.add({
+            severity: "warn",
+            summary: t("invalid_file"),
+            detail: t("please_upload_excel_file"),
+            life: 3000
+        });
+        return;
+    }
+
+    excelFile.value = file;
+}
+
+const uploadExcelFile = async () => {
+    if (!excelFile.value) {
+        toast.add({
+            severity: "warn",
+            summary: t("no_file"),
+            detail: t("please_select_a_file_to_upload"),
+            life: 3000
+        });
+        return;
+    }
+
+    loading.create = true;
+    try {
+        const formData = new FormData();
+        formData.append("file", excelFile.value);
+
+        const { data } = await backend.filePost(
+            "/lucky-draw-prizes/prize-excal-upload",
+            formData
+        );
+
+        toast.add({
+            severity: "success",
+            summary: t("success"),
+            detail: t("excel_uploaded_successfully"),
+            life: 3000
+        });
+
+        dialog.visible = false;
+        excelFile.value = null;
+        getPrizes(); // refresh table
+    } catch (error) {
+        console.error("Error uploading Excel file:", error);
+        toast.add({
+            severity: "error",
+            summary: t("error"),
+            detail: t("error_uploading_excel"),
+            life: 3000
+        });
+    } finally {
+        loading.create = false;
+    }
+};
+
 
 onMounted(() => {
     getPrizes();

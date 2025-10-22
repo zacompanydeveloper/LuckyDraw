@@ -170,5 +170,6 @@
   "ticket_winner": "Ticket Winner",
   "remark": "Remark",
   "export_sms": "Export SMS Records",
-  "check_sms_status": "Check SMS Status"
+  "check_sms_status": "Check SMS Status",
+  "upload_excel_file": "Upload Excel File"
 }

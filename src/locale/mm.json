@@ -182,5 +182,6 @@
   "ticket_winner": "လက်မှတ် အနိုင်ရသူ",
   "remark": "မှတ်ချက်",
   "export_sms": "စာတိုများ ထုတ်ယူမည်",
-  "check_sms_status": "စာတို အခြေအနေ စစ်ဆေးမည်"
+  "check_sms_status": "စာတို အခြေအနေ စစ်ဆေးမည်",
+  "upload_excel_file": "Excel ဖိုင် တင်မည်"
 }
