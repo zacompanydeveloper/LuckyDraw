@@ -183,5 +183,8 @@
   "remark": "မှတ်ချက်",
   "export_sms": "စာတိုများ ထုတ်ယူမည်",
   "check_sms_status": "စာတို အခြေအနေ စစ်ဆေးမည်",
-  "upload_excel_file": "Excel ဖိုင် တင်မည်"
+  "upload_excel_file": "Excel ဖိုင် တင်မည်",
+  "upload": "တင်မည်",
+  "excel_uploaded_successfully": "Excel ဖိုင် တင်ခြင်း အောင်မြင်ပါသည်",
+  "error_uploading_excel": "Excel ဖိုင် တင်ရာတွင် အမှားရှိပါသည်"
 }
