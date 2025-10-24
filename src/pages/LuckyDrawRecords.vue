@@ -417,6 +417,7 @@ const confirmStatus = (action, id) => {
 const approveAllTickets = async () => {
     try {
         loading.approve = true;
+        loading.table = true;
         const response = await backend.post(`/lucky-draw-tickets/approve-all`, {
             status: 'approved'
         });
@@ -428,6 +429,7 @@ const approveAllTickets = async () => {
         console.error("Error approving all tickets:", error);
         toast.add({ severity: "error", summary: t('error'), detail: error.response?.data?.message || t('error_occurred'), life: 5000 });
     } finally {
+        loading.table = false;
         loading.approve = false;
     }
 };

@@ -9,12 +9,12 @@
           <template v-if="type === 'prize'">
             <img :src="item.image" alt="" class="w-30 z-40" />
             <div class="flex flex-col items-center justify-center gap-4 font-bold text-white w-[350px]">
-              <p class="text-white text-4xl z-40 text-start text-nowrap truncate max-w-[350px]">
-                {{ (item.name).split(' - ')[0] }}
+              <p class="text-white text-4xl z-40 text-start truncate max-w-[350px]">
+                {{ item.name.split(' ').slice(0, -1).join(' ') }}
               </p>
-              <p class="z-40 text-center text-2xl">
-                {{ (item.name).split(' - ')[1] }}
-              </p>
+              <!-- <p class="z-40 text-center text-2xl">
+                {{ item.name.split(' ').slice(-1)[0] }}
+              </p> -->
             </div>
           </template>
 
@@ -36,7 +36,9 @@
 
     <!-- Background layers -->
     <img src="@/assets/svg/box.svg" alt="box" class="absolute bottom-6 left-0 right-0 top-0 z-20" />
-    <div class="m-4 absolute bottom-0 left-0 right-0 top-0 z-10 bg-gradient-to-b from-[#010671] via-[#000DFF] to-[#010671]"></div>
+    <div
+      class="m-4 absolute bottom-0 left-0 right-0 top-0 z-10 bg-gradient-to-b from-[#010671] via-[#000DFF] to-[#010671]">
+    </div>
   </div>
 </template>
 
