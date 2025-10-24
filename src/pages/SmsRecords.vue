@@ -71,7 +71,7 @@
                             class="w-24 !text-end">
                             <template #body="{ data }">
                                 <div class="flex justify-center items-center gap-2">
-                                    <Button v-if="data.type === 'lucky_draw_link'"
+                                    <Button
                                         v-tooltip.top="$t('check_sms_status')" icon="pi pi-eye" severity="success"
                                         @click.prevent="checkSmsStatus(data.id)" rounded />
                                 </div>

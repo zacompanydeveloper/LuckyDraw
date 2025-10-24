@@ -68,16 +68,16 @@
                         :header="$t('customer_phone')" />
 
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
-                        field="invoice_no" :header="$t('voucher_no')" />
-
-                    <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
                         field="business_type" :header="$t('business_type')">
                         <template #body="slotProps">
                             {{ $t(slotProps.data.business_type) }}
                         </template>
                     </Column>
 
-                    <Column headerStyle="background-color: #2E3192; color: white; width: 40px;" class="table-header"
+                    <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
+                        field="invoice_no" :header="$t('voucher_no')" />
+
+                    <Column headerStyle="background-color: #2E3192; color: white; max-width: 10px;"  class="table-header" style="width: 12%"
                         field="tracking_code" :header="$t('gift_code')" />
 
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
@@ -417,6 +417,7 @@ const confirmStatus = (action, id) => {
 const approveAllTickets = async () => {
     try {
         loading.approve = true;
+        loading.table = true;
         const response = await backend.post(`/lucky-draw-tickets/approve-all`, {
             status: 'approved'
         });
@@ -428,6 +429,7 @@ const approveAllTickets = async () => {
         console.error("Error approving all tickets:", error);
         toast.add({ severity: "error", summary: t('error'), detail: error.response?.data?.message || t('error_occurred'), life: 5000 });
     } finally {
+        loading.table = false;
         loading.approve = false;
     }
 };

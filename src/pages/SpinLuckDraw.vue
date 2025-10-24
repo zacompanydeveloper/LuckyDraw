@@ -264,6 +264,7 @@ async function spinCustomerAfterPrize() {
 }
 
 function resetForNextRound() {
+    fetchCustomers();
     remainingPrizes.value = remainingPrizes.value.filter(
         (p) => p.hash_id !== selectedPrize.value.hash_id
     );
