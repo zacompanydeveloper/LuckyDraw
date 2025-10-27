@@ -174,5 +174,6 @@
   "upload_excel_file": "Upload Excel File",
   "upload": "Upload",
   "excel_uploaded_successfully": "Excel file uploaded successfully",
-  "error_uploading_excel": "Error uploading Excel file"
+  "error_uploading_excel": "Error uploading Excel file",
+  "download_winners_list": "Download Winners List"
 }
