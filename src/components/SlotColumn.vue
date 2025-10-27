@@ -1,7 +1,8 @@
 <template>
   <div class="text-center relative overflow-hidden h-[260px]">
     <div class="w-full h-[180px] overflow-hidden mt-11 relative z-30">
-      <div v-if="items.length" :ref="el => setSlotRef(slotIndex, el)" class="flex flex-col">
+      <div v-if="items.length" :ref="el => setSlotRef(slotIndex, el)" class="flex flex-col"
+        :class="{ 'fade-in-prize': type === 'prize' && items.length === 1 }">
         <div v-for="(item, i) in items" :key="`${type}-${i}`"
           class="h-[180px] min-w-xl flex items-center justify-center gap-4 text-white font-semibold text-4xl px-10">
 
@@ -50,3 +51,21 @@ defineProps({
   type: { type: String, default: 'customer' } // 'prize' or 'customer'
 })
 </script>
+
+<style scoped>
+.fade-in-prize {
+  animation: fadeInFromBottom 0.3s ease-out;
+}
+
+@keyframes fadeInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>

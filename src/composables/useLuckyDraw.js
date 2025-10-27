@@ -89,6 +89,7 @@ export function useLuckyDraw() {
         shop_name: res.data?.data?.shop_name ?? null,
         township: res.data?.data?.township ?? null,
         nrc: res.data?.data?.nrc ?? null,
+        shop_township: res.data?.data?.shop_township ?? null,
       };
     } catch (err) {
       console.error("Failed to fetch real customer", err);
