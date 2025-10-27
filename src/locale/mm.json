@@ -186,5 +186,6 @@
   "upload_excel_file": "Excel ဖိုင် တင်မည်",
   "upload": "တင်မည်",
   "excel_uploaded_successfully": "Excel ဖိုင် တင်ခြင်း အောင်မြင်ပါသည်",
-  "error_uploading_excel": "Excel ဖိုင် တင်ရာတွင် အမှားရှိပါသည်"
+  "error_uploading_excel": "Excel ဖိုင် တင်ရာတွင် အမှားရှိပါသည်",
+  "download_winners_list": "အနိုင်ရသူများ စာရင်း ဒေါင်းလုပ်မည်"
 }
