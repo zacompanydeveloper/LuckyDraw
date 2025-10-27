@@ -18,12 +18,12 @@ export function useLuckyDraw() {
           image: p.image?.url,
         }));
       } else {
-        toast.add({
-          severity: "warn",
-          summary: "No Prizes",
-          detail: "No prizes available",
-          life: 5000,
-        });
+        // toast.add({
+        //   severity: "warn",
+        //   summary: "No Prizes",
+        //   detail: "No prizes available",
+        //   life: 5000,
+        // });
       }
     } catch (err) {
       console.error("Error fetching prizes:", err);

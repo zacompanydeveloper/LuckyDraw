@@ -13,9 +13,9 @@
               <p class="text-white text-4xl z-40 text-start truncate max-w-[350px]">
                 {{ item.name }}
               </p>
-              <!-- <p class="z-40 text-center text-2xl">
-                {{ item.name.split(' ').slice(-1)[0] }}
-              </p> -->
+              <p class="z-40 text-center text-3xl">
+                {{ item.color}}
+              </p>
             </div>
           </template>
 

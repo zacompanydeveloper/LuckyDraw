@@ -77,7 +77,7 @@
                         <img :src="selectedPrize?.image" alt="prize" class="w-38 object-contain absolute bottom-2" />
                         <h1
                             class="text-3xl inter-custom font-semibold text-white bg-[#000DFF] p-4 border border-[#3B43FF] text-shadow-lg ps-28">
-                            {{ selectedPrize?.name }}
+                            {{ selectedPrize?.name }} {{ selectedPrize?.color }}
                         </h1>
                     </div>
                 </div>
@@ -97,7 +97,7 @@
 
     <!-- Winner Section -->
     <div v-if="winnerSection"
-        class="flex flex-col items-center justify-center min-h-screen bg-contain bg-repeat-x bg-center"
+        class="flex flex-col items-center justify-start min-h-screen bg-contain bg-repeat-x bg-center"
         :style="{ backgroundImage: `url(${bgImage})` }">
         <Winners :winners="winners" />
     </div>
@@ -115,7 +115,7 @@ import Winners from "@/components/Winners.vue";
 
 const CONFIG = {
     ITEM_HEIGHT: 180,
-    ANIMATION_BASE_DURATION: 6000,
+    ANIMATION_BASE_DURATION: 7000,
     VIRTUAL_COUNT: 1000,
     CONFETTI_DELAY: 250,
 };
@@ -154,19 +154,22 @@ function cancelSlotAnimations(slotEl) {
 function animateSlot(slotEl, itemCount) {
     if (!slotEl) return;
     cancelSlotAnimations(slotEl);
-    slotEl.animate(
-        [
-            { transform: "translateY(0)" },
-            {
-                transform: `translateY(-${itemCount * CONFIG.ITEM_HEIGHT - CONFIG.ITEM_HEIGHT}px)`,
-            },
-        ],
-        {
-            duration: CONFIG.ANIMATION_BASE_DURATION,
-            fill: "forwards",
-            easing: "ease-out",
-        }
-    );
+
+    const totalDistance = itemCount * CONFIG.ITEM_HEIGHT - CONFIG.ITEM_HEIGHT;
+
+    // Multi-phase slowdown: fast → medium → slow → stop
+    const keyframes = [
+        { transform: "translateY(0)", offset: 0 },
+        { transform: `translateY(-${totalDistance * 0.7}px)`, offset: 0.6 }, // fast phase
+        { transform: `translateY(-${totalDistance * 0.9}px)`, offset: 0.85 }, // slower
+        { transform: `translateY(-${totalDistance}px)`, offset: 1 }, // final stop
+    ];
+
+    slotEl.animate(keyframes, {
+        duration: CONFIG.ANIMATION_BASE_DURATION * 2, // slightly longer spin
+        easing: "cubic-bezier(0.05, 0.9, 0.25, 1.0)", // strong ease-out curve
+        fill: "forwards",
+    });
 }
 const handleRoll = () => {
     if (processing.value) return;
@@ -205,6 +208,7 @@ async function spinPrize() {
         hash_id: realPrize.id,
         name: realPrize.name,
         image: realPrize.image?.url || "",
+        color: realPrize.color || "",
     };
 
     // Display only the actual prize in the slot
@@ -261,7 +265,7 @@ async function spinCustomerAfterPrize() {
             });
             successDialogVisible.value = true;
             launchConfetti();
-        }, CONFIG.ANIMATION_BASE_DURATION);
+        }, CONFIG.ANIMATION_BASE_DURATION * 2 + CONFIG.CONFETTI_DELAY);
     }, CONFIG.ANIMATION_BASE_DURATION / 10);
 }
 
