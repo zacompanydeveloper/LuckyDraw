@@ -18,12 +18,12 @@ export function useLuckyDraw() {
           image: p.image?.url,
         }));
       } else {
-        toast.add({
-          severity: "warn",
-          summary: "No Prizes",
-          detail: "No prizes available",
-          life: 5000,
-        });
+        // toast.add({
+        //   severity: "warn",
+        //   summary: "No Prizes",
+        //   detail: "No prizes available",
+        //   life: 5000,
+        // });
       }
     } catch (err) {
       console.error("Error fetching prizes:", err);
@@ -89,6 +89,7 @@ export function useLuckyDraw() {
         shop_name: res.data?.data?.shop_name ?? null,
         township: res.data?.data?.township ?? null,
         nrc: res.data?.data?.nrc ?? null,
+        shop_township: res.data?.data?.shop_township ?? null,
       };
     } catch (err) {
       console.error("Failed to fetch real customer", err);

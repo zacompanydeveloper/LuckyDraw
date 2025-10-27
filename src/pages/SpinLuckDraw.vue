@@ -25,7 +25,7 @@
         <!-- Spin Screen -->
         <div v-else class="rounded-md w-full px-[5%]">
             <!-- Marquee -->
-            <Marquee :items="remainingPrizes" />
+            <!-- <Marquee :items="remainingPrizes" /> -->
 
             <!-- Slots -->
             <div class="grid grid-cols-2 gap-6 mb-16">
@@ -54,27 +54,30 @@
 
         <!-- Winner Dialog -->
         <Dialog v-model:visible="successDialogVisible" modal :closable="false" :show-header="false" :show-footer="false"
-            :style="{ backgroundColor: '#FFF', borderRadius: '5px !important' }"
+            :style="{ backgroundColor: '#FFF', borderRadius: '15px !important' }"
             class="winner-dialog flex items-center justify-center audiowide-regular min-w-3xl pt-6">
             <div class="flex flex-col justify-between items-center gap-4 w-full h-full text-center text-[#080D88]">
                 <div>
                     <h1 class="text-[#080D88] text-5xl uppercase mb-4">Congratulation</h1>
                     <h3 class="text-3xl uppercase">Winner is</h3>
+                    <!-- <pre>{{ selectedCustomer }}</pre> -->
                 </div>
                 <div class="flex flex-col items-center gap-4 w-full max-w-2xl">
                     <p class="text-2xl font-semibold uppercase bg-[#E5F2FF] p-2 px-4 inter-custom text-[#2E3192]">
-                        {{ selectedCustomer?.shop_name }}
+                        {{ selectedCustomer?.shop_name }} | {{ selectedCustomer?.shop_township }}
                     </p>
                     <h1 class="text-4xl font-semibold">{{ selectedCustomer?.name }}</h1>
-                    <p class="text-xl font-light text-[#2E3192] inter-custom">
+                    <p class="text-2xl text-[#2E3192] inter-custom">
+                        {{ selectedCustomer?.township }}
+                    </p>
+                    <p class="text-2xl font-light text-[#2E3192] inter-custom">
                         {{ selectedCustomer?.nrc }}
                     </p>
                     <div class="relative w-full min-w-2xl mt-6">
-                        <img :src="selectedPrize?.image" alt="prize"
-                            class="w-34 h-34 object-contain absolute bottom-2" />
+                        <img :src="selectedPrize?.image" alt="prize" class="w-38 object-contain absolute bottom-2" />
                         <h1
                             class="text-3xl inter-custom font-semibold text-white bg-[#000DFF] p-4 border border-[#3B43FF] text-shadow-lg ps-28">
-                            {{ selectedPrize?.name }}
+                            {{ selectedPrize?.name }} {{ selectedPrize?.color }}
                         </h1>
                     </div>
                 </div>
@@ -94,7 +97,7 @@
 
     <!-- Winner Section -->
     <div v-if="winnerSection"
-        class="flex flex-col items-center justify-center min-h-screen bg-contain bg-repeat-x bg-center"
+        class="flex flex-col items-center justify-start min-h-screen bg-contain bg-repeat-x bg-center"
         :style="{ backgroundImage: `url(${bgImage})` }">
         <Winners :winners="winners" />
     </div>
@@ -111,8 +114,8 @@ import Marquee from "@/components/Marquee.vue";
 import Winners from "@/components/Winners.vue";
 
 const CONFIG = {
-    ITEM_HEIGHT: 150,
-    ANIMATION_BASE_DURATION: 6000,
+    ITEM_HEIGHT: 180,
+    ANIMATION_BASE_DURATION: 7000,
     VIRTUAL_COUNT: 1000,
     CONFETTI_DELAY: 250,
 };
@@ -151,19 +154,22 @@ function cancelSlotAnimations(slotEl) {
 function animateSlot(slotEl, itemCount) {
     if (!slotEl) return;
     cancelSlotAnimations(slotEl);
-    slotEl.animate(
-        [
-            { transform: "translateY(0)" },
-            {
-                transform: `translateY(-${itemCount * CONFIG.ITEM_HEIGHT - CONFIG.ITEM_HEIGHT}px)`,
-            },
-        ],
-        {
-            duration: CONFIG.ANIMATION_BASE_DURATION,
-            fill: "forwards",
-            easing: "ease-out",
-        }
-    );
+
+    const totalDistance = itemCount * CONFIG.ITEM_HEIGHT - CONFIG.ITEM_HEIGHT;
+
+    // Multi-phase slowdown: fast → medium → slow → stop
+    const keyframes = [
+        { transform: "translateY(0)", offset: 0 },
+        { transform: `translateY(-${totalDistance * 0.7}px)`, offset: 0.6 }, // fast phase
+        { transform: `translateY(-${totalDistance * 0.9}px)`, offset: 0.85 }, // slower
+        { transform: `translateY(-${totalDistance}px)`, offset: 1 }, // final stop
+    ];
+
+    slotEl.animate(keyframes, {
+        duration: CONFIG.ANIMATION_BASE_DURATION * 2, // slightly longer spin
+        easing: "cubic-bezier(0.05, 0.9, 0.25, 1.0)", // strong ease-out curve
+        fill: "forwards",
+    });
 }
 const handleRoll = () => {
     if (processing.value) return;
@@ -181,14 +187,10 @@ async function spinPrize() {
         });
         return;
     }
-    const virtualPrizeList = virtualPrizes.value.slice(
-        0,
-        Math.min(CONFIG.VIRTUAL_COUNT, virtualPrizes.value.length)
-    );
-    slots.value[1] = virtualPrizeList;
-    await nextTick();
-    animateSlot(slotRefs.value[1], virtualPrizeList.length);
+
+    // Directly get the real prize (no virtuals, no animation)
     const realPrize = await shufflePrize();
+
     if (!realPrize) {
         processing.value = false;
         toast.add({
@@ -200,19 +202,23 @@ async function spinPrize() {
         resetForNextRound();
         return;
     }
-    setTimeout(() => {
-        selectedPrize.value = {
-            hash_id: realPrize.id,
-            name: realPrize.name,
-            image: realPrize.image?.url || "",
-        };
-        slots.value[1].splice(-1, 1, selectedPrize.value);
-        setTimeout(() => {
-            showNextBtn.value = true;
-            processing.value = false;
-        }, CONFIG.ANIMATION_BASE_DURATION / 1.5);
-    }, CONFIG.ANIMATION_BASE_DURATION / 4);
+
+    // Show the real prize directly
+    selectedPrize.value = {
+        hash_id: realPrize.id,
+        name: realPrize.name,
+        image: realPrize.image?.url || "",
+        color: realPrize.color || "",
+    };
+
+    // Display only the actual prize in the slot
+    slots.value[1] = [selectedPrize.value];
+
+    // Instantly show NEXT button
+    showNextBtn.value = true;
+    processing.value = false;
 }
+
 
 function goToNextStep() {
     processing.value = true;
@@ -259,7 +265,7 @@ async function spinCustomerAfterPrize() {
             });
             successDialogVisible.value = true;
             launchConfetti();
-        }, CONFIG.ANIMATION_BASE_DURATION);
+        }, CONFIG.ANIMATION_BASE_DURATION * 2 + CONFIG.CONFETTI_DELAY);
     }, CONFIG.ANIMATION_BASE_DURATION / 10);
 }
 
