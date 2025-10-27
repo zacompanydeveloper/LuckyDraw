@@ -2,11 +2,13 @@
     <div>
         <DesktopLayout v-if="!isMobile">
 
-            <h2 class="text-2xl font-bold text-[#2E3192]">{{ $t('ticket_winner') }}</h2>
+            <div>
+                <h2 class="text-2xl font-bold text-[#2E3192]">{{ $t('ticket_winner') }}</h2>
+            </div>
             <!-- Table -->
             <div class="card mt-2">
                 <DataTable class="mt-2" dataKey="id" showGridlines stripedRows :value="winners" :loading="loading.table"
-                    scrollable scrollDirection="both" scrollHeight="460px" tableStyle="min-width: 150rem">
+                    scrollable scrollDirection="both" scrollHeight="500px" tableStyle="min-width: 150rem">
 
                     <Column headerStyle="background-color: #2E3192; color: white; width:3rem" class="table-header"
                         :header="$t('no')">
@@ -18,11 +20,11 @@
                     <Column headerStyle="background-color: #2E3192; color: white;" class="table-header"
                         field="created_at" :header="$t('created_date')" />
 
-                    <Column headerStyle="background-color: #2E3192; color: white;" :header="$t('prize')">
+                    <Column headerStyle="background-color: #2E3192; color: white;" :header="$t('prizes')">
                         <template #body="slotProps">
                             <div class="flex items-center gap-2">
                                 <img :src="slotProps.data?.prize?.image?.url" :alt="slotProps.data?.prize?.id"
-                                    class="w-10 h-10 border border-gray-300 rounded" />
+                                    class="w-10 rounded" />
                                 <span>{{ slotProps.data?.prize?.name }}</span>
                             </div>
                         </template>
