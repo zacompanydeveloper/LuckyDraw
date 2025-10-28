@@ -42,7 +42,7 @@
 
                 <div class="card mt-5 mb-10">
                     <DataTable :value="prizeList" showGridlines stripedRows scrollable scrollHeight="500px"
-                        tableStyle="min-width: 50rem" :loading="loading.table">
+                        tableStyle="min-width: 80rem" :loading="loading.table">
                         <Column :header="$t('no')" headerStyle="width:3rem ;background-color: #2E3192; color: white;">
                             <template #body="slotProps">
                                 {{ pagination.from + slotProps.index }}
@@ -50,7 +50,7 @@
                         </Column>
                         <Column headerStyle="background-color: #2E3192; color: white;" field="created_at"
                             :header="$t('created_date')" />
-                        <Column headerStyle="background-color: #2E3192; color: white;" :header="$t('label')">
+                        <Column headerStyle="background-color: #2E3192; color: white;" :header="$t('name')">
                             <template #body="slotProps">
                                 <div class="flex items-center gap-2">
                                     <img :src="slotProps.data.image?.url || '/src/assets/images/placeholder.png'"
@@ -59,8 +59,12 @@
                                 </div>
                             </template>
                         </Column>
-                        <Column headerStyle="background-color: #2E3192; color: white;" field="slug"
-                            :header="$t('info')" />
+                        <Column headerStyle="background-color: #2E3192; color: white;" field="color"
+                            :header="$t('color')" />
+                        <Column headerStyle="background-color: #2E3192; color: white;" field="sorting_no"
+                            :header="$t('sorting_no')" />
+                        <!-- <Column headerStyle="background-color: #2E3192; color: white;" field="slug"
+                            :header="$t('info')" /> -->
                         <Column headerStyle="background-color: #2E3192; color: white;" field="created_by"
                             :header="$t('created_by')" />
 
@@ -116,29 +120,43 @@
                 </Dialog>
 
                 <!-- Upload Image Dialog -->
-                <Dialog v-model:visible="imageDialog.visible" :header="selectPrize ? selectPrize.name : ''"
+                <Dialog v-model:visible="imageDialog.visible" header="Edit Prize"
                     :style="{ width: '25rem', height: '100%', color: 'gray' }" :position="imageDialog.position"
                     :modal="true" :draggable="false">
 
                     <div class="flex flex-col justify-between h-full">
-                        <div class="pt-2">
+                        <div class="pt-2 flex flex-col gap-4">
                             <div class="border border-dashed border-gray-500 rounded-lg p-2">
                                 <FileUpload v-if="!imagePreview" mode="basic" customUpload auto @select="onImageSelect"
                                     :chooseLabel="$t('upload_image')" class="p-button-outlined w-full" />
 
                                 <!-- Preview selected image -->
-                                <div v-if="imagePreview" class="relative">
-                                    <img :src="imagePreview" alt="Preview" class="rounded-lg w-full" />
+                                <div v-if="imagePreview" class="relative flex justify-center items-center">
+                                    <img :src="imagePreview" alt="Preview" class="rounded-lg w-1/2" />
                                     <i class="pi pi-times absolute top-2 right-1 text-red-500 bg-white rounded-full p-1 cursor-pointer"
                                         @click="removeImage"></i>
                                 </div>
+                            </div>
+                            <div class=" flex flex-col gap-4">
+                                <FloatLabel variant="on">
+                                    <InputText v-model="selectPrize.name" fluid autocomplete="off" disabled="true" />
+                                    <label for="name">{{ $t('name') }}</label>
+                                </FloatLabel>
+                                <FloatLabel variant="on">
+                                    <InputText v-model="selectPrize.color" fluid autocomplete="off" disabled="true" />
+                                    <label for="color">{{ $t('color') }}</label>
+                                </FloatLabel>
+                                <FloatLabel variant="on">
+                                    <InputText id="numkeys" type="text" v-model="selectPrize.sorting_no" v-keyfilter.num fluid autocomplete="off" />
+                                    <label for="sorting_no">{{ $t('sorting_no') }}</label>
+                                </FloatLabel>
                             </div>
                         </div>
 
                         <div
                             class="flex justify-end gap-2 mt-4 fixed bottom-0 left-0 right-0 bg-white p-4 rounded-b-lg">
-                            <Button type="button" iconPos="right" :label="$t('upload')" :loading="loading.create"
-                                :disabled="!imageFile || loading.create" class="cursor-pointer hover:opacity-90 w-35"
+                            <Button type="button" iconPos="right" :label="$t('edit_prize')" :loading="loading.create"
+                                :disabled="!imagePreview || loading.create" class="cursor-pointer hover:opacity-90 w-35"
                                 style="background-color: #2E3192;" @click="uploadPrizeImage" />
                         </div>
                     </div>
@@ -174,6 +192,9 @@ const prizeList = ref([]);
 const pagination = reactive({ totalRecords: 0, rows: 10, page: 1, from: 1 });
 
 const excelFile = ref(null);
+
+const imageFile = ref(null);
+const imagePreview = ref(null);
 
 const openDialog = (pos = "center") => {
     dialog.position = pos;
@@ -286,11 +307,11 @@ const onPageChange = (event) => {
 const selectPrize = ref(null);
 const editPrize = (prize) => {
     selectPrize.value = prize;
+    imagePreview.value = prize.image?.url || null;
     openImageDialog('right');
 };
 
-const imageFile = ref(null);
-const imagePreview = ref(null);
+
 
 const onImageSelect = (event) => {
     const file = event.files[0];
@@ -323,7 +344,7 @@ const removeImage = () => {
 };
 
 const uploadPrizeImage = async () => {
-    if (!imageFile.value || !selectPrize.value) {
+    if (!imagePreview.value || !selectPrize.value) {
         toast.add({
             severity: "warn",
             summary: t("no_file"),
@@ -336,14 +357,17 @@ const uploadPrizeImage = async () => {
     loading.create = true;
     try {
         const formData = new FormData();
-        formData.append("image", imageFile.value);
+        if(imageFile.value){
+            formData.append("image", imageFile.value);
+        }
+        formData.append("sorting_no", selectPrize.value.sorting_no);
 
         await backend.filePost(`/lucky-draw-prizes/${selectPrize.value.id}/upload-image`, formData);
 
         toast.add({
             severity: "success",
             summary: t("success"),
-            detail: t("image_uploaded_successfully"),
+            // detail: t("image_uploaded_successfully"),
             life: 3000,
         });
 
@@ -356,7 +380,7 @@ const uploadPrizeImage = async () => {
         toast.add({
             severity: "error",
             summary: t("error"),
-            detail: t("error_uploading_image"),
+            // detail: t("error_uploading_image"),
             life: 3000,
         });
     } finally {

@@ -175,5 +175,7 @@
   "upload": "Upload",
   "excel_uploaded_successfully": "Excel file uploaded successfully",
   "error_uploading_excel": "Error uploading Excel file",
-  "download_winners_list": "Download Winners List"
+  "download_winners_list": "Download Winners List",
+  "color": "Color",
+  "sorting_no": "Sorting No"
 }
