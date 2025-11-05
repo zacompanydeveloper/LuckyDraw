@@ -74,9 +74,9 @@
                         {{ selectedCustomer?.nrc }}
                     </p>
                     <div class="relative w-full min-w-2xl mt-6">
-                        <img :src="selectedPrize?.image" alt="prize" class="w-38 object-contain absolute bottom-2" />
+                        <img :src="selectedPrize?.image" alt="prize" class="w-36 object-contain absolute bottom-2 left-2" />
                         <h1
-                            class="text-3xl inter-custom font-semibold text-white bg-[#000DFF] p-4 border border-[#3B43FF] text-shadow-lg ps-28">
+                            class="text-3xl inter-custom font-semibold text-white bg-[#000DFF] p-4 border border-[#3B43FF] text-shadow-lg ps-28 rounded-lg">
                             {{ selectedPrize?.name }} {{ selectedPrize?.color }}
                         </h1>
                     </div>
