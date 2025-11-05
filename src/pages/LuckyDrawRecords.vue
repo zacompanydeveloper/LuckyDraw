@@ -293,6 +293,7 @@ const filterOptions = [
     { label: 'Used', value: 'used' },
     { label: 'Failed', value: 'failed' },
     { label: 'Double Winner Rejected', value: 'double_winner_rejected' },
+    { label: 'Expired', value: 'expired' },
 ];
 const filterMode = ref(
     filterOptions.find(opt => opt.value === (router.currentRoute.value.query.status || "pending")) || filterOptions[0]
