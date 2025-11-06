@@ -3,27 +3,27 @@
     <div v-if="spinSection"
         class="flex flex-col items-center justify-center min-h-screen bg-contain bg-repeat-x bg-center"
         :style="{ backgroundImage: `url(${bgImage})` }">
+        <div class="w-full flex justify-between absolute top-0 left-0 right-0 z-10">
+            <img src="@/assets/images/sweetyhome_logo.png" alt="" srcset="">
+            <img src="@/assets/images/30_years_anni.png" alt="" srcset="">
+        </div>
+        <div class="w-full flex justify-between absolute bottom-0 left-0 right-0 z-10 p-2 text-xl text-white font-bold audiowide-regular">
+            <p>8 November 2025 (Saturday)</p>
+        </div>
         <!-- Initial Start Screen -->
-        <div v-if="initialState" class="w-full px-[5%] flex flex-col items-center gap-16">
-            <h1 class="text-5xl text-center text-white audiowide-regular uppercase">
-                Thadingyut Lucky Draw
-            </h1>
-            <button
-                class="rounded-xl h-full bg-gradient-to-r from-[#000DFF] via-[#343EFF] to-[#FFFFFF] p-[5px] cursor-pointer transition-transform duration-300 hover:scale-101 hover:shadow-lg disabled:cursor-not-allowed"
-                :disabled="virtualPrizes.length === 0 || virtualCustomers.length === 0"
-                :aria-disabled="virtualPrizes.length === 0 || virtualCustomers.length === 0"
-                @click.prevent="initialState = false">
-                <div
-                    class="flex h-full w-full items-center justify-center bg-gradient-to-r from-[#00047D] to-[#0008CE] rounded-lg hover:from-[#0015A8] hover:to-[#001FFF]">
-                    <h1 class="text-xl text-white uppercase audiowide-regular p-4">
-                        START Lucky Draw
-                    </h1>
-                </div>
-            </button>
+        <div v-if="initialState" class="w-full flex flex-col items-center gap-16">
+            <img src="@/assets/images/typo.png" alt="Lucky Draw" class="lucky-img" :class="{
+                'disabled-img':
+                    virtualPrizes.length === 0 || virtualCustomers.length === 0
+            }" @click.prevent="
+                !(virtualPrizes.length === 0 || virtualCustomers.length === 0) &&
+                (initialState = false)
+                " />
         </div>
 
+
         <!-- Spin Screen -->
-        <div v-else class="rounded-md w-full px-[5%]">
+        <div v-else class="rounded-md w-full px-[5%] pt-20">
             <!-- Marquee -->
             <!-- <Marquee :items="remainingPrizes" /> -->
 
@@ -46,9 +46,9 @@
             </div>
         </div>
 
-        <!-- Confetti -->
+        <!-- Confetti - positioned to overflow over dialog -->
         <canvas ref="confettiCanvas"
-            class="pointer-events-none w-full h-full fixed bottom-6 right-0 left-0 top-0"></canvas>
+            class="pointer-events-none w-full h-full fixed bottom-0 right-0 left-0 top-0 z-[9999]"></canvas>
 
         <Toast />
 
@@ -56,27 +56,30 @@
         <Dialog v-model:visible="successDialogVisible" modal :closable="false" :show-header="false" :show-footer="false"
             :style="{ backgroundColor: '#FFF', borderRadius: '15px !important' }"
             class="winner-dialog flex items-center justify-center audiowide-regular min-w-3xl pt-6">
-            <div class="flex flex-col justify-between items-center gap-4 w-full h-full text-center text-[#080D88]">
+            <div
+                class="flex flex-col justify-between items-center gap-4 w-full h-full text-center text-[#080D88] relative">
+
                 <div>
-                    <h1 class="text-[#080D88] text-5xl uppercase mb-4">Congratulation</h1>
-                    <h3 class="text-3xl uppercase">Winner is</h3>
+                    <h1 class="text-[#080D88] text-4xl uppercase mb-4">Congratulation</h1>
+                    <h3 class="text-2xl uppercase">Winner is</h3>
                     <!-- <pre>{{ selectedCustomer }}</pre> -->
                 </div>
                 <div class="flex flex-col items-center gap-4 w-full max-w-2xl">
-                    <p class="text-2xl font-semibold uppercase bg-[#E5F2FF] p-2 px-4 inter-custom text-[#2E3192]">
+                    <p class="text-xl font-semibold uppercase bg-[#E5F2FF] p-2 px-4 inter-custom text-[#2E3192]">
                         {{ selectedCustomer?.shop_name }} | {{ selectedCustomer?.shop_township }}
                     </p>
                     <h1 class="text-4xl font-semibold">{{ selectedCustomer?.name }}</h1>
-                    <p class="text-2xl text-[#2E3192] inter-custom">
+                    <p class="text-xl text-[#2E3192] inter-custom">
                         {{ selectedCustomer?.township }}
                     </p>
-                    <p class="text-2xl font-light text-[#2E3192] inter-custom">
+                    <p class="text-xl font-light text-[#2E3192] inter-custom">
                         {{ selectedCustomer?.nrc }}
                     </p>
                     <div class="relative w-full min-w-2xl mt-6">
-                        <img :src="selectedPrize?.image" alt="prize" class="w-38 object-contain absolute bottom-2" />
+                        <img :src="selectedPrize?.image" alt="prize"
+                            class="w-30 object-contain absolute bottom-2 left-2" />
                         <h1
-                            class="text-3xl inter-custom font-semibold text-white bg-[#000DFF] p-4 border border-[#3B43FF] text-shadow-lg ps-28">
+                            class="text-3xl inter-custom font-semibold text-white bg-[#000DFF] p-4 border border-[#3B43FF] text-shadow-lg ps-28 rounded-lg">
                             {{ selectedPrize?.name }} {{ selectedPrize?.color }}
                         </h1>
                     </div>
@@ -106,7 +109,7 @@
 <script setup>
 import { ref, onMounted, nextTick, watch } from "vue";
 import { useToast } from "primevue/usetoast";
-import bgImage from "@/assets/svg/slot_bg.svg";
+import bgImage from "@/assets/images/background.png";
 import confetti from "canvas-confetti";
 import { useLuckyDraw } from "@/composables/useLuckyDraw";
 import SlotColumn from "@/components/SlotColumn.vue";
@@ -306,24 +309,52 @@ function launchConfetti() {
         resize: true,
         useWorker: true,
     });
-    myConfetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } });
+
+    // Initial center burst
+    myConfetti({
+        particleCount: 150,
+        spread: 100,
+        origin: { y: 0.6 },
+        colors: ['#000DFF', '#343EFF', '#FFFFFF', '#2E3192', '#080D88', '#FFD700', '#FFA500', '#FF0000', '#DC143C']
+    });
+
+    // Side bursts
     setTimeout(() => {
         myConfetti({
             particleCount: 120,
             angle: 60,
             spread: 100,
             origin: { x: 0 },
+            colors: ['#000DFF', '#343EFF', '#FFFFFF', '#2E3192', '#080D88', '#FFD700', '#FFA500', '#FF0000', '#DC143C']
         });
         myConfetti({
             particleCount: 120,
             angle: 120,
             spread: 100,
             origin: { x: 1 },
+            colors: ['#000DFF', '#343EFF', '#FFFFFF', '#2E3192', '#080D88', '#FFD700', '#FFA500', '#FF0000', '#DC143C']
         });
     }, 250);
+
+    // Additional bursts
     setTimeout(() => {
-        myConfetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } });
+        myConfetti({
+            particleCount: 150,
+            spread: 100,
+            origin: { y: 0.6 },
+            colors: ['#000DFF', '#343EFF', '#FFFFFF', '#2E3192', '#080D88', '#FFD700', '#FFA500', '#FF0000', '#DC143C']
+        });
     }, 500);
+
+    // Extra top bursts for more coverage over dialog
+    setTimeout(() => {
+        myConfetti({
+            particleCount: 100,
+            spread: 80,
+            origin: { y: 0.3, x: 0.5 },
+            colors: ['#000DFF', '#343EFF', '#FFFFFF', '#2E3192', '#080D88', '#FFD700', '#FFA500', '#FF0000', '#DC143C']
+        });
+    }, 700);
 }
 
 watch(remainingPrizes, (newVal) => {
@@ -345,3 +376,43 @@ onMounted(async () => {
     remainingPrizes.value = [...virtualPrizes.value];
 });
 </script>
+
+<style scoped>
+.lucky-img {
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.4s ease;
+    border-radius: 1rem;
+
+    /* Pulse animation */
+    animation: pulse 2.5s infinite ease-in-out;
+}
+
+/* Press-down animation */
+.lucky-img:active {
+    transform: scale(0.92);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Disabled State */
+.disabled-img {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: none !important;
+    transform: none !important;
+    animation: none !important;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+
+    50% {
+        transform: scale(1.03);
+        filter: brightness(1.15);
+    }
+}
+</style>

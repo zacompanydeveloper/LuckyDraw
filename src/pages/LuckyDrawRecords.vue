@@ -286,6 +286,7 @@ const detailDialog = ref(false);
 const isMobile = helper.isMobile();
 
 const filterOptions = [
+    {label: 'All', value: 'all' },
     { label: 'Pending', value: 'pending' },
     { label: 'In Review', value: 'in_review' },
     { label: 'Approved', value: 'approved' },
@@ -293,10 +294,11 @@ const filterOptions = [
     { label: 'Used', value: 'used' },
     { label: 'Failed', value: 'failed' },
     { label: 'Double Winner Rejected', value: 'double_winner_rejected' },
+    { label: 'Expired', value: 'expired' },
 ];
 const filterMode = ref(
-    filterOptions.find(opt => opt.value === (router.currentRoute.value.query.status || "pending")) || filterOptions[0]
-); // Default: Pending
+    filterOptions.find(opt => opt.value === (router.currentRoute.value.query.status || "all")) || filterOptions[0]
+); // Default: All
 
 watch(filterMode, () => {
     getLuckyDrawRecords(1);
