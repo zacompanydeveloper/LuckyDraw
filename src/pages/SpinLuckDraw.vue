@@ -8,9 +8,9 @@
             <img src="@/assets/images/30_years_anni.png" alt="" srcset="">
         </div>
         <div
-            class="w-full flex justify-between absolute items-end bottom-0 left-0 right-0 z-10 p-2 text-xl text-white font-bold audiowide-regular text-center">
+            class="w-full flex justify-between absolute items-end bottom-0 left-0 right-0 z-10 p-2 text-2xl text-white font-bold audiowide-regular text-center">
             <p>8 November 2025 (Saturday)</p>
-            <p class=" text-sm">No.(2A1/16G),Sweety Home Tower,<br>East
+            <p class="">No.(2A1/16G),Sweety Home Tower,<br>East
                 RaceCourse Road, Tamwe Township, Yangon.</p>
         </div>
         <!-- Initial Start Screen -->
@@ -31,7 +31,7 @@
             <!-- <Marquee :items="remainingPrizes" /> -->
 
             <!-- Slots -->
-            <div class="grid grid-cols-2 gap-6 mb-16">
+            <div class="grid grid-cols-2 gap-10 mb-16 px-[14%]">
                 <SlotColumn :items="slots[1]" :slotIndex="1" :setSlotRef="setSlotRef" type="prize" />
                 <SlotColumn :items="slots[0]" :slotIndex="0" :setSlotRef="setSlotRef" type="customer" />
             </div>
@@ -120,7 +120,7 @@ import Marquee from "@/components/Marquee.vue";
 import Winners from "@/components/Winners.vue";
 
 const CONFIG = {
-    ITEM_HEIGHT: 150,
+    ITEM_HEIGHT: 200,
     ANIMATION_BASE_DURATION: 10000,
     VIRTUAL_COUNT: 1000,
     CONFETTI_DELAY: 250,
