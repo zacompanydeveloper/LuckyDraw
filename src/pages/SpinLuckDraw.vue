@@ -8,14 +8,13 @@
             <img src="@/assets/images/30_years_anni.png" alt="" srcset="">
         </div>
         <div
-            class="w-full flex justify-between absolute items-end bottom-0 left-0 right-0 z-10 p-2 text-2xl text-white font-bold audiowide-regular text-center">
+            class="w-full flex justify-between absolute items-end bottom-0 left-0 right-0 z-10 p-2 text-3xl text-white font-bold audiowide-regular text-center">
             <p>8 November 2025 (Saturday)</p>
-            <p class="">No.(2A1/16G),Sweety Home Tower,<br>East
-                RaceCourse Road, Tamwe Township, Yangon.</p>
+            <p class="text-3xl">Kyaikkasan Living Mall</p>
         </div>
         <!-- Initial Start Screen -->
         <div v-if="initialState" class="w-full flex flex-col items-center gap-16">
-            <img src="@/assets/images/typo.png" alt="Lucky Draw" class="lucky-img" :class="{
+            <img src="@/assets/images/typo.png" alt="Lucky Draw" class="lucky-img w-6xl" :class="{
                 'disabled-img':
                     virtualPrizes.length === 0 || virtualCustomers.length === 0
             }" @click.prevent="
@@ -72,10 +71,10 @@
                         {{ selectedCustomer?.shop_name }} | {{ selectedCustomer?.shop_township }}
                     </p>
                     <h1 class="text-4xl font-semibold">{{ selectedCustomer?.name }}</h1>
-                    <p class="text-xl text-[#2E3192] inter-custom">
+                    <p class="text-xl text-[#2E3192] inter-custom font-bold">
                         {{ selectedCustomer?.township }}
                     </p>
-                    <p class="text-xl font-light text-[#2E3192] inter-custom">
+                    <p class="text-xl text-[#2E3192] inter-custom font-bold">
                         {{ selectedCustomer?.nrc }}
                     </p>
                     <div class="relative w-full min-w-2xl mt-6">
