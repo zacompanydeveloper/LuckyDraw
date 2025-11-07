@@ -1,10 +1,10 @@
 <template>
-  <div class="text-center relative overflow-hidden h-[190px]">
-    <div class="w-full h-[150px] overflow-hidden mt-5 relative z-30">
+  <div class="text-center relative overflow-hidden h-[250px]">
+    <div class="w-full h-[200px] overflow-hidden mt-5 relative z-30">
       <div v-if="items.length" :ref="el => setSlotRef(slotIndex, el)" class="flex flex-col"
         :class="{ 'fade-in-prize': type === 'prize' && items.length === 1 }">
         <div v-for="(item, i) in items" :key="`${type}-${i}`"
-          class="h-[150px] min-w-md flex items-center justify-center gap-4 text-white font-semibold text-2xl px-16">
+          class="h-[200px] min-w-md flex items-center justify-center gap-4 text-white font-semibold text-2xl px-16">
 
           <!-- Prize -->
           <template v-if="type === 'prize'">
@@ -36,9 +36,9 @@
     </div>
 
     <!-- Background layers -->
-    <img src="@/assets/svg/box.svg" alt="box" class="absolute bottom-6 left-0 right-0 top-0 z-20" />
+    <img src="@/assets/svg/box.svg" alt="box" class="absolute bottom-6 left-0 right-0 top-0 z-20 w-[852px]" />
     <div
-      class="m-3 absolute bottom-0 left-0 right-0 top-0 z-10 bg-gradient-to-b from-[#010671] via-[#000DFF] to-[#010671]">
+      class="m-3 mx-4 absolute bottom-0 left-0 right-0 top-0 z-10 bg-gradient-to-b from-[#010671] via-[#000DFF] to-[#010671]">
     </div>
   </div>
 </template>
