@@ -1,14 +1,14 @@
 <template>
-  <div v-if="winners.length" class="text-white w-full h-screen p-8 flex flex-col">
+  <div v-if="winners.length" class="text-white w-full h-screen p-4 flex flex-col">
     <!-- Header -->
-    <h1 class="text-5xl text-center text-white audiowide-regular uppercase">
+    <h1 class="text-4xl text-center text-white audiowide-regular uppercase">
       Congratulation
       <br />
-      <span class="text-4xl">Our Winners</span>
+      <span class="text-3xl">Our Winners</span>
     </h1>
 
     <!-- Winners List -->
-    <div ref="scrollContainer" class="mt-2 mb-14 flex-1 overflow-hidden px-6 relative">
+    <div ref="scrollContainer" class="mt-2 flex-1 overflow-hidden px-6 relative">
       <div
         class="absolute top-0 left-0 right-0 transition-transform duration-500 ease-linear"
         :style="{ transform: `translateY(-${scrollOffset}px)` }"
@@ -17,7 +17,7 @@
         <div
           v-for="(winner, index) in winners"
           :key="winner.id || winner.nrc"
-          class="grid grid-cols-4 gap-1 mt-1 text-xl text-center items-stretch text-[#2E3192]"
+          class="grid grid-cols-4 gap-1 mt-1 text-xs text-center items-stretch text-[#2E3192]"
         >
           <p
             class="p-6 flex items-center justify-center"
@@ -49,7 +49,7 @@
         <div
           v-for="(winner, index) in winners"
           :key="`duplicate-${winner.id || winner.nrc}`"
-          class="grid grid-cols-4 gap-1 mt-3 text-xl text-center items-stretch text-[#2E3192]"
+          class="grid grid-cols-4 gap-1 mt-3 text-xs text-center items-stretch text-[#2E3192]"
         >
           <p
             class="p-6 flex items-center justify-center"

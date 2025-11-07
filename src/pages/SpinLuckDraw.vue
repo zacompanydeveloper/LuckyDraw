@@ -7,8 +7,11 @@
             <img src="@/assets/images/sweetyhome_logo.png" alt="" srcset="">
             <img src="@/assets/images/30_years_anni.png" alt="" srcset="">
         </div>
-        <div class="w-full flex justify-between absolute bottom-0 left-0 right-0 z-10 p-2 text-xl text-white font-bold audiowide-regular">
+        <div
+            class="w-full flex justify-between absolute items-end bottom-0 left-0 right-0 z-10 p-2 text-xl text-white font-bold audiowide-regular text-center">
             <p>8 November 2025 (Saturday)</p>
+            <p class=" text-sm">No.(2A1/16G),Sweety Home Tower,<br>East
+                RaceCourse Road, Tamwe Township, Yangon.</p>
         </div>
         <!-- Initial Start Screen -->
         <div v-if="initialState" class="w-full flex flex-col items-center gap-16">
@@ -37,7 +40,7 @@
             <div class="flex justify-center">
                 <div class="rounded-xl bg-gradient-to-r from-[#000DFF] via-[#343EFF] to-[#FFFFFF] p-[4px]">
                     <button type="button" :disabled="processing" @click="handleRoll" :aria-disabled="processing"
-                        class="w-[200px] h-14 flex items-center justify-center bg-gradient-to-r from-[#00047D] to-[#0008CE] rounded-lg cursor-pointer hover:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed">
+                        class="w-[200px] h-14 flex items-center justify-center bg-gradient-to-r from-[#00047D] to-[#0008CE] rounded-lg cursor-pointer hover:opacity-80 disabled:opacity-10 disabled:cursor-not-allowed">
                         <span class="text-[21px] text-center font-light text-white uppercase audiowide-regular">
                             {{ showNextBtn ? "NEXT" : "START SPIN" }}
                         </span>
@@ -118,7 +121,7 @@ import Winners from "@/components/Winners.vue";
 
 const CONFIG = {
     ITEM_HEIGHT: 150,
-    ANIMATION_BASE_DURATION: 7000,
+    ANIMATION_BASE_DURATION: 10000,
     VIRTUAL_COUNT: 1000,
     CONFETTI_DELAY: 250,
 };
