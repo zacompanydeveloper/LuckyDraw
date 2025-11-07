@@ -17,7 +17,7 @@
         <div
           v-for="(winner, index) in winners"
           :key="winner.id || winner.nrc"
-          class="grid grid-cols-4 gap-1 mt-1 text-xs text-center items-stretch text-[#2E3192]"
+          class="grid grid-cols-4 gap-1 mt-1 text-center items-stretch text-[#2E3192]"
         >
           <p
             class="p-6 flex items-center justify-center"
@@ -41,7 +41,7 @@
             class="p-6 flex items-center justify-center"
             :class="index % 2 === 0 ? 'bg-[#D8EBFF]' : 'bg-[#C8E0FF]'"
           >
-            {{ winner.prize?.name || '-' }} {{ winner.prize?.color || '' }}
+            {{ winner.prize?.name || '-' }} <br> {{ winner.prize?.color || '' }}
           </p>
         </div>
 
@@ -49,7 +49,7 @@
         <div
           v-for="(winner, index) in winners"
           :key="`duplicate-${winner.id || winner.nrc}`"
-          class="grid grid-cols-4 gap-1 mt-3 text-xs text-center items-stretch text-[#2E3192]"
+          class="grid grid-cols-4 gap-1 mt-3 text-center items-stretch text-[#2E3192]"
         >
           <p
             class="p-6 flex items-center justify-center"
@@ -73,7 +73,7 @@
             class="p-6 flex items-center justify-center"
             :class="index % 2 === 0 ? 'bg-[#D8EBFF]' : 'bg-[#C8E0FF]'"
           >
-            {{ winner.prize?.name || '-' }}
+            {{ winner.prize?.name || '-' }} <br> {{ winner.prize?.color || '' }}
           </p>
         </div>
       </div>
