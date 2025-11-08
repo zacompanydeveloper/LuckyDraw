@@ -60,19 +60,19 @@
                 class="flex flex-col justify-between items-center gap-4 w-full h-full text-center text-[#080D88] relative">
 
                 <div>
-                    <h1 class="text-[#080D88] text-4xl uppercase mb-4">Congratulation</h1>
-                    <h3 class="text-2xl uppercase">Winner is</h3>
+                    <h1 class="text-[#080D88] text-3xl uppercase mb-4">Congratulation</h1>
+                    <h3 class="text-xl uppercase">Winner is</h3>
                     <!-- <pre>{{ selectedCustomer }}</pre> -->
                 </div>
                 <div class="flex flex-col items-center gap-4 w-full max-w-2xl">
-                    <p class="text-2xl font-semibold uppercase bg-[#E5F2FF] p-2 px-4 inter-custom text-[#2E3192]">
+                    <p class="text-xl font-semibold uppercase bg-[#E5F2FF] p-2 px-4 inter-custom text-[#2E3192]">
                         {{ selectedCustomer?.shop_name }} | {{ selectedCustomer?.shop_township }}
                     </p>
-                    <h1 class="text-4xl font-semibold">{{ selectedCustomer?.name }}</h1>
-                    <p class="text-2xl text-[#2E3192] inter-custom font-bold">
+                    <h1 class="text-3xl font-semibold">{{ selectedCustomer?.name }}</h1>
+                    <p class="text-xl text-[#2E3192] inter-custom font-bold">
                         {{ selectedCustomer?.township }}
                     </p>
-                    <p class="text-2xl text-[#2E3192] inter-custom font-bold">
+                    <p class="text-xl text-[#2E3192] inter-custom font-bold">
                         {{ selectedCustomer?.nrc }}
                     </p>
                     <div class="relative w-full min-w-2xl mt-6">
