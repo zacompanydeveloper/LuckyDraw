@@ -1,19 +1,19 @@
 <template>
-  <div class="text-center relative overflow-hidden h-[250px]">
-    <div class="w-full h-[200px] overflow-hidden mt-5 relative z-30">
+  <div class="text-center relative overflow-hidden h-[180px]">
+    <div class="w-full h-[150px] overflow-hidden mt-5 relative z-30">
       <div v-if="items.length" :ref="el => setSlotRef(slotIndex, el)" class="flex flex-col"
         :class="{ 'fade-in-prize': type === 'prize' && items.length === 1 }">
         <div v-for="(item, i) in items" :key="`${type}-${i}`"
-          class="h-[200px] min-w-lg flex items-center justify-center gap-8 text-white font-semibold text-2xl">
+          class="h-[150px] min-w-md flex items-center justify-center gap-4 text-white font-semibold text-2xl">
 
           <!-- Prize -->
           <template v-if="type === 'prize'">
-            <img :src="item.image" alt="" class="w-32 z-40 object-cover " />
-            <div class="flex flex-col items-center justify-center gap-1 font-bold text-white w-[300px]">
-              <p class="text-white text-[24px] z-40 text-start truncate max-w-[300px]">
+            <img :src="item.image" alt="" class="w-24 z-40 object-cover " />
+            <div class="flex flex-col items-center justify-center gap-1 font-bold text-white w-[250px]">
+              <p class="text-white text-[20px] z-40 text-start truncate max-w-[250px]">
                 {{ item.name }}
               </p>
-              <p class="z-40 text-center text-[24px]">
+              <p class="z-40 text-center text-[20px]">
                 {{ item.color}}
               </p>
             </div>
@@ -21,7 +21,7 @@
 
           <!-- Customer -->
           <template v-else>
-            <p class="text-white example font-bold text-[40px] z-40 text-center text-nowrap truncate max-w-[350px]">
+            <p class="text-white example font-bold text-3xl z-40 text-center text-nowrap truncate max-w-[350px]">
               {{ item.name || 'Anonymous' }}
             </p>
           </template>

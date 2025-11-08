@@ -117,7 +117,7 @@ import Marquee from "@/components/Marquee.vue";
 import Winners from "@/components/Winners.vue";
 
 const CONFIG = {
-    ITEM_HEIGHT: 200,
+    ITEM_HEIGHT: 150,
     ANIMATION_BASE_DURATION: 10000,
     VIRTUAL_COUNT: 1000,
     CONFETTI_DELAY: 250,
