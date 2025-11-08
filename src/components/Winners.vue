@@ -1,14 +1,14 @@
 <template>
-  <div v-if="winners.length" class="text-white w-full h-screen p-4 flex flex-col">
+  <div v-if="winners.length" class="text-white w-full h-screen p-6 flex flex-col">
     <!-- Header -->
-    <h1 class="text-4xl text-center text-white audiowide-regular uppercase">
+    <h1 class="text-5xl text-center text-white audiowide-regular uppercase">
       Congratulation
       <br />
-      <span class="text-3xl">Our Winners</span>
+      <span class="text-4xl">Our Winners</span>
     </h1>
 
     <!-- Winners List -->
-    <div ref="scrollContainer" class="mt-2 flex-1 overflow-hidden px-6 relative">
+    <div ref="scrollContainer" class="mt-2 flex-1 overflow-hidden px-6 relative text-3xl font-bold">
       <div
         class="absolute top-0 left-0 right-0 transition-transform duration-500 ease-linear"
         :style="{ transform: `translateY(-${scrollOffset}px)` }"
