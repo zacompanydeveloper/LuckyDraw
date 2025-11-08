@@ -4,8 +4,8 @@
         class="flex flex-col items-center justify-center min-h-screen bg-contain bg-repeat-x bg-center"
         :style="{ backgroundImage: `url(${bgImage})` }">
         <div class="w-full flex justify-between absolute top-0 left-0 right-0 z-10">
-            <img src="@/assets/images/sweetyhome_logo.png" alt="" srcset="">
-            <img src="@/assets/images/30_years_anni.png" alt="" srcset="">
+            <img src="@/assets/images/sweetyhome_logo_1.png" alt="" srcset="" class=" w-sm p-2">
+            <img src="@/assets/images/30Years.png" alt="" srcset="" class=" w-xs">
         </div>
         <div
             class="w-full flex justify-between absolute items-end bottom-0 left-0 right-0 z-10 p-2 text-3xl text-white font-bold audiowide-regular text-center">
@@ -14,7 +14,7 @@
         </div>
         <!-- Initial Start Screen -->
         <div v-if="initialState" class="w-full flex flex-col items-center gap-16">
-            <img src="@/assets/images/typo.png" alt="Lucky Draw" class="lucky-img w-6xl" :class="{
+            <img src="@/assets/images/typo1.png" alt="Lucky Draw" class="lucky-img w-4xl" :class="{
                 'disabled-img':
                     virtualPrizes.length === 0 || virtualCustomers.length === 0
             }" @click.prevent="
@@ -65,14 +65,14 @@
                     <!-- <pre>{{ selectedCustomer }}</pre> -->
                 </div>
                 <div class="flex flex-col items-center gap-4 w-full max-w-2xl">
-                    <p class="text-xl font-semibold uppercase bg-[#E5F2FF] p-2 px-4 inter-custom text-[#2E3192]">
+                    <p class="text-2xl font-semibold uppercase bg-[#E5F2FF] p-2 px-4 inter-custom text-[#2E3192]">
                         {{ selectedCustomer?.shop_name }} | {{ selectedCustomer?.shop_township }}
                     </p>
                     <h1 class="text-4xl font-semibold">{{ selectedCustomer?.name }}</h1>
-                    <p class="text-xl text-[#2E3192] inter-custom font-bold">
+                    <p class="text-2xl text-[#2E3192] inter-custom font-bold">
                         {{ selectedCustomer?.township }}
                     </p>
-                    <p class="text-xl text-[#2E3192] inter-custom font-bold">
+                    <p class="text-2xl text-[#2E3192] inter-custom font-bold">
                         {{ selectedCustomer?.nrc }}
                     </p>
                     <div class="relative w-full min-w-2xl mt-6">
