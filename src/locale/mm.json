@@ -189,5 +189,6 @@
   "error_uploading_excel": "Excel ဖိုင် တင်ရာတွင် အမှားရှိပါသည်",
   "download_winners_list": "အနိုင်ရသူများ စာရင်း ဒေါင်းလုပ်မည်",
   "color": "အရောင်",
-  "sorting_no": "စဉ်အမှတ်"
+  "sorting_no": "စဉ်အမှတ်",
+  "export_png": "Export ထုတ်ယူမည်"
 }
