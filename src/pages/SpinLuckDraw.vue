@@ -26,9 +26,7 @@
 
         <!-- Spin Screen -->
         <div v-else class="rounded-md w-full px-[5%] pt-20">
-            <!-- Marquee -->
-            <!-- <Marquee :items="remainingPrizes" /> -->
-
+            
             <!-- Slots -->
             <div class="grid grid-cols-2 gap-10 mb-16 px-[14%]">
                 <SlotColumn :items="slots[1]" :slotIndex="1" :setSlotRef="setSlotRef" type="prize" />

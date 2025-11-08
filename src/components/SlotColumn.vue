@@ -36,10 +36,11 @@
     </div>
 
     <!-- Background layers -->
-    <img src="@/assets/svg/box.svg" alt="box" class="absolute bottom-6 left-0 right-0 top-0 z-20 w-[852px]" />
-    <div
+    <img v-if="type == 'prize'" src="@/assets/svg/left_box.svg" alt="box" class="absolute bottom-6 left-0 right-0 top-0 z-20" />
+    <img v-if="type == 'customer'" src="@/assets/svg/right_box.svg" alt="box" class="absolute bottom-6 left-0 right-0 top-0 z-20" />
+    <!-- <div
       class="m-3 mx-4 absolute bottom-0 left-0 right-0 top-0 z-10 bg-gradient-to-b from-[#010671] via-[#000DFF] to-[#010671]">
-    </div>
+    </div> -->
   </div>
 </template>
 
