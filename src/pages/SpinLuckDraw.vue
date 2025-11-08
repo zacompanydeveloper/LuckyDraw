@@ -2,10 +2,10 @@
     <!-- Spin Section -->
     <div v-if="spinSection"
         class="flex flex-col items-center justify-center min-h-screen bg-contain bg-repeat-x bg-center"
-        :style="{ backgroundImage: `url(${bgImage})` }">
+        :style="{ backgroundImage: `url(https://shassets.sgp1.cdn.digitaloceanspaces.com/sweety_home/images/20251108-141404.png)` }">
         <div class="w-full flex justify-between absolute top-0 left-0 right-0 z-10">
-            <img src="@/assets/images/sweetyhome_logo_1.png" alt="" srcset="" class=" w-sm p-2">
-            <img src="@/assets/images/30Years.png" alt="" srcset="" class=" w-xs">
+            <img src="@/assets/images/sweetyhome_logo_1.png" alt="" srcset="" class=" w-[200px] p-2">
+            <img src="@/assets/images/30Years.png" alt="" srcset="" class=" w-[200px]">
         </div>
         <div
             class="w-full flex justify-between absolute items-end bottom-0 left-0 right-0 z-10 p-2 text-3xl text-white font-bold audiowide-regular text-center">
@@ -14,7 +14,7 @@
         </div>
         <!-- Initial Start Screen -->
         <div v-if="initialState" class="w-full flex flex-col items-center gap-16">
-            <img src="@/assets/images/typo1.png" alt="Lucky Draw" class="lucky-img w-4xl" :class="{
+            <img src="@/assets/images/typo1.png" alt="Lucky Draw" class="lucky-img w-lg" :class="{
                 'disabled-img':
                     virtualPrizes.length === 0 || virtualCustomers.length === 0
             }" @click.prevent="
@@ -101,7 +101,7 @@
     <!-- Winner Section -->
     <div v-if="winnerSection"
         class="flex flex-col items-center justify-start min-h-screen bg-contain bg-repeat-x bg-center"
-        :style="{ backgroundImage: `url(${bgImage})` }">
+        :style="{ backgroundImage: `url(https://shassets.sgp1.cdn.digitaloceanspaces.com/sweety_home/images/20251108-141404.png)` }">
         <Winners :winners="winners" />
     </div>
 </template>
