@@ -81,9 +81,9 @@
         </div>
 
         <!-- Winner Dialog -->
-        <div class="export-container-wrapper max-w-[1000px] absolute top-[-10000px] left-[-10000px]">
+        <div class="export-container-wrapper max-w-[1000px] aspect-square absolute top-[-10000px] left-[-10000px]">
             <div ref="imageContainer" :style="{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover' }"
-                class="winner-dialog flex items-center justify-center min-w-[1000px] max-w-[1000px] audiowide-regular aspect-square py-6">
+                class="winner-dialog flex items-center justify-center audiowide-regular max-w-[1000px] aspect-square py-6">
                 <div
                     class="flex flex-col items-center gap-8 w-full h-full text-center text-[#080D88] relative">
                     <div class="w-full flex justify-between">
@@ -94,11 +94,13 @@
                         <h1 class="text-[#080D88] text-[75.85px] uppercase mb-4">Congratulation</h1>
                         <h3 class="text-[55.35px] uppercase">Winner is</h3>
                     </div>
-                    <div class="flex flex-col items-center gap-4 w-full pb-6">
-                        <p
+                    <div class="flex flex-col items-center gap-4 w-full mb-">
+                        <div class="px-3 w-full max-w-[710px]">
+                            <h1
                             class="text-[49.91px] flex items-center font-semibold uppercase py-4 px-3 inter-custom text-white bg-[#2E3192]">
                             {{ selectedCustomer?.shop_name }} | {{ selectedCustomer?.shop_township }}
-                        </p>
+                        </h1>
+                        </div>
                         <h1 class="text-[65.56px] font-normal">{{ selectedCustomer?.name }}</h1>
                         <p class="text-[36px] text-[#2E3192] inter-custom">
                             {{ selectedCustomer?.township }}
@@ -106,7 +108,7 @@
                         <p class="text-[36px] font-light text-[#2E3192] inter-custom">
                             {{ selectedCustomer?.nrc }}
                         </p>
-                        <div class="relative w-full max-w-[710px] px-8 mt-6">
+                        <div class="relative w-full max-w-[710px] px-8 my-6">
                             <img :src="selectedPrize?.image" alt="prize"
                                 class="w-50 object-contain absolute bottom-2 left-2" />
                             <h1
