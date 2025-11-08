@@ -81,9 +81,10 @@
         </div>
 
         <!-- Winner Dialog -->
-        <div class="export-container-wrapper fixed top-[-10000px] left-[-10000px]  w-full max-w-[1000px] aspect-square">
+         <!-- fixed top-[-10000px] left-[-10000px]  -->
+        <div class="export-container-wrapper w-full fixed top-[-10000px] left-[-10000px] max-w-[1000px] aspect-square">
             <div ref="imageContainer" :style="{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover' }"
-                class="winner-dialog flex items-center justify-center w-full max-w-[1100] audiowide-regular py-6">
+                class="winner-dialog flex items-center justify-center w-full max-w-[1100] audiowide-regular pb-6">
                 <div
                     class="flex flex-col items-center gap-8 w-full h-full text-center text-[#080D88] relative">
                     <div class="w-full flex justify-between">
@@ -94,11 +95,13 @@
                         <h1 class="text-[#080D88] text-[75.85px] uppercase mb-4">Congratulation</h1>
                         <h3 class="text-[55.35px] uppercase">Winner is</h3>
                     </div>
-                    <div class="flex flex-col items-center gap-4 w-full mb-6">
+                    <div class="flex flex-col items-center gap-4 w-full">
                         <div class="px-3 w-full max-w-[750px]">
                             <h1
                             class="text-[49.91px] flex items-center justify-center font-semibold uppercase py-4 px-3 inter-custom text-white bg-[#2E3192]">
-                            {{ selectedCustomer?.shop_name }} | {{ selectedCustomer?.shop_township }}
+                            {{ selectedCustomer?.shop_name }}
+                             {{ selectedCustomer?.shop_name && selectedCustomer?.shop_township ? ' | ' : '' }}
+                             {{ selectedCustomer?.shop_township }}
                         </h1>
                         </div>
                         <h1 class="text-[65.56px] font-normal">{{ selectedCustomer?.name }}</h1>
@@ -108,7 +111,7 @@
                         <p class="text-[36px] font-light text-[#2E3192] inter-custom">
                             {{ selectedCustomer?.nrc }}
                         </p>
-                        <div class="relative w-full flex items-end gap-x-6 px-20">
+                        <div class="w-full flex items-end justify-start gap-x-6 px-20">
                             <!-- absolute bottom-2 left-2 -->
                             <img :src="selectedPrize?.image" alt="prize"
                                 class="w-50 object-contain ps-10" />
@@ -272,6 +275,8 @@ const exportPNG = async (data) => {
             allowTaint: true,
         }).then((canvas) => {
             const image = canvas.toDataURL("image/png");
+
+            console.log('Generated Image Data URL:', image);
 
             const link = document.createElement("a");
             link.href = image;
