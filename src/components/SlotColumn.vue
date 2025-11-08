@@ -8,12 +8,12 @@
 
           <!-- Prize -->
           <template v-if="type === 'prize'">
-            <img :src="item.image" alt="" class="w-36 z-40 object-cover " />
-            <div class="flex flex-col items-center justify-center gap-1 font-bold text-white w-[250px]">
-              <p class="text-white text-[22px] z-40 text-start truncate max-w-[250px]">
+            <img :src="item.image" alt="" class="w-32 z-40 object-cover " />
+            <div class="flex flex-col items-center justify-center gap-1 font-bold text-white w-[300px]">
+              <p class="text-white text-[24px] z-40 text-start truncate max-w-[300px]">
                 {{ item.name }}
               </p>
-              <p class="z-40 text-center text-[22px]">
+              <p class="z-40 text-center text-[24px]">
                 {{ item.color}}
               </p>
             </div>
@@ -21,7 +21,7 @@
 
           <!-- Customer -->
           <template v-else>
-            <p class="text-white example font-bold text-4xl z-40 text-center text-nowrap truncate max-w-[350px]">
+            <p class="text-white example font-bold text-[40px] z-40 text-center text-nowrap truncate max-w-[350px]">
               {{ item.name || 'Anonymous' }}
             </p>
           </template>
