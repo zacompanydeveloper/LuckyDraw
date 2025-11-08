@@ -81,42 +81,42 @@
         </div>
 
         <!-- Winner Dialog -->
-         <div class="export-container-wrapper absolute top-[-10000px] left-[-10000px]">
-        <div ref="imageContainer"
-            :style="{ backgroundImage: `url(${bgImage})` }"
-            class="winner-dialog flex items-center justify-center audiowide-regular w-full max-w-[1000px]  aspect-square py-6">
-            <div
-                class="flex flex-col justify-between items-center gap-4 w-full h-full text-center text-[#080D88] relative">
-                <div class="w-full flex justify-between">
-                    <img src="@/assets/images/sweetyhome_logo.png" alt="" srcset="">
-                    <img src="@/assets/images/30_years_anni.png" alt="" srcset="">
-                </div>
-                <div class="w-full max-w-[820px]">
-                    <h1 class="text-[#080D88] text-[75.85px] uppercase mb-4">Congratulation</h1>
-                    <h3 class="text-[55.35px] uppercase">Winner is</h3>
-                </div>
-                <div class="flex flex-col items-center gap-4 w-full max-w-[820px]">
-                    <p class="text-[49.91px] flex items-center font-semibold uppercase py-4 px-3 inter-custom text-white bg-[#2E3192]">
-                        {{ selectedCustomer?.shop_name }} | {{ selectedCustomer?.shop_township }}
-                    </p>
-                    <h1 class="text-[65.56px] font-normal">{{ selectedCustomer?.name }}</h1>
-                    <p class="text-[36px] text-[#2E3192] inter-custom">
-                        {{ selectedCustomer?.township }}
-                    </p>
-                    <p class="text-[36px] font-light text-[#2E3192] inter-custom">
-                        {{ selectedCustomer?.nrc }}
-                    </p>
-                    <div class="relative w-full min-w-[610px] mt-6">
-                        <img :src="selectedPrize?.image" alt="prize"
-                            class="w-50 object-contain absolute bottom-2 left-2" />
-                        <h1
-                            class="text-[61.74px] inter-custom font-semibold text-white text-shadow-lg ps-50 rounded-lg">
-                            {{ selectedPrize?.name }} {{ selectedPrize?.color }}
-                        </h1>
+        <div class="export-container-wrapper max-w-[1000px] absolute top-[-10000px] left-[-10000px]">
+            <div ref="imageContainer" :style="{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover' }"
+                class="winner-dialog flex items-center justify-center min-w-[1000px] max-w-[1000px] audiowide-regular aspect-square py-6">
+                <div
+                    class="flex flex-col items-center gap-8 w-full h-full text-center text-[#080D88] relative">
+                    <div class="w-full flex justify-between">
+                        <img src="@/assets/images/sweetyhome_logo.png" alt="" srcset="">
+                        <img src="@/assets/images/30_years_anni.png" alt="" srcset="">
+                    </div>
+                    <div class="w-full max-w-[820px]">
+                        <h1 class="text-[#080D88] text-[75.85px] uppercase mb-4">Congratulation</h1>
+                        <h3 class="text-[55.35px] uppercase">Winner is</h3>
+                    </div>
+                    <div class="flex flex-col items-center gap-4 w-full pb-6">
+                        <p
+                            class="text-[49.91px] flex items-center font-semibold uppercase py-4 px-3 inter-custom text-white bg-[#2E3192]">
+                            {{ selectedCustomer?.shop_name }} | {{ selectedCustomer?.shop_township }}
+                        </p>
+                        <h1 class="text-[65.56px] font-normal">{{ selectedCustomer?.name }}</h1>
+                        <p class="text-[36px] text-[#2E3192] inter-custom">
+                            {{ selectedCustomer?.township }}
+                        </p>
+                        <p class="text-[36px] font-light text-[#2E3192] inter-custom">
+                            {{ selectedCustomer?.nrc }}
+                        </p>
+                        <div class="relative w-full max-w-[710px] px-8 mt-6">
+                            <img :src="selectedPrize?.image" alt="prize"
+                                class="w-50 object-contain absolute bottom-2 left-2" />
+                            <h1
+                                class="text-[61.74px] inter-custom font-semibold text-white text-shadow-lg ps-50 rounded-lg">
+                                {{ selectedPrize?.name }} {{ selectedPrize?.color }}
+                            </h1>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         </div>
 
     </div>
@@ -252,7 +252,7 @@ const exportPNG = async (data) => {
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
         console.log('logging the capture element:', captureElement);
-        
+
         html2canvas(captureElement, {
             useCORS: true,
             allowTaint: true,
