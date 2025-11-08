@@ -1,6 +1,6 @@
 <template>
   <div class="text-center relative overflow-hidden h-[180px]">
-    <div class="w-full h-[150px] overflow-hidden mt-5 relative z-30">
+    <div class="w-full h-[150px] overflow-hidden mt-3 relative z-30">
       <div v-if="items.length" :ref="el => setSlotRef(slotIndex, el)" class="flex flex-col"
         :class="{ 'fade-in-prize': type === 'prize' && items.length === 1 }">
         <div v-for="(item, i) in items" :key="`${type}-${i}`"
