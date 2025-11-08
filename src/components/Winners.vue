@@ -8,7 +8,7 @@
     </h1>
 
     <!-- Winners List -->
-    <div ref="scrollContainer" class="mt-2 flex-1 overflow-hidden px-6 relative text-3xl font-bold">
+    <div ref="scrollContainer" class="mt-2 flex-1 overflow-hidden px-6 relative text-2xl font-bold">
       <div class="absolute top-0 left-0 right-0 transition-transform duration-500 ease-linear"
         :style="{ transform: `translateY(-${scrollOffset}px)` }">
         <!-- Original Winners -->
