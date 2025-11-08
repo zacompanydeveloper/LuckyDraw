@@ -81,7 +81,7 @@
         </div>
 
         <!-- Winner Dialog -->
-        <div class="export-container-wrapper w-full max-w-[1000px] aspect-square absolute top-[-10000px] left-[-10000px]">
+        <div class="export-container-wrapper fixed top-[-10000px] left-[-10000px]  w-full max-w-[1000px] aspect-square">
             <div ref="imageContainer" :style="{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover' }"
                 class="winner-dialog flex items-center justify-center w-full max-w-[1100] audiowide-regular py-6">
                 <div
@@ -95,9 +95,9 @@
                         <h3 class="text-[55.35px] uppercase">Winner is</h3>
                     </div>
                     <div class="flex flex-col items-center gap-4 w-full mb-6">
-                        <div class="px-3 w-full max-w-[710px]">
+                        <div class="px-3 w-full max-w-[750px]">
                             <h1
-                            class="text-[49.91px] flex items-center font-semibold uppercase py-4 px-3 inter-custom text-white bg-[#2E3192]">
+                            class="text-[49.91px] flex items-center justify-center font-semibold uppercase py-4 px-3 inter-custom text-white bg-[#2E3192]">
                             {{ selectedCustomer?.shop_name }} | {{ selectedCustomer?.shop_township }}
                         </h1>
                         </div>
@@ -108,11 +108,12 @@
                         <p class="text-[36px] font-light text-[#2E3192] inter-custom">
                             {{ selectedCustomer?.nrc }}
                         </p>
-                        <div class="relative w-full max-w-[710px] px-8">
+                        <div class="relative w-full flex items-end gap-x-6 px-20">
+                            <!-- absolute bottom-2 left-2 -->
                             <img :src="selectedPrize?.image" alt="prize"
-                                class="w-50 object-contain absolute bottom-2 left-2" />
+                                class="w-50 object-contain ps-10" />
                             <h1
-                                class="text-[61.74px] inter-custom font-semibold text-white text-shadow-lg ps-50 rounded-lg">
+                                class="text-[61.74px] inter-custom font-semibold text-white text-shadow-lg pb-5">
                                 {{ selectedPrize?.name }} {{ selectedPrize?.color }}
                             </h1>
                         </div>
@@ -153,7 +154,7 @@ const selectedPrize = ref({
     image: examplePrize,
 });
 
-const { height } = useElementSize(imageContainer)
+const { width, height } = useElementSize(imageContainer)
 
 const isMobile = helper.isMobile();
 
@@ -232,7 +233,7 @@ const exportData = async () => {
 
 // png export for winner info
 const exportPNG = async (data) => {
-    console.log('element height first', height.value);
+    console.log('element width and height first', width.value, height.value);
 
     selectedCustomer.value = {
         name: data.customer_name,
@@ -252,10 +253,13 @@ const exportPNG = async (data) => {
     console.log('Selected Prize:', selectedPrize.value);
     try {
         // need to settime here to wait for DOM update
-        console.log('element height second', height.value);
+        console.log('element width and height second', width.value, height.value);
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        console.log('element height third', height.value);
+        // height နဲ့ width နဲ့ တူအောင်လို့ အခုလိုလုပ်ထားတာ
+        imageContainer.value.style.width = `${height.value}px`;
+
+        console.log('element width and height third', width.value, height.value);
         const captureElement = imageContainer.value;
 
         // do i need to wait here ?
