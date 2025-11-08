@@ -81,9 +81,9 @@
         </div>
 
         <!-- Winner Dialog -->
-        <div class="export-container-wrapper max-w-[1000px] aspect-square absolute top-[-10000px] left-[-10000px]">
+        <div class="export-container-wrapper w-full max-w-[1000px] aspect-square absolute top-[-10000px] left-[-10000px]">
             <div ref="imageContainer" :style="{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover' }"
-                class="winner-dialog flex items-center justify-center audiowide-regular max-w-[1000px] aspect-square py-6">
+                class="winner-dialog flex items-center justify-center w-full max-w-[1100] audiowide-regular py-6">
                 <div
                     class="flex flex-col items-center gap-8 w-full h-full text-center text-[#080D88] relative">
                     <div class="w-full flex justify-between">
@@ -94,7 +94,7 @@
                         <h1 class="text-[#080D88] text-[75.85px] uppercase mb-4">Congratulation</h1>
                         <h3 class="text-[55.35px] uppercase">Winner is</h3>
                     </div>
-                    <div class="flex flex-col items-center gap-4 w-full mb-">
+                    <div class="flex flex-col items-center gap-4 w-full mb-6">
                         <div class="px-3 w-full max-w-[710px]">
                             <h1
                             class="text-[49.91px] flex items-center font-semibold uppercase py-4 px-3 inter-custom text-white bg-[#2E3192]">
@@ -108,7 +108,7 @@
                         <p class="text-[36px] font-light text-[#2E3192] inter-custom">
                             {{ selectedCustomer?.nrc }}
                         </p>
-                        <div class="relative w-full max-w-[710px] px-8 my-6">
+                        <div class="relative w-full max-w-[710px] px-8">
                             <img :src="selectedPrize?.image" alt="prize"
                                 class="w-50 object-contain absolute bottom-2 left-2" />
                             <h1
@@ -134,6 +134,7 @@ import { useI18n } from "vue-i18n";
 import helper from "@/helper";
 import backend from "@/api/backend";
 import NotFound from "@/views/NotFound.vue";
+import { useElementSize } from '@vueuse/core'
 
 const toast = useToast();
 const { t } = useI18n();
@@ -151,6 +152,8 @@ const selectedPrize = ref({
     color: 'White Titanium',
     image: examplePrize,
 });
+
+const { height } = useElementSize(imageContainer)
 
 const isMobile = helper.isMobile();
 
@@ -229,6 +232,8 @@ const exportData = async () => {
 
 // png export for winner info
 const exportPNG = async (data) => {
+    console.log('element height first', height.value);
+
     selectedCustomer.value = {
         name: data.customer_name,
         shop_name: data.shop_name,
@@ -247,7 +252,10 @@ const exportPNG = async (data) => {
     console.log('Selected Prize:', selectedPrize.value);
     try {
         // need to settime here to wait for DOM update
+        console.log('element height second', height.value);
         await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        console.log('element height third', height.value);
         const captureElement = imageContainer.value;
 
         // do i need to wait here ?
