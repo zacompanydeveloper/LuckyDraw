@@ -182,5 +182,8 @@
   "mmk": "MMK",
   "spin_employee_lucky_draw": "Spin Employee Lucky Draw",
   "reward_management": "Reward Management",
-  "sponsor_by": "Sponsored By"
+  "sponsor_by": "Sponsored By",
+  "winners_list": "Winners List",
+  "company_name": "Company Name",
+  "role": "Role"
 }
