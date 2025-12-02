@@ -101,10 +101,10 @@ export const routes = [
     path: "/admin-panel/playground",
     name: "admin-panel-playground",
     component: () => import("@/pages/Playground.vue"),
-    // meta: {
-    //   requiresAdminAuth: true,
-    //   // permissions: ["view-playground"],
-    // }, // protected route
+    meta: {
+      requiresAdminAuth: true,
+      permissions: ["view-playground"],
+    }, // protected route
   },
   {
     path: "/admin-panel/spin-luck-draw",
@@ -123,7 +123,16 @@ export const routes = [
       requiresAdminAuth: true,
       // permissions: ["manage-ticket-winner"],
     }, // protected route
-  }
+  },
+  {
+    path: "/admin-panel/spin-luck-employee-draw",
+    name: "admin-panel-spin-luck-employee-draw",
+    component: () => import("@/pages/SpinLuckEmployeeDraw.vue"),
+    meta: {
+      requiresAdminAuth: true,
+      permissions: ["manage-employee-lucky-draw"],
+    }, // protected route
+  },
 ];
 
 export default routes;

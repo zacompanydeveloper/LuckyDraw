@@ -68,6 +68,14 @@
                             {{ $t('spin_luck_draw') }}
                         </router-link>
                     </li>
+
+                    <li v-can="'manage-employee-lucky-draw'">
+                        <router-link to="/admin-panel/spin-luck-employee-draw" active-class="bg-[#2E3192]/10"
+                            class="w-full flex items-center gap-2 text-[#2E3192] hover:bg-[#2E3192]/10 px-3 py-2 rounded-md transition-colors">
+                            <i class="pi pi-users"></i>
+                            {{ $t('spin_employee_lucky_draw') }}
+                        </router-link>
+                    </li>
                 </ul>
 
                 <template #footer class="p-0">
