@@ -137,11 +137,20 @@ export const routes = [
     path: "/admin-panel/reward",
     name: "admin-panel-reward",
     component: () => import("@/pages/Reward.vue"),
-    meta: { 
+    meta: {
       requiresAdminAuth: true,
       permissions: ["manage-employee-reward"],
     }, // protected route
-  }
+  },
+  {
+    path: "/admin-panel/winner-employees",
+    name: "admin-panel-winner-employees",
+    component: () => import("@/pages/WinnerEmployee.vue"),
+    meta: {
+      requiresAdminAuth: true,
+      permissions: ["manage-employee-lucky-draw"],
+    }, // protected route
+  },
 ];
 
 export default routes;
