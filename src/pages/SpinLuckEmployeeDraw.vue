@@ -123,8 +123,7 @@ async function start() {
   isLoading.value = true;
 
   if (clickStep.value === 1) {
-    const result = await apiFetchPrize();
-    if (result) await loadPrize();
+    await loadPrize();
     clickStep.value = 2;
     isLoading.value = false;
     return;
