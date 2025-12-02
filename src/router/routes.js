@@ -133,6 +133,15 @@ export const routes = [
       permissions: ["manage-employee-lucky-draw"],
     }, // protected route
   },
+  {
+    path: "/admin-panel/reward",
+    name: "admin-panel-reward",
+    component: () => import("@/pages/Reward.vue"),
+    meta: { 
+      requiresAdminAuth: true,
+      permissions: ["manage-employee-reward"],
+    }, // protected route
+  }
 ];
 
 export default routes;
