@@ -1,23 +1,41 @@
 <template>
     <div class="w-full min-h-screen flex flex-col lg:flex-row justify-center items-center 
-           bg-gradient-to-b from-blue-50 to-white p-6 lg:p-12" :style="{ backgroundImage: `url(${bgImage})` }">
+           bg-gradient-to-b from-blue-50 to-white p-6 lg:p-12 bg-contain bg-center bg-repeat-x"
+        :style="{ backgroundImage: `url(${bgImage})` }">
 
-        <!-- LEFT SIDE -->
-        <div class="w-full lg:w-1/3 h-full flex flex-col items-center justify-start mb-8 lg:mb-0">
+        <div class="w-full flex justify-between absolute top-0 left-0 right-0 z-10">
+            <img src="@/assets/images/SweetyHome.png" alt="" srcset="" class=" w-[200px] p-2">
+            <img src="@/assets/images/30Years.png" alt="" srcset="" class=" w-[200px]">
+        </div>
+        <div
+            class="w-full flex justify-end absolute items-end bottom-0 left-0 right-0 z-10 p-2 text-2xl text-white font-bold audiowide-regular text-center">
+            <p>6 Dec 2025 (Saturday)</p>
+        </div>
+        <!-- INITIAL STATE -->
+        <template v-if="initialState">
+            <img src="@/assets/images/typ_emp.png" alt="Lucky Draw" class="lucky-img w-xl cursor-pointer"
+                @click.prevent="initialState = false" />
+        </template>
 
-            <div class="flex flex-1 items-center justify-center">
+        <!-- MAIN DRAW STATE -->
+        <template v-else>
 
-                <!-- Prize box (Responsive square) -->
-                <div class="relative w-[100vw] max-w-[300px] h-[100vw] max-h-[300px] 
-                 rounded-2xl inset-shadow-sm inset-shadow-[#FFFFFF1A] 
-                 border-6 border-[#0106A9] rotate-45 flex justify-center items-center 
-                 transition-all duration-700">
+            <!-- LEFT SIDE -->
+            <div class="w-full lg:w-1/3 h-full flex flex-col items-center justify-start mb-8 lg:mb-0">
 
-                    <div class="-rotate-45 flex flex-col justify-center items-center text-center px-2 sm:px-4">
+                <div class="flex flex-1 items-center justify-center">
 
-                        <!-- Prize content with smooth fade -->
-                        <transition name="fade-zoom" mode="out-in">
-                            <div v-if="prizeLoaded" class="flex flex-col justify-center items-start text-center px-6">
+                    <!-- PRIZE BOX -->
+                    <div class="relative w-[100vw] max-w-[300px] h-[100vw] max-h-[300px] rounded-2xl 
+                   inset-shadow-sm inset-shadow-[#FFFFFF1A] border-6 border-[#0106A9] 
+                   rotate-45 flex justify-center items-center transition-all duration-700">
+
+                        <div class="-rotate-45 flex flex-col justify-center items-center text-center px-2 sm:px-4">
+
+                            <!-- Prize Content -->
+                            <transition name="fade-zoom" mode="out-in">
+                                <div v-if="prizeLoaded"
+                                    class="flex flex-col justify-center items-start text-center px-6">
 
                                 <!-- Prize Image (Responsive) -->
                                 <img v-if="prize?.image" :src="prize?.image"
@@ -26,79 +44,85 @@
                                 <img v-else src="@/assets/images/pz.png"
                                     class="w-[40vw] sm:w-[30vw] md:w-[180px] h-auto mx-auto" alt="">
 
-                                <!-- Prize Name -->
-                                <h1
-                                    class="text-xl font-bold text-blue-700 line-clamp-3 audiowide-regular text-center mx-auto capitalize p-1 pb-2 mb-4">
-                                    <template v-if="prize?.name">
-                                        <span v-if="!isNaN(Number(prize.name))">
-                                            {{ helper.priceFormat(prize.name) }} {{ $t("mmk") }}
-                                        </span>
-                                        <span v-else>
-                                            {{ prize?.name?.length > 50
-                                                ? prize.name.slice(0, 50) + "…"
-                                            : prize.name
-                                            }}
-                                        </span>
-                                    </template>
-                                </h1>
+                                    <!-- Prize Name -->
+                                    <h1 class="text-xl font-bold text-white line-clamp-3 audiowide-regular text-center 
+                           mx-auto capitalize p-1 pb-2 mb-4">
 
-                            </div>
-                        </transition>
+                                        <template v-if="prize?.name">
+
+                                            <!-- NUMBER FORMAT -->
+                                            <span v-if="!isNaN(Number(prize.name))">
+                                                {{ helper.priceFormat(prize.name) }} {{ $t("mmk") }}
+                                            </span>
+
+                                            <!-- NORMAL TEXT -->
+                                            <span v-else>
+                                                {{ prize.name.length > 50
+                                                    ? prize.name.slice(0, 50) + "…"
+                                                    : prize.name
+                                                }}
+                                            </span>
+
+                                        </template>
+                                    </h1>
+                                </div>
+                            </transition>
+
+                        </div>
                     </div>
                 </div>
+
+                <!-- BUTTON -->
+                <button @click="start" :disabled="isLoading" class="w-[60%] sm:w-[40%] md:w-[200px] h-12 md:h-14 flex items-center justify-center 
+                 bg-gradient-to-r from-[#00047D] to-[#0008CE] rounded-lg cursor-pointer 
+                 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed 
+                 fixed bottom-0 mb-6 md:mb-12">
+                    <span class="text-[21px] font-light text-white uppercase audiowide-regular">
+                        {{ buttonText }}
+                    </span>
+                </button>
+
             </div>
 
-            <!-- BUTTON (Responsive) -->
-            <button @click="start" :disabled="isLoading" class="w-[60%] sm:w-[40%] md:w-[200px] h-12 md:h-14
-               flex items-center justify-center bg-gradient-to-r from-[#00047D] to-[#0008CE]
-               rounded-lg cursor-pointer hover:opacity-90 
-               disabled:opacity-50 disabled:cursor-not-allowed fixed bottom-0 mb-6 md:mb-12">
-                <span class="text-[21px] font-light text-white uppercase audiowide-regular">
-                    {{ buttonText }}
-                </span>
-            </button>
+            <!-- RIGHT SIDE WINNER LIST -->
+            <transition-group name="list" tag="div" class="w-full lg:w-2/3 flex flex-wrap justify-center items-center gap-4 
+               max-h-[85vh] overflow-y-auto">
+                <div v-for="(p, i) in positioned" :key="i" class="item-card flex items-center bg-white rounded shadow-md border border-[#080D88] 
+                 overflow-hidden w-full sm:w-auto h-[20vw] sm:h-[70px] transform"
+                    :style="{ transitionDelay: i * 50 + 'ms' }">
+                    <div class="bg-[#080D88] text-white h-full flex items-center justify-center px-2 text-lg font-bold">
+                        {{ (p.start_index + i).toString().padStart(3, '0') }}
+                    </div>
 
-        </div>
-
-        <!-- RIGHT SIDE WINNER LIST -->
-        <transition-group name="list" tag="div"
-            class="w-full lg:w-2/3 flex flex-wrap justify-center items-center gap-4 max-h-[85vh] overflow-y-auto">
-
-            <div v-for="(p, i) in positioned" :key="i" class="item-card flex items-center bg-white rounded shadow-md border border-[#080D88] 
-               overflow-hidden w-full sm:w-auto 
-               h-[20vw] sm:h-[70px] transform" :style="{ transitionDelay: i * 50 + 'ms' }">
-
-                <div class="bg-[#080D88] text-white h-full flex items-center justify-center px-2 text-lg font-bold">
-                    {{ (p.start_index + i).toString().padStart(3, '0') }}
+                    <div class="flex flex-col px-8 items-center justify-center py-2 w-full">
+                        <span class="text-[#080D88] font-bold text-lg truncate audiowide-regular px-2">
+                            {{ p.name }}
+                        </span>
+                        <span class="text-[#080D88] font-bold text-xs truncate audiowide-regular px-2">
+                            {{ p.region }}
+                        </span>
+                        <span class="text-[#080D88] truncate text-xs">
+                            <span class="font-bold">{{ p.company_name }}</span>-{{ p.role }}
+                        </span>
+                    </div>
                 </div>
+            </transition-group>
 
-                <div class="flex flex-col px-8 items-center justify-center py-2 w-full">
-                    <span class="text-[#080D88] font-bold text-lg truncate audiowide-regular px-2">
-                        {{ p.name }}
-                    </span>
-                    <span class="text-[#080D88] font-bold text-xs truncate audiowide-regular px-2">
-                        {{ p.region }}
-                    </span>
-                    <span class="text-[#080D88] truncate text-xs">
-                        <span class=" font-bold">{{ p.company_name }}</span>-{{ p.role }}
-                    </span>
-                </div>
+            <Toast />
 
-            </div>
-        </transition-group>
+        </template>
 
-        <Toast />
     </div>
 </template>
 
-
 <script setup>
 import { ref, computed } from "vue";
-import bgImage from '@/assets/svg/bg.svg'
+import bgImage from '@/assets/images/bg_emp.png'
 import backend from "@/api/backend";
 import helper from "@/helper";
 import { useToast } from "primevue/usetoast";
 
+const initialState = ref(true);
 const positioned = ref([]);
 const prize = ref(null);
 const prizeLoaded = ref(false);
