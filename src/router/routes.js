@@ -151,6 +151,15 @@ export const routes = [
       permissions: ["manage-employee-lucky-draw"],
     }, // protected route
   },
+  {
+    path: "/admin-panel/employee-list",
+    name: "admin-panel-employee-list",
+    component: () => import("@/pages/EmployeeList.vue"),
+    meta: {
+      requiresAdminAuth: true,
+      permissions: ["manage-employee-lucky-draw"],
+    }, // protected route
+  }
 ];
 
 export default routes;

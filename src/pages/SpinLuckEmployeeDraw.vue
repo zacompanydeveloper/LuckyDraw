@@ -21,8 +21,9 @@
 
         <!-- INITIAL STATE -->
         <template v-if="initialState">
-            <img src="https://0s3.sweetyhome.net.mm/shassets/sweety_home/images/typ_emp.png" alt="Lucky Draw"
-                class="lucky-img w-xl cursor-pointer prize-zoom" @click.prevent="initialState = false" />
+            <img src="https://0s3.sweetyhome.net.mm/shassets/sweety_home/images/sweetyhome_typ_emp.webp"
+                alt="Lucky Draw" class="lucky-img w-xl cursor-pointer prize-zoom"
+                @click.prevent="initialState = false" />
         </template>
 
         <!-- MAIN DRAW STATE -->
@@ -31,8 +32,9 @@
             <div class="w-full lg:w-1/3 h-full flex flex-col items-center justify-start mb-8 lg:mb-0">
                 <div class="flex flex-1 items-center justify-center">
                     <div class="relative bg-white/80 w-[100vw] max-w-[300px] h-[100vw] max-h-[300px]
-                        rounded-2xl shadow-lg shadow-white/20 border-6 border-[#0106A9] rotate-45
-                        flex justify-center items-center transition-all duration-700">
+                        rounded-2xl shadow-lg shadow-white/20 border-6 rotate-45
+                        flex justify-center items-center transition-all duration-700"
+                        :class="isSpecialPrize ? 'border-[#FFD700] special-prize-glow bg-amber-300' : 'border-[#0106A9]'">
 
                         <div class="-rotate-45 flex flex-col justify-center items-center text-center px-2 sm:px-4">
                             <transition name="fade-zoom" mode="out-in">
@@ -40,14 +42,19 @@
                                     class="flex flex-col justify-center items-center text-center px-6">
                                     <img :src="prize?.image || defaultPrizeImg"
                                         class="w-[40vw] sm:w-[30vw] md:w-[180px] h-auto mx-auto prize-zoom" />
-
-                                    <h1
-                                        class="text-xl font-bold text-[#080D88] line-clamp-3 audiowide-regular text-center mx-auto capitalize p-1 pb-2 px-4 mb-4 prize-zoom">
+                                    <h1 class="text-xl font-bold line-clamp-3 audiowide-regular text-center mx-auto capitalize p-1 pb-2 px-4 prize-zoom"
+                                        :class="isSpecialPrize ? 'text-[#DAA520] special-prize-text' : 'text-[#080D88]'">
                                         <span v-if="!isNaN(Number(prize?.name))">
                                             {{ helper.priceFormat(prize.name) }} {{ $t("mmk") }}
                                         </span>
                                         <span v-else>
                                             {{ prize.name.length > 50 ? prize.name.slice(0, 50) + "…" : prize.name }}
+                                        </span>
+                                    </h1>
+                                    <h1
+                                        class="text font-bold audiowide-regular text-center mx-auto capitalize text-[#bb1d28] prize-zoom">
+                                        <span>
+                                            {{ prize.quantity }} {{ prize.quantity > 1 ? 'items' : 'item' }}
                                         </span>
                                     </h1>
                                 </div>
@@ -71,9 +78,11 @@
                     rounded-lg cursor-pointer transition-all duration-300
                     disabled:opacity-50 disabled:cursor-not-allowed fixed bottom-0 mb-6 md:mb-12" :class="apiError && clickStep === 1
                         ? 'bg-gradient-to-r from-[#DC3545] to-[#C82333] hover:from-[#C82333] hover:to-[#BD2130]'
-                        : 'bg-gradient-to-r from-[#00047D] to-[#0008CE] hover:opacity-90'">
+                        : isSpecialPrize ? 'bg-gradient-to-r from-[#DAA520] to-[#B8860B] hover:from-[#FFD700] hover:to-[#DAA520]'
+                            : 'bg-gradient-to-r from-[#00047D] to-[#0008CE] hover:opacity-90'">
 
-                    <span class="text-[21px] font-light text-white uppercase audiowide-regular">
+                    <span class="text-[21px] font-light text-white uppercase audiowide-regular"
+                        :class="isSpecialPrize ? 'special-prize-text' : ''">
                         {{ buttonText }}
                     </span>
                 </button>
@@ -83,9 +92,10 @@
             <transition-group name="list" tag="div"
                 class="winner-scroll w-full lg:w-2/3 flex flex-wrap justify-center items-start gap-2">
 
-                <div v-for="(p, i) in positioned" :key="i" class="item-card flex items-center bg-white rounded-lg shadow-md border-2 border-[#080D88]
+                <div v-for="(p, i) in positioned" :key="i" class="item-card flex items-center bg-white rounded-lg shadow-md border-2
                     overflow-hidden transform transition-all duration-300" :class="[
                         { 'winner-flash': p.flash },
+                        isSpecialPrize ? 'border-[#DAA520]' : 'border-[#080D88]',
                         positioned.length <= 3 ? 'w-[48%] min-h-[25vw] sm:min-h-[140px]' :
                             positioned.length <= 6 ? 'w-[32%] min-h-[22vw] sm:min-h-[120px]' :
                                 positioned.length <= 14 ? 'w-[32%] min-h-[20vw] sm:min-h-[100px]' :
@@ -93,11 +103,14 @@
                                         'w-[19%] min-h-[12vw] sm:min-h-[65px]'
                     ]" :style="{ transitionDelay: i * 30 + 'ms' }">
 
-                    <div class="bg-[#080D88] text-white h-full flex items-center justify-center self-stretch"
-                        :class="positioned.length <= 3 ? 'px-4' : positioned.length <= 6 ? 'px-3' : positioned.length <= 14 ? 'px-2' : positioned.length <= 30 ? 'px-1.5' : 'px-1'">
-                        <span
-                            :class="positioned.length <= 3 ? 'text-2xl' : positioned.length <= 14 ? 'text-xl' : positioned.length <= 30 ? 'text-base' : 'text-sm'"
-                            class="font-bold whitespace-nowrap">
+                    <div class="h-full flex items-center justify-center self-stretch" :class="[
+                        isSpecialPrize ? 'bg-[#DAA520]' : 'bg-[#080D88]',
+                        positioned.length <= 3 ? 'px-4' : positioned.length <= 6 ? 'px-3' : positioned.length <= 14 ? 'px-2' : positioned.length <= 30 ? 'px-1.5' : 'px-1'
+                    ]">
+                        <span :class="[
+                            isSpecialPrize ? 'special-prize-text' : 'text-white',
+                            positioned.length <= 3 ? 'text-2xl' : positioned.length <= 14 ? 'text-xl' : positioned.length <= 30 ? 'text-base' : 'text-sm'
+                        ]" class="font-bold whitespace-nowrap">
                             {{ (p.start_index + i).toString().padStart(3, "0") }}
                         </span>
                     </div>
@@ -136,7 +149,6 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import bgImage from "@/assets/images/bg_emp.png";
 import defaultPrizeImg from "@/assets/images/pz.png";
 import backend from "@/api/backend";
 import confetti from "canvas-confetti";
@@ -155,6 +167,13 @@ const confettiCanvas = ref(null);
 const apiError = ref(false);
 const retryCount = ref(0);
 const MAX_RETRIES = 2;
+
+/* ---------------- SPECIAL PRIZES ---------------- */
+const SPECIAL_PRIZE_NAMES = ['1000000', '2000000', '3000000'];
+
+const isSpecialPrize = computed(() => {
+    return prize.value?.name && SPECIAL_PRIZE_NAMES.includes(String(prize.value.name));
+});
 
 /* ---------------- API ---------------- */
 
@@ -321,7 +340,8 @@ async function start() {
         positioned.value = [];
 
         for (let i = 0; i < sortedWinners.length; i++) {
-            const totalSpins = 100;
+            // More spins for single winner to increase suspense
+            const totalSpins = sortedWinners.length === 1 ? 150 : 100;
 
             for (let s = 0; s < totalSpins; s++) {
                 const progress = s / totalSpins;
@@ -386,8 +406,16 @@ const buttonText = computed(() => {
 });
 
 let balloon = confetti.shapeFromText({ text: '🎈' });
+let star = confetti.shapeFromText({ text: '⭐' });
+let money = confetti.shapeFromText({ text: '💰' });
+let sparkle = confetti.shapeFromText({ text: '✨' });
+
 /* ---------------- CONFETTI ---------------- */
 function launchConfetti() {
+    if (isSpecialPrize.value) {
+        launchSpecialConfetti();
+        return;
+    }
     if (!confettiCanvas.value) return;
     const myConfetti = confetti.create(confettiCanvas.value, {
         resize: true,
@@ -441,6 +469,114 @@ function launchConfetti() {
             shapes: [balloon],
         });
     }, 700);
+}
+
+/* ---------------- SPECIAL CONFETTI (for 1M, 2M, 3M prizes) ---------------- */
+function launchSpecialConfetti() {
+    if (!confettiCanvas.value) return;
+    const myConfetti = confetti.create(confettiCanvas.value, {
+        resize: true,
+        useWorker: true,
+    });
+
+    const goldColors = ['#FFD700', '#FFA500', '#FFDF00', '#F0E68C', '#DAA520', '#B8860B', '#FFE135', '#FFFFFF'];
+
+    // Massive initial gold burst
+    myConfetti({
+        particleCount: 250,
+        spread: 120,
+        origin: { y: 0.5 },
+        colors: goldColors,
+        shapes: [star, money, sparkle],
+        scalar: 1.2,
+    });
+
+    // Continuous golden rain effect
+    const duration = 4000;
+    const end = Date.now() + duration;
+
+    const frame = () => {
+        myConfetti({
+            particleCount: 5,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0, y: 0.5 },
+            colors: goldColors,
+            shapes: [star, money],
+        });
+        myConfetti({
+            particleCount: 5,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1, y: 0.5 },
+            colors: goldColors,
+            shapes: [star, money],
+        });
+
+        if (Date.now() < end) {
+            requestAnimationFrame(frame);
+        }
+    };
+    frame();
+
+    // Multiple side bursts with gold theme
+    setTimeout(() => {
+        myConfetti({
+            particleCount: 200,
+            angle: 60,
+            spread: 100,
+            origin: { x: 0 },
+            colors: goldColors,
+            shapes: [balloon, star, money],
+            scalar: 1.3,
+        });
+        myConfetti({
+            particleCount: 200,
+            angle: 120,
+            spread: 100,
+            origin: { x: 1 },
+            colors: goldColors,
+            shapes: [balloon, star, money],
+            scalar: 1.3,
+        });
+    }, 300);
+
+    // Top golden shower
+    setTimeout(() => {
+        myConfetti({
+            particleCount: 200,
+            spread: 160,
+            origin: { y: 0, x: 0.5 },
+            colors: goldColors,
+            shapes: [sparkle, star],
+            gravity: 0.8,
+            scalar: 1.5,
+        });
+    }, 600);
+
+    // Extra golden bursts
+    setTimeout(() => {
+        myConfetti({
+            particleCount: 150,
+            spread: 100,
+            origin: { y: 0.6 },
+            colors: goldColors,
+            shapes: [money, star],
+            scalar: 1.4,
+        });
+    }, 900);
+
+    // Final grand burst
+    setTimeout(() => {
+        myConfetti({
+            particleCount: 300,
+            spread: 180,
+            origin: { y: 0.5, x: 0.5 },
+            colors: goldColors,
+            shapes: [star, money, sparkle, balloon],
+            scalar: 1.5,
+        });
+    }, 1200);
 }
 </script>
 
@@ -549,5 +685,58 @@ function launchConfetti() {
 
 .prize-zoom {
     animation: prizeZoom 2s ease-in-out infinite;
+}
+
+/* Special Prize Golden Glow Effect */
+@keyframes goldenGlow {
+
+    0%,
+    100% {
+        box-shadow:
+            0 0 10px #FFD700,
+            0 0 20px #FFA500,
+            0 0 30px #FFD700,
+            inset 0 0 10px rgba(255, 215, 0, 0.3);
+    }
+
+    50% {
+        box-shadow:
+            0 0 20px #FFD700,
+            0 0 30px #FFA500,
+            0 0 40px #FFD700,
+            inset 0 0 20px rgba(255, 215, 0, 0.5);
+    }
+}
+
+.special-prize-glow {
+    animation: goldenGlow 1.5s ease-in-out infinite;
+    border-width: 8px !important;
+}
+
+/* Special Prize Text Shimmer Effect */
+@keyframes textShimmer {
+    0% {
+        background-position: -200% center;
+    }
+
+    100% {
+        background-position: 200% center;
+    }
+}
+
+.special-prize-text {
+    background: linear-gradient(90deg,
+            #DAA520 0%,
+            #FFD700 25%,
+            #FFFFFF 50%,
+            #FFD700 75%,
+            #DAA520 100%);
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: textShimmer 10s linear infinite;
+    font-size: 1.5rem !important;
+    text-shadow: none;
 }
 </style>
