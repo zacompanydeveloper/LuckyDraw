@@ -1,10 +1,16 @@
 <template>
-    <div class="w-full min-h-screen flex flex-col lg:flex-row justify-center items-center bg-contain bg-center bg-repeat-x"
-        :style="{ backgroundImage: `url(${bgImage})` }">
+    <!-- ROOT (bg-cover REMOVED from here) -->
+    <div class="relative w-full min-h-screen overflow-hidden flex flex-col lg:flex-row justify-center items-center">
+
+        <!-- FIXED BACKGROUND LAYER (THE ONLY REAL FIX) -->
+        <div class="fixed inset-0 -z-10 bg-cover bg-center"
+            style="background-image: url('https://0s3.sweetyhome.net.mm/shassets/sweety_home/images/bg_emp.png')">
+        </div>
+
         <!-- Top Bar -->
         <div v-if="initialState" class="w-full flex justify-between absolute top-0 left-0 right-0 z-10">
-            <img src="@/assets/images/SweetyHome.png" alt="" srcset="" class=" w-[260px] p-2">
-            <img src="@/assets/images/30Years.png" alt="" srcset="" class=" w-[200px]">
+            <img src="@/assets/images/SweetyHome.png" class="w-[260px] p-2">
+            <img src="@/assets/images/30Years.png" class="w-[200px]">
         </div>
 
         <!-- Bottom Date -->
@@ -15,25 +21,26 @@
 
         <!-- INITIAL STATE -->
         <template v-if="initialState">
-            <img src="@/assets/images/typ_emp.png" alt="Lucky Draw" class="lucky-img w-xl cursor-pointer prize-zoom"
-                @click.prevent="initialState = false" />
+            <img src="https://0s3.sweetyhome.net.mm/shassets/sweety_home/images/typ_emp.png" alt="Lucky Draw"
+                class="lucky-img w-xl cursor-pointer prize-zoom" @click.prevent="initialState = false" />
         </template>
 
         <!-- MAIN DRAW STATE -->
         <template v-else>
-            <!-- LEFT SIDE: Prize + Button -->
+            <!-- LEFT SIDE -->
             <div class="w-full lg:w-1/3 h-full flex flex-col items-center justify-start mb-8 lg:mb-0">
                 <div class="flex flex-1 items-center justify-center">
-                    <!-- PRIZE BOX -->
-                    <div
-                        class="relative bg-white/80 w-[100vw] max-w-[300px] h-[100vw] max-h-[300px] rounded-2xl shadow-lg shadow-white/20 border-6 border-[#0106A9] rotate-45 flex justify-center items-center transition-all duration-700">
+                    <div class="relative bg-white/80 w-[100vw] max-w-[300px] h-[100vw] max-h-[300px]
+                        rounded-2xl shadow-lg shadow-white/20 border-6 border-[#0106A9] rotate-45
+                        flex justify-center items-center transition-all duration-700">
+
                         <div class="-rotate-45 flex flex-col justify-center items-center text-center px-2 sm:px-4">
-                            <!-- Prize Content -->
                             <transition name="fade-zoom" mode="out-in">
                                 <div v-if="prizeLoaded"
                                     class="flex flex-col justify-center items-center text-center px-6">
                                     <img :src="prize?.image || defaultPrizeImg"
                                         class="w-[40vw] sm:w-[30vw] md:w-[180px] h-auto mx-auto prize-zoom" />
+
                                     <h1
                                         class="text-xl font-bold text-[#080D88] line-clamp-3 audiowide-regular text-center mx-auto capitalize p-1 pb-2 px-4 mb-4 prize-zoom">
                                         <span v-if="!isNaN(Number(prize?.name))">
@@ -50,8 +57,10 @@
                 </div>
 
                 <!-- START / RESET BUTTON -->
-                <button @click="start" :disabled="isLoading"
-                    class="w-[60%] sm:w-[40%] md:w-[200px] h-12 md:h-14 flex items-center justify-center bg-gradient-to-r from-[#00047D] to-[#0008CE] rounded-lg cursor-pointer hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed fixed bottom-0 mb-6 md:mb-12">
+                <button @click="start" :disabled="isLoading" class="w-[60%] sm:w-[40%] md:w-[200px] h-12 md:h-14 flex items-center justify-center
+                    bg-gradient-to-r from-[#00047D] to-[#0008CE] rounded-lg cursor-pointer hover:opacity-90
+                    disabled:opacity-50 disabled:cursor-not-allowed fixed bottom-0 mb-6 md:mb-12">
+
                     <span class="text-[21px] font-light text-white uppercase audiowide-regular">
                         {{ buttonText }}
                     </span>
@@ -61,12 +70,15 @@
             <!-- RIGHT SIDE: Winner List -->
             <transition-group name="list" tag="div"
                 class="winner-scroll w-full lg:w-2/3 flex flex-wrap justify-center items-start gap-1 max-h-[85vh] overflow-y-auto">
-                <div v-for="(p, i) in positioned" :key="i"
-                    class="item-card flex items-center bg-white rounded shadow-md border border-[#080D88] overflow-hidden w-[32%] h-[20vw] sm:h-[80px] transform"
-                    :class="{ 'winner-flash': p.flash }" :style="{ transitionDelay: i * 30 + 'ms' }">
+
+                <div v-for="(p, i) in positioned" :key="i" class="item-card flex items-center bg-white rounded shadow-md border border-[#080D88]
+                    overflow-hidden w-[32%] h-[20vw] sm:h-[80px] transform" :class="{ 'winner-flash': p.flash }"
+                    :style="{ transitionDelay: i * 30 + 'ms' }">
+
                     <div class="bg-[#080D88] text-white h-full flex items-center justify-center px-2 text-lg font-bold">
                         {{ (p.start_index + i).toString().padStart(3, "0") }}
                     </div>
+
                     <div class="flex flex-col items-center justify-center py-2 w-full">
                         <span class="text-[#080D88] font-bold text-lg truncate audiowide-regular px-2">
                             {{ p.name }}
@@ -75,15 +87,17 @@
                             {{ p.region }}
                         </span>
                         <span class="text-[#080D88] truncate text-xs text-center px-2">
-                            <span class="font-bold">{{ p.company_name }}</span><br>{{ p.role }}
+                            <span class="font-bold">{{ p.company_name }}</span><br>
+                            {{ p.role }}
                         </span>
                     </div>
                 </div>
             </transition-group>
 
-            <!-- Confetti - positioned to overflow over dialog -->
+            <!-- Confetti -->
             <canvas ref="confettiCanvas"
-                class="pointer-events-none w-full h-full fixed bottom-0 right-0 left-0 top-0 z-[9999]"></canvas>
+                class="pointer-events-none w-full h-full fixed bottom-0 right-0 left-0 top-0 z-[9999]">
+            </canvas>
 
             <Toast />
         </template>
