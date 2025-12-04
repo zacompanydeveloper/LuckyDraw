@@ -4,11 +4,11 @@
 
         <!-- FIXED BACKGROUND LAYER (THE ONLY REAL FIX) -->
         <div class="fixed inset-0 -z-10 bg-cover bg-center"
-            style="background-image: url('https://0s3.sweetyhome.net.mm/shassets/sweety_home/images/bg_emp.png')">
+            style="background-image: url('https://0s3.sweetyhome.net.mm/shassets/sweety_home/images/sweetyhome_bg2.webp')">
         </div>
 
         <!-- Top Bar -->
-        <div v-if="initialState" class="w-full flex justify-between absolute top-0 left-0 right-0 z-10">
+        <div class="w-full flex justify-between absolute top-0 left-0 right-0 z-10">
             <img src="@/assets/images/SweetyHome.png" class="w-[260px] p-2">
             <img src="@/assets/images/30Years.png" class="w-[200px]">
         </div>
@@ -36,7 +36,7 @@
 
                         <div class="-rotate-45 flex flex-col justify-center items-center text-center px-2 sm:px-4">
                             <transition name="fade-zoom" mode="out-in">
-                                <div v-if="prizeLoaded"
+                                <div v-if="prizeLoaded && prize"
                                     class="flex flex-col justify-center items-center text-center px-6">
                                     <img :src="prize?.image || defaultPrizeImg"
                                         class="w-[40vw] sm:w-[30vw] md:w-[180px] h-auto mx-auto prize-zoom" />
@@ -51,6 +51,16 @@
                                         </span>
                                     </h1>
                                 </div>
+                                <div v-else-if="apiError"
+                                    class="flex flex-col justify-center items-center text-center px-6">
+                                    <svg class="w-16 h-16 text-red-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <p class="text-red-600 font-bold text-lg mt-4 audiowide-regular">Failed to Load
+                                        Prize</p>
+                                </div>
                             </transition>
                         </div>
                     </div>
@@ -58,8 +68,10 @@
 
                 <!-- START / RESET BUTTON -->
                 <button @click="start" :disabled="isLoading" class="w-[60%] sm:w-[40%] md:w-[200px] h-12 md:h-14 flex items-center justify-center
-                    bg-gradient-to-r from-[#00047D] to-[#0008CE] rounded-lg cursor-pointer hover:opacity-90
-                    disabled:opacity-50 disabled:cursor-not-allowed fixed bottom-0 mb-6 md:mb-12">
+                    rounded-lg cursor-pointer transition-all duration-300
+                    disabled:opacity-50 disabled:cursor-not-allowed fixed bottom-0 mb-6 md:mb-12" :class="apiError && clickStep === 1
+                        ? 'bg-gradient-to-r from-[#DC3545] to-[#C82333] hover:from-[#C82333] hover:to-[#BD2130]'
+                        : 'bg-gradient-to-r from-[#00047D] to-[#0008CE] hover:opacity-90'">
 
                     <span class="text-[21px] font-light text-white uppercase audiowide-regular">
                         {{ buttonText }}
@@ -69,26 +81,44 @@
 
             <!-- RIGHT SIDE: Winner List -->
             <transition-group name="list" tag="div"
-                class="winner-scroll w-full lg:w-2/3 flex flex-wrap justify-center items-start gap-1 max-h-[85vh] overflow-y-auto">
+                class="winner-scroll w-full lg:w-2/3 flex flex-wrap justify-center items-start gap-2">
 
-                <div v-for="(p, i) in positioned" :key="i" class="item-card flex items-center bg-white rounded shadow-md border border-[#080D88]
-                    overflow-hidden w-[32%] h-[20vw] sm:h-[80px] transform" :class="{ 'winner-flash': p.flash }"
-                    :style="{ transitionDelay: i * 30 + 'ms' }">
+                <div v-for="(p, i) in positioned" :key="i" class="item-card flex items-center bg-white rounded-lg shadow-md border-2 border-[#080D88]
+                    overflow-hidden transform transition-all duration-300" :class="[
+                        { 'winner-flash': p.flash },
+                        positioned.length <= 3 ? 'w-[48%] min-h-[25vw] sm:min-h-[140px]' :
+                            positioned.length <= 6 ? 'w-[32%] min-h-[22vw] sm:min-h-[120px]' :
+                                positioned.length <= 14 ? 'w-[32%] min-h-[20vw] sm:min-h-[100px]' :
+                                    positioned.length <= 30 ? 'w-[29%] min-h-[15vw] sm:min-h-[75px]' :
+                                        'w-[19%] min-h-[12vw] sm:min-h-[65px]'
+                    ]" :style="{ transitionDelay: i * 30 + 'ms' }">
 
-                    <div class="bg-[#080D88] text-white h-full flex items-center justify-center px-2 text-lg font-bold">
-                        {{ (p.start_index + i).toString().padStart(3, "0") }}
+                    <div class="bg-[#080D88] text-white h-full flex items-center justify-center self-stretch"
+                        :class="positioned.length <= 3 ? 'px-4' : positioned.length <= 6 ? 'px-3' : positioned.length <= 14 ? 'px-2' : positioned.length <= 30 ? 'px-1.5' : 'px-1'">
+                        <span
+                            :class="positioned.length <= 3 ? 'text-2xl' : positioned.length <= 14 ? 'text-xl' : positioned.length <= 30 ? 'text-base' : 'text-sm'"
+                            class="font-bold whitespace-nowrap">
+                            {{ (p.start_index + i).toString().padStart(3, "0") }}
+                        </span>
                     </div>
 
-                    <div class="flex flex-col items-center justify-center py-2 w-full">
-                        <span class="text-[#080D88] font-bold text-lg truncate audiowide-regular px-2">
+                    <div class="flex flex-col items-center justify-center w-full"
+                        :class="positioned.length > 30 ? 'py-1 gap-0' : positioned.length > 14 ? 'py-2 gap-0.5' : 'py-3 gap-1'">
+                        <span
+                            class="text-[#080D88] font-bold audiowide-regular px-2 text-center whitespace-nowrap overflow-hidden text-ellipsis"
+                            :class="positioned.length <= 3 ? 'text-2xl' : positioned.length <= 6 ? 'text-xl' : positioned.length <= 14 ? 'text-lg' : positioned.length <= 30 ? 'text-sm' : 'text-sm'">
                             {{ p.name }}
                         </span>
-                        <span class="text-[#080D88] font-bold text-xs truncate audiowide-regular px-2">
+                        <span
+                            class="text-[#080D88] font-bold audiowide-regular px-1 text-center whitespace-nowrap overflow-hidden text-ellipsis"
+                            :class="positioned.length <= 3 ? 'text-base' : positioned.length <= 14 ? 'text-sm' : 'text-xs'">
                             {{ p.region }}
                         </span>
-                        <span class="text-[#080D88] truncate text-xs text-center px-2">
-                            <span class="font-bold">{{ p.company_name }}</span><br>
-                            {{ p.role }}
+                        <span class="text-[#080D88] text-center px-1"
+                            :class="positioned.length <= 3 ? 'text-base' : positioned.length <= 14 ? 'text-sm' : 'text-xs'">
+                            <span class="font-bold whitespace-nowrap overflow-hidden text-ellipsis block">{{
+                                p.company_name }}</span>
+                            <span class="whitespace-nowrap overflow-hidden text-ellipsis block">{{ p.role }}</span>
                         </span>
                     </div>
                 </div>
@@ -122,26 +152,67 @@ const clickStep = ref(1);
 const virtualWinners = ref([]);
 const toast = useToast();
 const confettiCanvas = ref(null);
+const apiError = ref(false);
+const retryCount = ref(0);
+const MAX_RETRIES = 2;
 
 /* ---------------- API ---------------- */
 
 const apiFetchPrize = async () => {
     try {
         const { data } = await backend.get("/employees/get-prize");
-        return data?.data || null;
+
+        if (!data?.data) {
+            throw new Error("Prize data is empty");
+        }
+
+        apiError.value = false;
+        retryCount.value = 0;
+        return data.data;
     } catch (err) {
-        toast.add({ severity: "error", summary: "Error", detail: err?.response?.data?.message || "Failed to fetch prize.", life: 4000 });
+        apiError.value = true;
+        const errorMessage = err?.response?.data?.message || err?.message || "Failed to fetch prize.";
+
+        toast.add({
+            severity: "error",
+            summary: "Prize Fetch Error",
+            detail: errorMessage,
+            life: 5000
+        });
+
+        console.error("Prize fetch error:", err);
         return null;
     }
 };
 
 const apiFetchWinners = async () => {
     try {
-        const { data } = await backend.get("/employees/get-winners", { params: { reward_id: prize.value?.id } });
+        if (!prize.value?.id) {
+            throw new Error("Prize ID is missing");
+        }
+
+        const { data } = await backend.get("/employees/get-winners", {
+            params: { reward_id: prize.value.id }
+        });
+
         virtualWinners.value = data?.virtual_winners || [];
-        return data?.data || [];
+
+        if (!data?.data || data.data.length === 0) {
+            throw new Error("No winners found");
+        }
+
+        return data.data;
     } catch (err) {
-        toast.add({ severity: "error", summary: "Error", detail: err?.response?.data?.message || "Failed to fetch winners.", life: 4000 });
+        const errorMessage = err?.response?.data?.message || err?.message || "Failed to fetch winners.";
+
+        toast.add({
+            severity: "error",
+            summary: "Winners Fetch Error",
+            detail: errorMessage,
+            life: 5000
+        });
+
+        console.error("Winners fetch error:", err);
         return [];
     }
 };
@@ -150,19 +221,71 @@ const apiFetchWinners = async () => {
 
 async function loadPrize() {
     prizeLoaded.value = false;
-    prize.value = await apiFetchPrize();
-    setTimeout(() => (prizeLoaded.value = true), 200);
+    apiError.value = false;
+
+    const fetchedPrize = await apiFetchPrize();
+
+    if (!fetchedPrize) {
+        prize.value = null;
+        return false;
+    }
+
+    prize.value = fetchedPrize;
+
+    // Smooth transition with delay
+    await new Promise(resolve => setTimeout(resolve, 300));
+    prizeLoaded.value = true;
+
+    return true;
+}
+
+/* ---------------- RETRY LOGIC ---------------- */
+
+async function retryLoadPrize() {
+    if (retryCount.value >= MAX_RETRIES) {
+        toast.add({
+            severity: "error",
+            summary: "Max Retries Reached",
+            detail: "Please try again later or contact support.",
+            life: 5000
+        });
+        return false;
+    }
+
+    retryCount.value++;
+
+    return await loadPrize();
 }
 
 /* ---------------- MAIN BUTTON ---------------- */
 
 async function start() {
     if (isLoading.value) return;
+
     isLoading.value = true;
 
     // STEP 1: LOAD PRIZE
     if (clickStep.value === 1) {
-        await loadPrize();
+        const success = await loadPrize();
+
+        // If prize fetch fails, don't proceed to step 2
+        if (!success) {
+            // Offer retry option
+            const shouldRetry = retryCount.value < MAX_RETRIES;
+
+            if (shouldRetry) {
+                const retrySuccess = await retryLoadPrize();
+
+                if (retrySuccess) {
+                    clickStep.value = 2;
+                }
+            }
+
+            isLoading.value = false;
+            return;
+        }
+
+        // Only proceed to step 2 if prize loaded successfully
         clickStep.value = 2;
         isLoading.value = false;
         return;
@@ -171,8 +294,25 @@ async function start() {
     // STEP 2: SLOW-SPIN + WINNER
     if (clickStep.value === 2) {
         const winners = await apiFetchWinners();
-        if (!winners.length) {
-            toast.add({ severity: "warn", summary: "No Winners", detail: "No winner data found.", life: 3000 });
+
+        if (!winners || winners.length === 0) {
+            toast.add({
+                severity: "warn",
+                summary: "No Winners",
+                detail: "No winner data available for this prize.",
+                life: 4000
+            });
+            isLoading.value = false;
+            return;
+        }
+
+        if (!virtualWinners.value || virtualWinners.value.length === 0) {
+            toast.add({
+                severity: "error",
+                summary: "Virtual Winners Missing",
+                detail: "Cannot start animation without virtual winners data.",
+                life: 4000
+            });
             isLoading.value = false;
             return;
         }
@@ -181,13 +321,12 @@ async function start() {
         positioned.value = [];
 
         for (let i = 0; i < sortedWinners.length; i++) {
-
             const totalSpins = 100;
 
             for (let s = 0; s < totalSpins; s++) {
-
                 const progress = s / totalSpins;
 
+                // Smooth progressive delay
                 let delay = 30;
                 if (progress > 0.6) delay = 80;
                 if (progress > 0.8) delay = 150;
@@ -204,7 +343,7 @@ async function start() {
                     flash: false,
                 };
 
-                await new Promise((res) => setTimeout(res, delay));
+                await new Promise((resolve) => setTimeout(resolve, delay));
             }
 
             // REAL WINNER REVEAL
@@ -213,8 +352,13 @@ async function start() {
                 flash: true,
             };
 
-            setTimeout(() => (positioned.value[i].flash = false), 2000);
-            await new Promise((res) => setTimeout(res, 600));
+            setTimeout(() => {
+                if (positioned.value[i]) {
+                    positioned.value[i].flash = false;
+                }
+            }, 2000);
+
+            await new Promise((resolve) => setTimeout(resolve, 600));
             launchConfetti();
         }
 
@@ -227,6 +371,8 @@ async function start() {
     positioned.value = [];
     prize.value = null;
     prizeLoaded.value = false;
+    apiError.value = false;
+    retryCount.value = 0;
     clickStep.value = 1;
     isLoading.value = false;
 }
@@ -235,6 +381,7 @@ async function start() {
 
 const buttonText = computed(() => {
     if (isLoading.value) return "Loading...";
+    if (apiError.value && clickStep.value === 1) return "Retry";
     return clickStep.value < 3 ? "START" : "RESET";
 });
 
@@ -298,6 +445,21 @@ function launchConfetti() {
 </script>
 
 <style scoped>
+/* Loading Spinner */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
 /* Winner Flash Animation */
 @keyframes flashGlow {
 
@@ -316,22 +478,29 @@ function launchConfetti() {
     border-color: #080d88 !important;
 }
 
-/* Prize Animation */
-.fade-zoom-enter-active,
-.fade-zoom-leave-active {
-    transition: all 0.6s ease;
+/* Prize Animation - Smoother transitions */
+.fade-zoom-enter-active {
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.fade-zoom-enter-from,
+.fade-zoom-leave-active {
+    transition: all 0.3s ease-out;
+}
+
+.fade-zoom-enter-from {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+}
+
 .fade-zoom-leave-to {
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale(0.95) translateY(-10px);
 }
 
 .fade-zoom-enter-to,
 .fade-zoom-leave-from {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1) translateY(0);
 }
 
 /* Winner list animation */
