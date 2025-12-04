@@ -21,8 +21,9 @@
 
         <!-- INITIAL STATE -->
         <template v-if="initialState">
-            <img src="https://0s3.sweetyhome.net.mm/shassets/sweety_home/images/typ_emp.png" alt="Lucky Draw"
-                class="lucky-img w-xl cursor-pointer prize-zoom" @click.prevent="initialState = false" />
+            <img src="https://0s3.sweetyhome.net.mm/shassets/sweety_home/images/sweetyhome_typ_emp.webp"
+                alt="Lucky Draw" class="lucky-img w-xl cursor-pointer prize-zoom"
+                @click.prevent="initialState = false" />
         </template>
 
         <!-- MAIN DRAW STATE -->
@@ -136,7 +137,6 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import bgImage from "@/assets/images/bg_emp.png";
 import defaultPrizeImg from "@/assets/images/pz.png";
 import backend from "@/api/backend";
 import confetti from "canvas-confetti";
