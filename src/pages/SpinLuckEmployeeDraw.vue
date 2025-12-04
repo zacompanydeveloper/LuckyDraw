@@ -60,22 +60,22 @@
 
             <!-- RIGHT SIDE: Winner List -->
             <transition-group name="list" tag="div"
-                class="winner-scroll w-full lg:w-2/3 flex flex-wrap justify-center items-start gap-4 max-h-[85vh] overflow-y-auto">
+                class="winner-scroll w-full lg:w-2/3 flex flex-wrap justify-center items-start gap-1 max-h-[85vh] overflow-y-auto">
                 <div v-for="(p, i) in positioned" :key="i"
-                    class="item-card flex items-center bg-white rounded shadow-md border border-[#080D88] overflow-hidden w-[45%] h-[20vw] sm:h-[70px] transform"
+                    class="item-card flex items-center bg-white rounded shadow-md border border-[#080D88] overflow-hidden w-[32%] h-[20vw] sm:h-[80px] transform"
                     :class="{ 'winner-flash': p.flash }" :style="{ transitionDelay: i * 30 + 'ms' }">
                     <div class="bg-[#080D88] text-white h-full flex items-center justify-center px-2 text-lg font-bold">
                         {{ (p.start_index + i).toString().padStart(3, "0") }}
                     </div>
-                    <div class="flex flex-col px-4 items-center justify-center py-2 w-full">
+                    <div class="flex flex-col items-center justify-center py-2 w-full">
                         <span class="text-[#080D88] font-bold text-lg truncate audiowide-regular px-2">
                             {{ p.name }}
                         </span>
                         <span class="text-[#080D88] font-bold text-xs truncate audiowide-regular px-2">
                             {{ p.region }}
                         </span>
-                        <span class="text-[#080D88] truncate text-xs">
-                            <span class="font-bold">{{ p.company_name }}</span>-{{ p.role }}
+                        <span class="text-[#080D88] truncate text-xs text-center px-2">
+                            <span class="font-bold">{{ p.company_name }}</span><br>{{ p.role }}
                         </span>
                     </div>
                 </div>
