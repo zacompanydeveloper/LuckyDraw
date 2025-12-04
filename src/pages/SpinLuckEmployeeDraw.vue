@@ -15,7 +15,7 @@
 
         <!-- INITIAL STATE -->
         <template v-if="initialState">
-            <img src="@/assets/images/typ_emp.png" alt="Lucky Draw" class="lucky-img w-xl cursor-pointer"
+            <img src="@/assets/images/typ_emp.png" alt="Lucky Draw" class="lucky-img w-xl cursor-pointer prize-zoom"
                 @click.prevent="initialState = false" />
         </template>
 
@@ -26,16 +26,16 @@
                 <div class="flex flex-1 items-center justify-center">
                     <!-- PRIZE BOX -->
                     <div
-                        class="relative bg-white/40 w-[100vw] max-w-[300px] h-[100vw] max-h-[300px] rounded-2xl shadow-lg shadow-white/20 border-6 border-[#0106A9] rotate-45 flex justify-center items-center transition-all duration-700">
+                        class="relative bg-white/80 w-[100vw] max-w-[300px] h-[100vw] max-h-[300px] rounded-2xl shadow-lg shadow-white/20 border-6 border-[#0106A9] rotate-45 flex justify-center items-center transition-all duration-700">
                         <div class="-rotate-45 flex flex-col justify-center items-center text-center px-2 sm:px-4">
                             <!-- Prize Content -->
                             <transition name="fade-zoom" mode="out-in">
                                 <div v-if="prizeLoaded"
                                     class="flex flex-col justify-center items-center text-center px-6">
                                     <img :src="prize?.image || defaultPrizeImg"
-                                        class="w-[40vw] sm:w-[30vw] md:w-[180px] h-auto mx-auto" />
+                                        class="w-[40vw] sm:w-[30vw] md:w-[180px] h-auto mx-auto prize-zoom" />
                                     <h1
-                                        class="text-xl font-bold text-[#080D88] line-clamp-3 audiowide-regular text-center mx-auto capitalize p-1 pb-2 mb-4">
+                                        class="text-xl font-bold text-[#080D88] line-clamp-3 audiowide-regular text-center mx-auto capitalize p-1 pb-2 px-4 mb-4 prize-zoom">
                                         <span v-if="!isNaN(Number(prize?.name))">
                                             {{ helper.priceFormat(prize.name) }} {{ $t("mmk") }}
                                         </span>
@@ -168,7 +168,7 @@ async function start() {
 
         for (let i = 0; i < sortedWinners.length; i++) {
 
-            const totalSpins = 45;
+            const totalSpins = 100;
 
             for (let s = 0; s < totalSpins; s++) {
 
@@ -177,7 +177,8 @@ async function start() {
                 let delay = 30;
                 if (progress > 0.6) delay = 80;
                 if (progress > 0.8) delay = 150;
-                if (progress > 0.92) delay = 220;
+                if (progress > 0.92) delay = 300;
+                if (progress > 0.99) delay = 400;
 
                 const virtual = virtualWinners.value[
                     Math.floor(Math.random() * virtualWinners.value.length)
@@ -223,6 +224,7 @@ const buttonText = computed(() => {
     return clickStep.value < 3 ? "START" : "RESET";
 });
 
+let balloon = confetti.shapeFromText({ text: '🎈' });
 /* ---------------- CONFETTI ---------------- */
 function launchConfetti() {
     if (!confettiCanvas.value) return;
@@ -246,7 +248,8 @@ function launchConfetti() {
             angle: 60,
             spread: 100,
             origin: { x: 0 },
-            colors: ['#000DFF', '#343EFF', '#FFFFFF', '#2E3192', '#080D88', '#FFD700', '#FFA500', '#FF0000', '#DC143C']
+            colors: ['#000DFF', '#343EFF', '#FFFFFF', '#2E3192', '#080D88', '#FFD700', '#FFA500', '#FF0000', '#DC143C'],
+            shapes: [balloon],
         });
         myConfetti({
             particleCount: 120,
@@ -273,7 +276,8 @@ function launchConfetti() {
             particleCount: 100,
             spread: 80,
             origin: { y: 0.3, x: 0.5 },
-            colors: ['#000DFF', '#343EFF', '#FFFFFF', '#2E3192', '#080D88', '#FFD700', '#FFA500', '#FF0000', '#DC143C']
+            colors: ['#000DFF', '#343EFF', '#FFFFFF', '#2E3192', '#080D88', '#FFD700', '#FFA500', '#FF0000', '#DC143C'],
+            shapes: [balloon],
         });
     }, 700);
 }
@@ -343,5 +347,24 @@ function launchConfetti() {
 .winner-scroll {
     scrollbar-width: none;
     -ms-overflow-style: none;
+}
+
+/* Prize Zoom In / Zoom Out Effect */
+@keyframes prizeZoom {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.08);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.prize-zoom {
+    animation: prizeZoom 2s ease-in-out infinite;
 }
 </style>
