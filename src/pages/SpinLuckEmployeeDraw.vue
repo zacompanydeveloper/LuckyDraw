@@ -60,26 +60,30 @@
 
             <!-- RIGHT SIDE: Winner List -->
             <transition-group name="list" tag="div"
-                class="winner-scroll w-full lg:w-2/3 flex flex-wrap justify-center items-start gap-4 max-h-[85vh] overflow-y-auto">
+                class="winner-scroll w-full lg:w-2/3 flex flex-wrap justify-center items-start gap-1 max-h-[85vh] overflow-y-auto">
                 <div v-for="(p, i) in positioned" :key="i"
-                    class="item-card flex items-center bg-white rounded shadow-md border border-[#080D88] overflow-hidden w-[45%] h-[20vw] sm:h-[70px] transform"
+                    class="item-card flex items-center bg-white rounded shadow-md border border-[#080D88] overflow-hidden w-[32%] h-[20vw] sm:h-[80px] transform"
                     :class="{ 'winner-flash': p.flash }" :style="{ transitionDelay: i * 30 + 'ms' }">
                     <div class="bg-[#080D88] text-white h-full flex items-center justify-center px-2 text-lg font-bold">
                         {{ (p.start_index + i).toString().padStart(3, "0") }}
                     </div>
-                    <div class="flex flex-col px-4 items-center justify-center py-2 w-full">
+                    <div class="flex flex-col items-center justify-center py-2 w-full">
                         <span class="text-[#080D88] font-bold text-lg truncate audiowide-regular px-2">
                             {{ p.name }}
                         </span>
                         <span class="text-[#080D88] font-bold text-xs truncate audiowide-regular px-2">
                             {{ p.region }}
                         </span>
-                        <span class="text-[#080D88] truncate text-xs">
-                            <span class="font-bold">{{ p.company_name }}</span>-{{ p.role }}
+                        <span class="text-[#080D88] truncate text-xs text-center px-2">
+                            <span class="font-bold">{{ p.company_name }}</span><br>{{ p.role }}
                         </span>
                     </div>
                 </div>
             </transition-group>
+
+            <!-- Confetti - positioned to overflow over dialog -->
+            <canvas ref="confettiCanvas"
+                class="pointer-events-none w-full h-full fixed bottom-0 right-0 left-0 top-0 z-[9999]"></canvas>
 
             <Toast />
         </template>
@@ -91,8 +95,9 @@ import { ref, computed } from "vue";
 import bgImage from "@/assets/images/bg_emp.png";
 import defaultPrizeImg from "@/assets/images/pz.png";
 import backend from "@/api/backend";
-import helper from "@/helper";
+import confetti from "canvas-confetti";
 import { useToast } from "primevue/usetoast";
+import helper from "@/helper";
 
 const initialState = ref(true);
 const positioned = ref([]);
@@ -102,10 +107,10 @@ const isLoading = ref(false);
 const clickStep = ref(1);
 const virtualWinners = ref([]);
 const toast = useToast();
+const confettiCanvas = ref(null);
 
-// --------------------
-// API Calls
-// --------------------
+/* ---------------- API ---------------- */
+
 const apiFetchPrize = async () => {
     try {
         const { data } = await backend.get("/employees/get-prize");
@@ -127,23 +132,21 @@ const apiFetchWinners = async () => {
     }
 };
 
-// --------------------
-// Prize Loader
-// --------------------
+/* ---------------- PRIZE LOAD ---------------- */
+
 async function loadPrize() {
     prizeLoaded.value = false;
     prize.value = await apiFetchPrize();
     setTimeout(() => (prizeLoaded.value = true), 200);
 }
 
-// --------------------
-// Main Button Logic
-// --------------------
+/* ---------------- MAIN BUTTON ---------------- */
+
 async function start() {
     if (isLoading.value) return;
     isLoading.value = true;
 
-    // STEP 1: Load Prize
+    // STEP 1: LOAD PRIZE
     if (clickStep.value === 1) {
         await loadPrize();
         clickStep.value = 2;
@@ -151,7 +154,7 @@ async function start() {
         return;
     }
 
-    // STEP 2: Spin + Reveal Winners
+    // STEP 2: SLOW-SPIN + WINNER
     if (clickStep.value === 2) {
         const winners = await apiFetchWinners();
         if (!winners.length) {
@@ -163,16 +166,41 @@ async function start() {
         const sortedWinners = winners.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         positioned.value = [];
 
-        // Spin animation
         for (let i = 0; i < sortedWinners.length; i++) {
-            for (let s = 0; s < 40; s++) {
-                const virtual = virtualWinners.value[Math.floor(Math.random() * virtualWinners.value.length)];
-                positioned.value[i] = { ...virtual, start_index: sortedWinners[i].start_index, flash: false };
-                await new Promise((res) => setTimeout(res, 50)); // faster spin
+
+            const totalSpins = 45;
+
+            for (let s = 0; s < totalSpins; s++) {
+
+                const progress = s / totalSpins;
+
+                let delay = 30;
+                if (progress > 0.6) delay = 80;
+                if (progress > 0.8) delay = 150;
+                if (progress > 0.92) delay = 220;
+
+                const virtual = virtualWinners.value[
+                    Math.floor(Math.random() * virtualWinners.value.length)
+                ];
+
+                positioned.value[i] = {
+                    ...virtual,
+                    start_index: sortedWinners[i].start_index,
+                    flash: false,
+                };
+
+                await new Promise((res) => setTimeout(res, delay));
             }
-            positioned.value[i] = { ...sortedWinners[i], flash: true };
+
+            // REAL WINNER REVEAL
+            positioned.value[i] = {
+                ...sortedWinners[i],
+                flash: true,
+            };
+
             setTimeout(() => (positioned.value[i].flash = false), 2000);
-            await new Promise((res) => setTimeout(res, 300)); // faster reveal
+            await new Promise((res) => setTimeout(res, 600));
+            launchConfetti();
         }
 
         clickStep.value = 3;
@@ -188,13 +216,67 @@ async function start() {
     isLoading.value = false;
 }
 
-// --------------------
-// Button Text
-// --------------------
+/* ---------------- BUTTON TEXT ---------------- */
+
 const buttonText = computed(() => {
     if (isLoading.value) return "Loading...";
     return clickStep.value < 3 ? "START" : "RESET";
 });
+
+/* ---------------- CONFETTI ---------------- */
+function launchConfetti() {
+    if (!confettiCanvas.value) return;
+    const myConfetti = confetti.create(confettiCanvas.value, {
+        resize: true,
+        useWorker: true,
+    });
+
+    // Initial center burst
+    myConfetti({
+        particleCount: 150,
+        spread: 100,
+        origin: { y: 0.6 },
+        colors: ['#000DFF', '#343EFF', '#FFFFFF', '#2E3192', '#080D88', '#FFD700', '#FFA500', '#FF0000', '#DC143C']
+    });
+
+    // Side bursts
+    setTimeout(() => {
+        myConfetti({
+            particleCount: 120,
+            angle: 60,
+            spread: 100,
+            origin: { x: 0 },
+            colors: ['#000DFF', '#343EFF', '#FFFFFF', '#2E3192', '#080D88', '#FFD700', '#FFA500', '#FF0000', '#DC143C']
+        });
+        myConfetti({
+            particleCount: 120,
+            angle: 120,
+            spread: 100,
+            origin: { x: 1 },
+            colors: ['#000DFF', '#343EFF', '#FFFFFF', '#2E3192', '#080D88', '#FFD700', '#FFA500', '#FF0000', '#DC143C']
+        });
+    }, 250);
+
+    // Additional bursts
+    setTimeout(() => {
+        myConfetti({
+            particleCount: 150,
+            spread: 100,
+            origin: { y: 0.6 },
+            colors: ['#000DFF', '#343EFF', '#FFFFFF', '#2E3192', '#080D88', '#FFD700', '#FFA500', '#FF0000', '#DC143C']
+        });
+    }, 500);
+
+    // Extra top bursts for more coverage over dialog
+    setTimeout(() => {
+        myConfetti({
+            particleCount: 100,
+            spread: 80,
+            origin: { y: 0.3, x: 0.5 },
+            colors: ['#000DFF', '#343EFF', '#FFFFFF', '#2E3192', '#080D88', '#FFD700', '#FFA500', '#FF0000', '#DC143C']
+        });
+    }, 700);
+}
 </script>
 
 <style scoped>
