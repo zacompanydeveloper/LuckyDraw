@@ -7,6 +7,14 @@
             style="background-image: url('https://0s3.sweetyhome.net.mm/shassets/sweety_home/images/sweetyhome_bg2.webp')">
         </div>
 
+        <!-- FLOATING SOUND TOGGLE BUTTON -->
+        <button @click="toggleSound" class="fixed bottom-0 left-0 z-[10000] w-10 h-10 flex items-center justify-center opacity-20
+        hover:scale-110 transition-all duration-300 hover:opacity-100">
+            <span class="text-2xl">
+                {{ isSoundOn ? '🔊' : '🔇' }}
+            </span>
+        </button>
+
         <!-- Top Bar -->
         <div class="w-full flex justify-between absolute top-0 left-0 right-0 z-10">
             <img src="@/assets/images/SweetyHome.png" class="w-[260px] p-2">
@@ -22,8 +30,7 @@
         <!-- INITIAL STATE -->
         <template v-if="initialState">
             <img src="https://0s3.sweetyhome.net.mm/shassets/sweety_home/images/sweetyhome_typ_emp.webp"
-                alt="Lucky Draw" class="lucky-img w-xl cursor-pointer prize-zoom"
-                @click.prevent="initialState = false" />
+                alt="Lucky Draw" class="lucky-img w-xl cursor-pointer prize-zoom" @click.prevent="spinState()" />
         </template>
 
         <!-- MAIN DRAW STATE -->
@@ -154,6 +161,11 @@ import backend from "@/api/backend";
 import confetti from "canvas-confetti";
 import { useToast } from "primevue/usetoast";
 import helper from "@/helper";
+import sound_1 from "@/assets/sounds/sound_1.mp3";
+import sound_2 from "@/assets/sounds/sound_2.mp3";
+import sound_3 from "@/assets/sounds/sound_3.mp3";
+import sound_4 from "@/assets/sounds/sound_4.mp3";
+
 
 const initialState = ref(true);
 const positioned = ref([]);
@@ -167,6 +179,7 @@ const confettiCanvas = ref(null);
 const apiError = ref(false);
 const retryCount = ref(0);
 const MAX_RETRIES = 2;
+const isSoundOn = ref(false);
 
 /* ---------------- SPECIAL PRIZES ---------------- */
 const SPECIAL_PRIZE_NAMES = ['1000000', '2000000', '3000000'];
@@ -285,6 +298,8 @@ async function start() {
 
     // STEP 1: LOAD PRIZE
     if (clickStep.value === 1) {
+        toggleSound(true); // Turn on sound on spin start
+
         const success = await loadPrize();
 
         // If prize fetch fails, don't proceed to step 2
@@ -388,6 +403,7 @@ async function start() {
     }
 
     // STEP 3: RESET
+    toggleSound(false); // Turn off sound on reset
     positioned.value = [];
     prize.value = null;
     prizeLoaded.value = false;
@@ -578,6 +594,68 @@ function launchSpecialConfetti() {
         });
     }, 1200);
 }
+
+// ---------------- RANDOM SOUND POOL ----------------
+
+const soundPool = [
+    new Audio(sound_1),
+    new Audio(sound_2),
+    new Audio(sound_3),
+    new Audio(sound_4),
+];
+
+// Set common settings
+soundPool.forEach((audio) => {
+    audio.loop = false;   // set true if you want loop
+    audio.volume = 0.7;  // adjust 0.0 - 1.0
+});
+
+function playRandomSound() {
+    try {
+        // Stop all sounds first (safety)
+        soundPool.forEach((audio) => {
+            audio.pause();
+            audio.currentTime = 0;
+        });
+
+        // Pick random index
+        const randomIndex = Math.floor(Math.random() * soundPool.length);
+
+        // Play random sound
+        soundPool[randomIndex].play();
+    } catch (e) {
+        console.warn("Random sound blocked:", e);
+    }
+}
+
+function stopAllRandomSounds() {
+    soundPool.forEach((audio) => {
+        audio.pause();
+        audio.currentTime = 0;
+    });
+}
+
+function toggleSound(forceState = null) {
+    // If parameter is passed, force that state
+    if (typeof forceState === "boolean") {
+        isSoundOn.value = forceState;
+    } else {
+        // Otherwise normal toggle
+        isSoundOn.value = !isSoundOn.value;
+    }
+
+    if (isSoundOn.value) {
+        playRandomSound();
+    } else {
+        stopAllRandomSounds();
+    }
+}
+
+function spinState() {
+    initialState.value = false;
+    toggleSound(false); // Turn off sound on spin start
+}
+
 </script>
 
 <style scoped>
@@ -726,17 +804,21 @@ function launchSpecialConfetti() {
 
 .special-prize-text {
     background: linear-gradient(90deg,
-            #DAA520 0%,
-            #FFD700 25%,
-            #FFFFFF 50%,
-            #FFD700 75%,
-            #DAA520 100%);
+            #FFD700 0%,
+            #DAA520 25%,
+            #FFFFFF 60%,
+            #DAA520 75%,
+            #FFD700 100%);
+
     background-size: 200% auto;
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+
     animation: textShimmer 10s linear infinite;
     font-size: 1.5rem !important;
-    text-shadow: none;
+
+    -webkit-text-stroke: 0.5px #DAA520;
+    /* dark gold border */
 }
 </style>
