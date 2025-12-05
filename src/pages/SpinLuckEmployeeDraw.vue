@@ -42,7 +42,7 @@
                                     class="flex flex-col justify-center items-center text-center px-6">
                                     <img :src="prize?.image || defaultPrizeImg"
                                         class="w-[40vw] sm:w-[30vw] md:w-[180px] h-auto mx-auto prize-zoom" />
-                                    <h1 class="text-xl font-bold line-clamp-3 audiowide-regular text-center mx-auto capitalize p-1 pb-2 px-4 prize-zoom"
+                                    <h1 class="text-xl font-bold line-clamp-3 audiowide-regular text-center mx-auto capitalize p-1 pb-2 px-4 prize-zoom mb-4"
                                         :class="isSpecialPrize ? 'text-[#DAA520] special-prize-text' : 'text-[#080D88]'">
                                         <span v-if="!isNaN(Number(prize?.name))">
                                             {{ helper.priceFormat(prize.name) }} {{ $t("mmk") }}
@@ -341,7 +341,7 @@ async function start() {
 
         for (let i = 0; i < sortedWinners.length; i++) {
             // More spins for single winner to increase suspense
-            const totalSpins = sortedWinners.length === 1 ? 150 : 100;
+            const totalSpins = isSpecialPrize.value ? 300 : 100;
 
             for (let s = 0; s < totalSpins; s++) {
                 const progress = s / totalSpins;
