@@ -606,8 +606,8 @@ const soundPool = [
 
 // Set common settings
 soundPool.forEach((audio) => {
-    audio.loop = false;   // set true if you want loop
-    audio.volume = 0.7;  // adjust 0.0 - 1.0
+    audio.loop = true;   // set true if you want loop
+    audio.volume = 1.0;  // adjust 0.0 - 1.0
 });
 
 function playRandomSound() {
