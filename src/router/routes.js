@@ -103,7 +103,7 @@ export const routes = [
     component: () => import("@/pages/Playground.vue"),
     meta: {
       requiresAdminAuth: true,
-      permissions: ["view-playground"],
+      // permissions: ["view-playground"],
     }, // protected route
   },
   {
@@ -137,6 +137,15 @@ export const routes = [
     path: "/admin-panel/reward",
     name: "admin-panel-reward",
     component: () => import("@/pages/Reward.vue"),
+    meta: {
+      requiresAdminAuth: true,
+      permissions: ["manage-employee-reward"],
+    }, // protected route
+  },
+  {
+    path: "/admin-panel/reward/:id/print",
+    name: "admin-panel-reward-print",
+    component: () => import("@/pages/PrintImage.vue"),
     meta: {
       requiresAdminAuth: true,
       permissions: ["manage-employee-reward"],

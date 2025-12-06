@@ -108,9 +108,6 @@
                 </template>
             </Drawer>
             <i class="pi pi-bars text-2xl text-[#2E3192] cursor-pointer" @click="visible = true"></i>
-            <p class="text-red-500 border px-2 bg-red-100">
-                {{ $t('testing') }}
-            </p>
         </div>
 
         <div class="flex items-center gap-2">

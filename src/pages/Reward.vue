@@ -5,7 +5,7 @@
 
             <div class="card mt-5 mb-10">
                 <DataTable :value="rewardList" showGridlines stripedRows scrollable scrollHeight="500px"
-                    tableStyle="min-width: 80rem" :loading="loading.table">
+                    tableStyle="min-width: 100rem" :loading="loading.table">
                     <Column :header="$t('no')" headerStyle="width:3rem ;background-color: #2E3192; color: white;">
                         <template #body="slotProps">
                             {{ pagination.from + slotProps.index }}
@@ -16,8 +16,8 @@
                     <Column headerStyle="background-color: #2E3192; color: white;" :header="$t('name')">
                         <template #body="slotProps">
                             <div class="flex items-center gap-2">
-                                <img :src="slotProps.data.image?.url || '/src/assets/images/placeholder.png'"
-                                    :alt="slotProps.data.image?.id" class="w-12" />
+                                <img :src="slotProps.data.image?.url || defaultPrizeImg" :alt="slotProps.data.image?.id"
+                                    class="w-12" />
                                 <template v-if="slotProps.data">
                                     <span v-if="!isNaN(Number(slotProps.data.name))">
                                         {{ helper.priceFormat(slotProps.data.name) }} {{ $t("mmk") }}
@@ -29,6 +29,8 @@
                             </div>
                         </template>
                     </Column>
+                    <Column headerStyle="background-color: #2E3192; color: white;" field="quantity"
+                        :header="$t('quantity')" />
                     <Column headerStyle="background-color: #2E3192; color: white;" field="sponsor_by"
                         :header="$t('sponsor_by')" />
                     <Column headerStyle="background-color: #2E3192; color: white;" field="sorting_no"
@@ -40,6 +42,12 @@
                             <div class="flex justify-center items-center gap-2">
                                 <Button type="button" icon="pi pi-cloud-upload" severity="success" outlined
                                     v-tooltip.top="'Upload Image'" @click="editReward(slotProps.data)" />
+                                <!-- <Button type="button" icon="pi pi-file-export" severity="info" outlined
+                                    v-tooltip.top="'Export Image'" /> -->
+                                <router-link :to="`/admin-panel/reward/${slotProps.data.id}/print`">
+                                    <Button type="button" icon="pi pi-file-export" severity="info" outlined
+                                        v-tooltip.top="'Export Image'" />
+                                </router-link>
                             </div>
                         </template>
                     </Column>
@@ -112,7 +120,7 @@ import backend from "@/api/backend";
 import helper from "@/helper";
 import NotFound from "@/views/NotFound.vue";
 import { useToast } from "primevue/usetoast";
-import { useConfirm } from "primevue/useconfirm";
+import defaultPrizeImg from "@/assets/images/pz.png";
 import router from "@/router";
 
 const isMobile = helper.isMobile();
