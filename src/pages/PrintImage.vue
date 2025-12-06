@@ -62,7 +62,7 @@
             <div class="w-full lg:w-2/3 flex flex-wrap justify-center items-start gap-2">
 
                 <div v-for="(winner, i) in winners" :key="i" class="item-card flex items-center bg-white rounded-lg shadow-md border-2
-                        overflow-hidden transition-all duration-300 border-[#080D88]" :class="winnerSizeClass">
+                        overflow-hidden transition-all duration-300 border-[#080D88] z-[9999]" :class="winnerSizeClass">
 
                     <!-- INDEX -->
                     <div class="h-full flex items-center justify-center self-stretch" :class="winnerPadClass"
